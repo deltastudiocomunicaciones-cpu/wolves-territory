@@ -564,7 +564,7 @@ input,textarea,select{outline:none;}
   <div class="info-page">
     <button class="back-btn" onclick="showView('home')">← Volver</button>
     <img src="https://i.imgur.com/y4gM7IO.png" 
-      style="width:100%;border-radius:4px;margin-bottom:8px;">
+     style="width:100%;border-radius:4px;margin-bottom:8px;max-height:400px;object-fit:cover;">
     <h2>Wolves Territory</h2>
     <div class="subtitle">NUESTRA HISTORIA</div>
     <div class="info-section">
@@ -660,7 +660,22 @@ input,textarea,select{outline:none;}
     </div>
   </div>
 </div>
-
+	
+<!-- Start of Rocket.Chat Livechat Script -->
+<script>
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    (function(w, d, s, u) {
+      w.RocketChat = function(c) { w.RocketChat._.push(c) };
+      w.RocketChat._ = [];
+      w.RocketChat.url = u;
+      var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
+      j.async = true;
+      j.src = 'https://chat.summo.com.co/livechat/rocketchat-livechat.min.js?_=201903270000';
+      h.parentNode.insertBefore(j, h);
+    })(window, document, 'script', 'https://chat.summo.com.co/livechat');
+  }, 2000);
+});
 <div id="toast"></div>
 </div>
 
