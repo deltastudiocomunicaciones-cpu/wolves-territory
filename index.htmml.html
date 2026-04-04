@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wolves Territory</title>
+  <meta name="description" content="Ropa masculina premium. Wolves Territory — elegancia y estilo para hombres que aprecian el detalle.">
+</head>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0a;--bg2:#111;--bg3:#1a1a1a;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.14);
+  --text:#f0ece4;--muted:#777;--accent:#c9a96e;--danger:#e24b4a;--badge:#1e1a12;
+  --success:#4caf7d;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+a{color:inherit;text-decoration:none;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:200;background:rgba(10,10,10,0.97);backdrop-filter:blur(10px);border-bottom:0.5px solid var(--border);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;}
+.nav-logo{font-size:14px;font-weight:600;letter-spacing:0.18em;color:var(--accent);}
+.nav-links{display:flex;gap:18px;font-size:12px;color:var(--muted);}
+.nav-links span{cursor:pointer;letter-spacing:0.05em;transition:color .2s;}
+.nav-links span:hover,.nav-links span.active{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.nav-search-btn{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;display:flex;align-items:center;}
+.nav-cart{cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--muted);}
+
+/* SEARCH BAR */
+.search-bar{background:var(--bg2);border-bottom:0.5px solid var(--border);padding:10px 16px;display:none;}
+.search-bar.open{display:flex;gap:8px;align-items:center;}
+.search-bar input{flex:1;background:var(--bg3);color:var(--text);border:0.5px solid var(--border2);border-radius:2px;padding:8px 12px;font-size:13px;outline:none;}
+.search-bar input::placeholder{color:var(--muted);}
+.search-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:0 4px;}
+
+/* HERO */
+.hero{position:relative;height:52vw;max-height:340px;min-height:200px;overflow:hidden;}
+.hero-bg{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(0.42);}
+.hero-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:28px 20px;}
+.hero-tag{font-size:10px;letter-spacing:0.22em;color:var(--accent);margin-bottom:8px;}
+.hero-title{font-size:clamp(24px,6vw,42px);font-weight:500;line-height:1.1;margin-bottom:10px;}
+.hero-sub{color:rgba(240,236,228,0.6);font-size:13px;margin-bottom:18px;}
+.hero-btn{display:inline-block;background:var(--accent);color:#000;border:none;padding:11px 24px;font-size:12px;font-weight:600;border-radius:2px;cursor:pointer;letter-spacing:0.12em;}
+
+/* ANUNCIO ENVIO */
+.shipping-bar{background:var(--bg2);border-bottom:0.5px solid var(--border);text-align:center;padding:8px 16px;font-size:11px;color:var(--muted);letter-spacing:0.06em;}
+.shipping-bar span{color:var(--accent);}
+
+/* FILTROS */
+.filters{padding:12px 16px;background:var(--bg2);border-bottom:0.5px solid var(--border);display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;align-items:center;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filter-btn{padding:6px 13px;border-radius:2px;font-size:11px;cursor:pointer;white-space:nowrap;letter-spacing:0.06em;flex-shrink:0;transition:all .2s;}
+.filter-btn.active{background:var(--accent);color:#000;border:none;font-weight:600;}
+.filter-btn:not(.active){background:transparent;color:var(--muted);border:0.5px solid var(--border2);}
+.sort-sel{margin-left:auto;background:var(--bg3);color:var(--muted);border:0.5px solid var(--border2);padding:5px 8px;border-radius:2px;font-size:11px;flex-shrink:0;}
+
+/* GRID */
+.product-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:2px;}
+@media(min-width:600px){.product-grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:900px){.product-grid{grid-template-columns:repeat(4,1fr);}}
+.no-results{grid-column:1/-1;text-align:center;padding:60px 16px;color:var(--muted);font-size:14px;}
+
+.p-card{background:var(--bg3);cursor:pointer;overflow:hidden;position:relative;}
+.p-card:hover .p-card-img{transform:scale(1.05);}
+.p-card-img-wrap{overflow:hidden;aspect-ratio:3/4;background:#111;}
+.p-card-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s ease;}
+.p-card-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:52px;}
+.p-card-info{padding:10px 12px 14px;}
+.p-card-cat{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:3px;}
+.p-card-name{font-size:13px;font-weight:500;margin-bottom:5px;line-height:1.3;}
+.p-card-row{display:flex;justify-content:space-between;align-items:center;}
+.p-card-price{color:var(--accent);font-size:13px;font-weight:500;}
+.p-card-stars{color:var(--accent);font-size:9px;letter-spacing:1px;}
+.disc{position:absolute;top:10px;left:10px;background:var(--danger);color:#fff;font-size:10px;padding:3px 7px;font-weight:600;letter-spacing:0.05em;}
+.new-badge{position:absolute;top:10px;left:10px;background:var(--accent);color:#000;font-size:10px;padding:3px 7px;font-weight:600;letter-spacing:0.05em;}
+
+/* DETAIL */
+.detail-wrap{display:grid;grid-template-columns:1fr;gap:0;}
+@media(min-width:560px){.detail-wrap{grid-template-columns:1fr 1fr;}}
+.detail-img-box{aspect-ratio:3/4;overflow:hidden;background:var(--bg3);}
+.detail-img-box img{width:100%;height:100%;object-fit:cover;display:block;}
+.detail-info{padding:20px 16px;}
+
+/* SIZES */
+.size-grid{display:flex;gap:6px;flex-wrap:wrap;}
+.sz{width:38px;height:38px;border-radius:2px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;letter-spacing:0.05em;transition:all .15s;}
+.sz.on{background:var(--accent);color:#000;border:none;font-weight:600;}
+.sz.off{background:transparent;color:var(--muted);border:0.5px solid var(--border2);}
+.sz:hover:not(.on){border-color:var(--accent);color:var(--text);}
+
+/* GARANTIAS */
+.garantias{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0;padding:14px;background:var(--bg3);border:0.5px solid var(--border);}
+.gar-item{text-align:center;}
+.gar-icon{font-size:18px;margin-bottom:4px;}
+.gar-text{font-size:10px;color:var(--muted);line-height:1.3;letter-spacing:0.04em;}
+
+/* WHATSAPP BTN */
+.wa-btn{width:100%;background:#25d366;color:#fff;border:none;padding:13px;border-radius:2px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:0.08em;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.wa-btn:hover{background:#1db954;}
+
+/* CART */
+.cart-thumb{width:56px;height:70px;background:var(--bg3);overflow:hidden;border-radius:2px;flex-shrink:0;}
+.cart-thumb img{width:100%;height:100%;object-fit:cover;}
+.qty-btn{width:28px;height:28px;background:var(--bg3);color:var(--text);border:0.5px solid var(--border2);border-radius:2px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
+
+/* CHECKOUT */
+.checkout-section{margin-bottom:20px;}
+.checkout-section h3{font-size:12px;font-weight:600;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:400px){.form-row{grid-template-columns:1fr;}}
+.form-group{margin-bottom:10px;}
+.form-group label{display:block;font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-bottom:5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);color:var(--text);border:0.5px solid var(--border2);border-radius:2px;padding:10px 12px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent);}
+.form-group select option{background:var(--bg3);}
+.payment-methods{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
+.pay-method{border:0.5px solid var(--border2);border-radius:2px;padding:12px 10px;cursor:pointer;text-align:center;transition:all .2s;}
+.pay-method.selected{border-color:var(--accent);background:var(--badge);}
+.pay-method-icon{font-size:20px;margin-bottom:4px;}
+.pay-method-name{font-size:11px;color:var(--muted);letter-spacing:0.05em;}
+.pay-method.selected .pay-method-name{color:var(--accent);}
+.wompi-info{background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;padding:14px;font-size:12px;color:var(--muted);line-height:1.6;}
+.wompi-info a{color:var(--accent);}
+.order-btn{width:100%;background:var(--accent);color:#000;border:none;padding:14px;border-radius:2px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.12em;margin-top:4px;}
+.order-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* CONFIRMACION */
+.confirm-box{text-align:center;padding:40px 20px;}
+.confirm-icon{font-size:48px;margin-bottom:16px;}
+.confirm-num{font-size:11px;color:var(--muted);letter-spacing:0.1em;margin-bottom:6px;}
+.confirm-title{font-size:20px;font-weight:500;margin-bottom:8px;}
+.confirm-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
+.confirm-wa{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;border:none;padding:12px 22px;border-radius:2px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:0.06em;}
+.order-detail-box{background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;padding:16px;margin:20px 16px;text-align:left;}
+
+/* PAGINAS INFORMATIVAS */
+.info-page{padding:24px 16px;max-width:680px;}
+.info-page h2{font-size:18px;font-weight:500;letter-spacing:0.08em;margin-bottom:6px;}
+.info-page .subtitle{font-size:12px;color:var(--muted);letter-spacing:0.12em;margin-bottom:24px;}
+.info-section{margin-bottom:24px;}
+.info-section h3{font-size:13px;font-weight:600;color:var(--accent);letter-spacing:0.08em;margin-bottom:8px;}
+.info-section p,.info-section li{font-size:13px;color:var(--muted);line-height:1.8;}
+.info-section ul{padding-left:16px;}
+.info-section li{margin-bottom:4px;}
+.info-card{background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;padding:16px;margin-bottom:12px;}
+.info-card-title{font-size:13px;font-weight:500;margin-bottom:4px;}
+.info-card-val{font-size:13px;color:var(--muted);}
+.contact-btn{display:flex;align-items:center;gap:10px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:2px;padding:14px 16px;cursor:pointer;margin-bottom:8px;width:100%;transition:border-color .2s;}
+.contact-btn:hover{border-color:var(--accent);}
+.contact-btn-icon{font-size:20px;flex-shrink:0;}
+.contact-btn-info{text-align:left;}
+.contact-btn-title{font-size:13px;font-weight:500;}
+.contact-btn-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* SEGUIMIENTO */
+.tracking-box{background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;padding:20px;margin-bottom:16px;}
+.tracking-steps{margin-top:20px;}
+.tracking-step{display:flex;gap:12px;margin-bottom:0;}
+.tracking-step-left{display:flex;flex-direction:column;align-items:center;}
+.tracking-step-dot{width:12px;height:12px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:2px;}
+.tracking-step-dot.done{background:var(--accent);}
+.tracking-step-dot.active{background:var(--accent);box-shadow:0 0 0 3px rgba(201,169,110,0.2);}
+.tracking-step-line{width:1px;background:var(--border2);flex:1;margin:4px 0;}
+.tracking-step-line.done{background:var(--accent);}
+.tracking-step-content{padding-bottom:20px;}
+.tracking-step-title{font-size:13px;font-weight:500;margin-bottom:2px;}
+.tracking-step-sub{font-size:11px;color:var(--muted);}
+
+/* FOOTER */
+.footer{background:var(--bg2);border-top:0.5px solid var(--border);padding:32px 16px 20px;margin-top:40px;}
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+@media(min-width:600px){.footer-grid{grid-template-columns:2fr 1fr 1fr;}}
+.footer-brand{grid-column:1/-1;}
+@media(min-width:600px){.footer-brand{grid-column:auto;}}
+.footer-logo{font-size:14px;font-weight:600;letter-spacing:0.18em;color:var(--accent);margin-bottom:8px;}
+.footer-tagline{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.footer-social{display:flex;gap:12px;}
+.footer-social a{font-size:18px;transition:opacity .2s;}
+.footer-social a:hover{opacity:0.7;}
+.footer-col h4{font-size:10px;font-weight:600;letter-spacing:0.14em;color:var(--muted);margin-bottom:12px;}
+.footer-col ul{list-style:none;}
+.footer-col li{margin-bottom:8px;}
+.footer-col li span{font-size:12px;color:var(--muted);cursor:pointer;transition:color .2s;}
+.footer-col li span:hover{color:var(--text);}
+.footer-bottom{border-top:0.5px solid var(--border);padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.footer-copy{font-size:11px;color:var(--muted);}
+.footer-payments{display:flex;gap:6px;align-items:center;}
+.footer-pay-badge{background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;padding:3px 8px;font-size:10px;color:var(--muted);letter-spacing:0.06em;}
+
+/* MISC */
+.add-btn{width:100%;background:var(--accent);color:#000;border:none;padding:13px;border-radius:2px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:0.1em;margin-top:4px;transition:opacity .2s;}
+.add-btn:hover{opacity:0.9;}
+.back-btn{background:transparent;color:var(--muted);border:none;font-size:13px;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px;margin-bottom:16px;}
+input,textarea,select{outline:none;}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:var(--text);border:0.5px solid var(--border2);border-left:3px solid var(--accent);border-radius:3px;padding:10px 18px;font-size:13px;display:none;z-index:999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+.divider{border:none;border-top:0.5px solid var(--border);margin:16px 0;}
+</style>
+
+<div style="background:var(--bg);min-height:100vh;">
+
+<!-- NAV -->
+<div class="nav">
+  <div class="nav-logo">WOLVES TERRITORY</div>
+  <div class="nav-links">
+    <span class="active" onclick="showView('home')">Colección</span>
+    <span onclick="showView('ofertas')">Ofertas</span>
+    <span onclick="showView('nosotros')">Nosotros</span>
+  </div>
+  <div class="nav-right">
+    <button class="nav-search-btn" onclick="toggleSearch()" title="Buscar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <div class="nav-cart" onclick="showView('cart')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span id="cart-count" style="background:var(--accent);color:#000;border-radius:9999px;font-size:10px;font-weight:600;padding:1px 6px;display:none;">0</span>
+    </div>
+  </div>
+</div>
+
+<!-- BARRA DE BÚSQUEDA -->
+<div class="search-bar" id="search-bar">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  <input id="search-input" placeholder="Buscar productos..." oninput="doSearch(this.value)" autocomplete="off">
+  <button class="search-close" onclick="toggleSearch()">✕</button>
+</div>
+
+<!-- HOME -->
+<div id="view-home">
+  <div class="shipping-bar">Envío gratis en compras superiores a <span>$200.000</span> · Colombia</div>
+  <div class="hero">
+    <img class="hero-bg" src="https://i.imgur.com/7W2WBD6.jpeg" alt="Wolves Territory">
+    <div class="hero-overlay">
+      <div class="hero-tag">NUEVA TEMPORADA 2026</div>
+      <h1 class="hero-title">Elegancia<br>Masculina.</h1>
+      <p class="hero-sub">Piezas atemporales para quienes aprecian el detalle.</p>
+      <button class="hero-btn" onclick="document.getElementById('productos').scrollIntoView({behavior:'smooth'})">VER COLECCIÓN</button>
+    </div>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterP('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="filterP('tops',this)">Camisetas</button>
+    <button class="filter-btn" onclick="filterP('pantalones',this)">Bermudas</button>
+    <button class="filter-btn" onclick="filterP('Hoodies',this)">Hoodies</button>
+    <button class="filter-btn" onclick="filterP('accesorios',this)">Accesorios</button>
+    <select class="sort-sel" onchange="sortP(this.value)">
+      <option value="default">Ordenar</option>
+      <option value="price-asc">Menor precio</option>
+      <option value="price-desc">Mayor precio</option>
+      <option value="name">A-Z</option>
+    </select>
+  </div>
+  <div id="productos"><div id="product-grid" class="product-grid"></div></div>
+</div>
+
+<!-- OFERTAS -->
+<div id="view-ofertas" style="display:none;">
+  <div style="padding:20px 16px 12px;">
+    <div style="font-size:10px;letter-spacing:0.18em;color:var(--accent);margin-bottom:6px;">TEMPORADA PASADA</div>
+    <h2 style="font-size:18px;font-weight:500;">Ofertas especiales</h2>
+  </div>
+  <div class="product-grid" style="padding:2px;">
+    <div class="p-card" onclick="openP({id:'o1',name:'Bermuda Origen',price:99000,oldPrice:149000,category:'Bermuda',img:'https://i.imgur.com/s4SGCFG.jpeg',desc:'Bermuda de corte recto, tela premium. Edición pasada.',rating:4.7,reviews:[{user:'Laura M.',text:'Increíble calidad.',stars:5}]})">
+      <div class="p-card-img-wrap" style="position:relative;">
+        <img class="p-card-img" src="https://i.imgur.com/s4SGCFG.jpeg" alt="Bermuda">
+        <div class="disc">-30%</div>
+      </div>
+      <div class="p-card-info">
+        <div class="p-card-cat">Bermuda</div>
+        <div class="p-card-name">Bermuda Origen</div>
+        <div class="p-card-row">
+          <span class="p-card-price">$99.000</span>
+          <span style="color:var(--muted);font-size:11px;text-decoration:line-through;">$149.000</span>
+        </div>
+      </div>
+    </div>
+    <div class="p-card" onclick="openP({id:'o2',name:'Polo Origen',price:89000,oldPrice:130000,category:'tops',img:'https://i.imgur.com/VbFXztx.jpeg',desc:'Polo piqué premium edición pasada.',rating:4.5,reviews:[{user:'Sofía P.',text:'Hermosa tela.',stars:5}]})">
+      <div class="p-card-img-wrap" style="position:relative;">
+        <img class="p-card-img" src="https://i.imgur.com/VbFXztx.jpeg" alt="Polo">
+        <div class="disc">-20%</div>
+      </div>
+      <div class="p-card-info">
+        <div class="p-card-cat">Camiseta</div>
+        <div class="p-card-name">Polo Origen</div>
+        <div class="p-card-row">
+          <span class="p-card-price">$89.000</span>
+          <span style="color:var(--muted);font-size:11px;text-decoration:line-through;">$130.000</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:16px;"><button class="back-btn" onclick="showView('home')">← Volver</button></div>
+</div>
+
+<!-- DETALLE PRODUCTO -->
+<div id="view-product" style="display:none;">
+  <div style="padding:14px 16px 0;"><button class="back-btn" onclick="showView('home')">← Volver</button></div>
+  <div class="detail-wrap">
+    <div id="detail-img" class="detail-img-box"></div>
+    <div class="detail-info">
+      <div id="detail-cat" style="font-size:10px;letter-spacing:0.18em;color:var(--accent);margin-bottom:6px;"></div>
+      <div id="detail-name" style="font-size:22px;font-weight:500;margin-bottom:8px;line-height:1.2;"></div>
+      <div id="detail-stars" style="margin-bottom:10px;"></div>
+      <div id="detail-price" style="font-size:24px;font-weight:500;color:var(--accent);margin-bottom:4px;"></div>
+      <div id="detail-oldprice" style="font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:12px;display:none;"></div>
+      <div id="detail-desc" style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;"></div>
+      <div style="margin-bottom:18px;">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:0.08em;margin-bottom:8px;">TALLA</div>
+        <div class="size-grid">
+          <button class="sz off" onclick="selSz(this)">M</button>
+          <button class="sz off" onclick="selSz(this)">L</button>
+          <button class="sz off" onclick="selSz(this)">XL</button>
+          <button class="sz off" onclick="selSz(this)">XXL</button>
+        </div>
+      </div>
+      <button class="add-btn" onclick="addToCart()">AÑADIR AL CARRITO</button>
+      <button class="wa-btn" onclick="buyViaWA()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        PEDIR POR WHATSAPP
+      </button>
+      <div class="garantias">
+        <div class="gar-item"><div class="gar-icon">🚚</div><div class="gar-text">Envío a toda Colombia</div></div>
+        <div class="gar-item"><div class="gar-icon">🔄</div><div class="gar-text">Cambios en 15 días</div></div>
+        <div class="gar-item"><div class="gar-icon">🔒</div><div class="gar-text">Pago seguro</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:20px 16px;">
+    <div style="border-top:0.5px solid var(--border);padding-top:20px;">
+      <h3 style="font-size:13px;font-weight:600;letter-spacing:0.08em;margin-bottom:14px;">OPINIONES</h3>
+      <div id="reviews-list"></div>
+      <div style="margin-top:16px;background:var(--bg3);padding:14px;border:0.5px solid var(--border);">
+        <div style="font-size:12px;font-weight:600;margin-bottom:10px;letter-spacing:0.06em;">DEJA TU OPINIÓN</div>
+        <div id="star-input" style="display:flex;gap:4px;margin-bottom:10px;">
+          <span onclick="setSt(1)" style="font-size:20px;cursor:pointer;color:var(--accent);">★</span>
+          <span onclick="setSt(2)" style="font-size:20px;cursor:pointer;color:var(--muted);">★</span>
+          <span onclick="setSt(3)" style="font-size:20px;cursor:pointer;color:var(--muted);">★</span>
+          <span onclick="setSt(4)" style="font-size:20px;cursor:pointer;color:var(--muted);">★</span>
+          <span onclick="setSt(5)" style="font-size:20px;cursor:pointer;color:var(--muted);">★</span>
+        </div>
+        <div class="form-group"><input id="rv-name" placeholder="Tu nombre"></div>
+        <div class="form-group"><textarea id="rv-text" placeholder="Tu comentario..." style="height:72px;resize:none;"></textarea></div>
+        <button onclick="submitRv()" style="background:var(--accent);color:#000;border:none;padding:9px 18px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.08em;border-radius:2px;">PUBLICAR</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARRITO -->
+<div id="view-cart" style="display:none;padding:16px;">
+  <h2 style="font-size:16px;font-weight:500;letter-spacing:0.08em;margin-bottom:16px;">TU CARRITO</h2>
+  <div id="cart-items"></div>
+  <div id="cart-empty" style="text-align:center;padding:50px 0;color:var(--muted);display:none;">
+    <div style="font-size:40px;margin-bottom:12px;">🛍</div>
+    <div style="font-size:13px;margin-bottom:16px;">Tu carrito está vacío</div>
+    <button onclick="showView('home')" style="background:var(--accent);color:#000;border:none;padding:10px 22px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.1em;border-radius:2px;">VER COLECCIÓN</button>
+  </div>
+  <div id="cart-summary" style="display:none;margin-top:16px;">
+    <div id="cupon-section" style="margin-bottom:14px;">
+      <div style="display:flex;gap:8px;">
+        <input id="cupon-input" placeholder="Código de descuento" style="flex:1;background:var(--bg3);color:var(--text);border:0.5px solid var(--border2);border-radius:2px;padding:9px 12px;font-size:13px;">
+        <button onclick="aplicarCupon()" style="background:var(--bg3);color:var(--text);border:0.5px solid var(--border2);border-radius:2px;padding:9px 14px;font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:0.06em;">APLICAR</button>
+      </div>
+      <div id="cupon-msg" style="font-size:11px;margin-top:5px;display:none;"></div>
+    </div>
+    <div style="border-top:0.5px solid var(--border);padding-top:14px;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;color:var(--muted);"><span>Subtotal</span><span id="sub-val"></span></div>
+      <div id="desc-row" style="display:none;justify-content:space-between;margin-bottom:6px;font-size:13px;color:var(--success);"><span id="desc-label">Descuento</span><span id="desc-val"></span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:14px;font-size:13px;color:var(--muted);"><span>Envío</span><span id="envio-val" style="color:var(--success);">Calculando...</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:500;margin-bottom:18px;"><span>Total</span><span id="tot-val" style="color:var(--accent);"></span></div>
+      <button onclick="showView('checkout')" class="order-btn">PROCEDER AL PAGO</button>
+    </div>
+  </div>
+  <button class="back-btn" style="margin-top:14px;" onclick="showView('home')">← Seguir comprando</button>
+</div>
+
+<!-- CHECKOUT -->
+<div id="view-checkout" style="display:none;padding:16px;">
+  <button class="back-btn" onclick="showView('cart')">← Volver al carrito</button>
+  <h2 style="font-size:16px;font-weight:500;letter-spacing:0.08em;margin-bottom:20px;">FINALIZAR COMPRA</h2>
+
+  <div class="checkout-section">
+    <h3>DATOS PERSONALES</h3>
+    <div class="form-row">
+      <div class="form-group"><label>Nombre</label><input id="ch-nombre" placeholder="Juan"></div>
+      <div class="form-group"><label>Apellido</label><input id="ch-apellido" placeholder="García"></div>
+    </div>
+    <div class="form-group"><label>Correo electrónico</label><input id="ch-email" type="email" placeholder="juan@ejemplo.com"></div>
+    <div class="form-group"><label>Teléfono / WhatsApp</label><input id="ch-tel" type="tel" placeholder="300 123 4567"></div>
+  </div>
+
+  <div class="checkout-section">
+    <h3>DIRECCIÓN DE ENVÍO</h3>
+    <div class="form-group"><label>Ciudad</label>
+      <select id="ch-ciudad">
+        <option value="">Selecciona tu ciudad</option>
+        <option>Medellín</option><option>Bogotá</option><option>Cali</option>
+        <option>Barranquilla</option><option>Cartagena</option><option>Bucaramanga</option>
+        <option>Pereira</option><option>Manizales</option><option>Santa Marta</option>
+        <option>Otra ciudad</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Dirección completa</label><input id="ch-dir" placeholder="Calle 10 # 20-30, Apto 501"></div>
+    <div class="form-group"><label>Barrio / Referencia</label><input id="ch-barrio" placeholder="El Poblado, cerca al parque"></div>
+  </div>
+
+  <div class="checkout-section">
+    <h3>MÉTODO DE PAGO</h3>
+    <div class="payment-methods">
+      <div class="pay-method selected" onclick="selPay(this,'wompi')">
+        <div class="pay-method-icon">💳</div>
+        <div class="pay-method-name">TARJETA / PSE</div>
+      </div>
+      <div class="pay-method" onclick="selPay(this,'nequi')">
+        <div class="pay-method-icon">📱</div>
+        <div class="pay-method-name">NEQUI</div>
+      </div>
+      <div class="pay-method" onclick="selPay(this,'efectivo')">
+        <div class="pay-method-icon">💵</div>
+        <div class="pay-method-name">EFECTIVO</div>
+      </div>
+      <div class="pay-method" onclick="selPay(this,'wa')">
+        <div class="pay-method-icon">💬</div>
+        <div class="pay-method-name">WHATSAPP</div>
+      </div>
+    </div>
+    <div id="pay-info-wompi" class="wompi-info">
+      Serás redirigido a <strong>Wompi</strong> para completar el pago de forma segura. Aceptamos Visa, Mastercard, PSE y Bancolombia. <br><br>
+      <strong style="color:var(--accent);">Tu pedido se confirma inmediatamente.</strong>
+    </div>
+    <div id="pay-info-nequi" class="wompi-info" style="display:none;">
+      Recibirás una notificación en tu app <strong>Nequi</strong> al número registrado. Acepta el cobro y tu pedido quedará confirmado. <br><br>
+      Número Nequi: <strong style="color:var(--accent);">300 XXX XXXX</strong>
+    </div>
+    <div id="pay-info-efectivo" class="wompi-info" style="display:none;">
+      Paga en <strong>Efecty, Baloto</strong> o cualquier corresponsal bancario. Te enviaremos el código de pago por WhatsApp. <br><br>
+      El pedido se despacha al confirmar el pago.
+    </div>
+    <div id="pay-info-wa" class="wompi-info" style="display:none;">
+      Coordinaremos el pago directamente por <strong>WhatsApp</strong>. Un asesor te atenderá en menos de 2 horas en horario hábil. <br><br>
+      Horario: Lun–Sáb 8am–7pm
+    </div>
+  </div>
+
+  <div style="background:var(--bg3);border:0.5px solid var(--border);border-radius:2px;padding:14px;margin-bottom:20px;">
+    <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;margin-bottom:10px;color:var(--muted);">RESUMEN DEL PEDIDO</div>
+    <div id="checkout-items"></div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;"><span>Total a pagar</span><span id="checkout-total" style="color:var(--accent);"></span></div>
+  </div>
+
+  <button class="order-btn" id="btn-confirmar" onclick="confirmarPedido()">CONFIRMAR PEDIDO</button>
+  <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6;">Al confirmar aceptas nuestros <span onclick="showView('politicas')" style="color:var(--accent);cursor:pointer;">términos y política de devoluciones</span></p>
+</div>
+
+<!-- CONFIRMACIÓN -->
+<div id="view-confirmacion" style="display:none;">
+  <div class="confirm-box">
+    <div class="confirm-icon">✅</div>
+    <div class="confirm-num" id="confirm-num">PEDIDO #WT-000</div>
+    <div class="confirm-title">¡Pedido recibido!</div>
+    <div class="confirm-sub">Gracias por tu compra. Te contactaremos por WhatsApp para confirmar el despacho. El tiempo de entrega es de 2–5 días hábiles.</div>
+    <button class="confirm-wa" onclick="enviarWA()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      CONFIRMAR POR WHATSAPP
+    </button>
+  </div>
+  <div class="order-detail-box" id="order-detail-box"></div>
+  <div style="padding:0 16px 32px;text-align:center;">
+    <button onclick="showView('seguimiento')" style="background:transparent;color:var(--accent);border:0.5px solid var(--accent);padding:10px 22px;font-size:12px;cursor:pointer;letter-spacing:0.08em;border-radius:2px;margin-right:8px;">SEGUIR PEDIDO</button>
+    <button onclick="showView('home')" style="background:var(--accent);color:#000;border:none;padding:10px 22px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.08em;border-radius:2px;">SEGUIR COMPRANDO</button>
+  </div>
+</div>
+
+<!-- SEGUIMIENTO -->
+<div id="view-seguimiento" style="display:none;">
+  <div class="info-page">
+    <button class="back-btn" onclick="showView('home')">← Volver</button>
+    <h2>Seguimiento de pedido</h2>
+    <div class="subtitle">RASTREA TU COMPRA</div>
+    <div class="tracking-box">
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <input id="track-input" placeholder="Número de pedido ej: WT-001234" style="flex:1;background:var(--bg2);color:var(--text);border:0.5px solid var(--border2);border-radius:2px;padding:9px 12px;font-size:13px;">
+        <button onclick="rastrearPedido()" style="background:var(--accent);color:#000;border:none;padding:9px 16px;font-size:12px;font-weight:600;cursor:pointer;border-radius:2px;white-space:nowrap;">BUSCAR</button>
+      </div>
+      <div id="track-result" style="display:none;">
+        <div class="divider"></div>
+        <div style="font-size:12px;color:var(--muted);letter-spacing:0.08em;margin-bottom:4px;">PEDIDO</div>
+        <div style="font-size:16px;font-weight:500;margin-bottom:16px;" id="track-num"></div>
+        <div class="tracking-steps" id="track-steps"></div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">¿No encuentras tu pedido?</div>
+      <div class="info-card-val">Escríbenos por WhatsApp o Rocketchat con tu número de pedido y lo rastreamos de inmediato.</div>
+      <button onclick="window.open('https://wa.me/573001234567?text=Hola! Quiero rastrear mi pedido','_blank')" class="wa-btn" style="margin-top:10px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        CONSULTAR POR WHATSAPP
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- POLÍTICAS -->
+<div id="view-politicas" style="display:none;">
+  <div class="info-page">
+    <button class="back-btn" onclick="showView('home')">← Volver</button>
+    <h2>Envíos y devoluciones</h2>
+    <div class="subtitle">POLÍTICA OFICIAL</div>
+    <div class="info-section">
+      <h3>TIEMPOS DE ENTREGA</h3>
+      <ul>
+        <li>Medellín y área metropolitana: 1–2 días hábiles</li>
+        <li>Bogotá, Cali, Barranquilla: 2–3 días hábiles</li>
+        <li>Resto de Colombia: 3–5 días hábiles</li>
+        <li>Zonas apartadas: hasta 7 días hábiles</li>
+      </ul>
+    </div>
+    <div class="info-section">
+      <h3>COSTOS DE ENVÍO</h3>
+      <ul>
+        <li>Envío gratis en compras superiores a $200.000</li>
+        <li>Compras menores: tarifa según destino desde $8.000</li>
+        <li>El costo exacto se calcula al ingresar tu ciudad</li>
+      </ul>
+    </div>
+    <div class="info-section">
+      <h3>CAMBIOS Y DEVOLUCIONES</h3>
+      <ul>
+        <li>Tienes 15 días calendario desde la recepción</li>
+        <li>El producto debe estar sin uso, con etiquetas</li>
+        <li>Cambios por talla sin costo adicional</li>
+        <li>Devolución de dinero: 3–5 días hábiles</li>
+        <li>Productos en oferta: solo cambio por talla</li>
+      </ul>
+    </div>
+    <div class="info-section">
+      <h3>CÓMO SOLICITAR UN CAMBIO</h3>
+      <p>Escríbenos por WhatsApp o Rocketchat con tu número de pedido y el motivo. Te guiaremos en el proceso sin complicaciones.</p>
+    </div>
+  </div>
+</div>
+
+<!-- NOSOTROS -->
+<div id="view-nosotros" style="display:none;">
+  <div class="info-page">
+    <button class="back-btn" onclick="showView('home')">← Volver</button>
+    <h2>Wolves Territory</h2>
+    <div class="subtitle">NUESTRA HISTORIA</div>
+    <div class="info-section">
+      <h3>QUIÉNES SOMOS</h3>
+      <p>Wolves Territory nació de la convicción de que la moda masculina premium no debe ser un privilegio. Creamos piezas con materiales de alta calidad, diseños atemporales y una atención al detalle que marca la diferencia.</p>
+    </div>
+    <div class="info-section">
+      <h3>NUESTRA FILOSOFÍA</h3>
+      <p>Cada prenda es una declaración. No seguimos tendencias pasajeras — construimos un armario que dura. Calidad sobre cantidad, siempre.</p>
+    </div>
+    <div class="info-section">
+      <h3>CONTÁCTANOS</h3>
+      <button class="contact-btn" onclick="window.open('https://wa.me/573001234567','_blank')">
+        <div class="contact-btn-icon">💬</div>
+        <div class="contact-btn-info">
+          <div class="contact-btn-title">WhatsApp</div>
+          <div class="contact-btn-sub">Respuesta en menos de 2 horas · Lun–Sáb 8am–7pm</div>
+        </div>
+      </button>
+      <button class="contact-btn" onclick="window.open('https://instagram.com/wolvesterritory','_blank')">
+        <div class="contact-btn-icon">📸</div>
+        <div class="contact-btn-info">
+          <div class="contact-btn-title">Instagram</div>
+          <div class="contact-btn-sub">@wolvesterritory_</div>
+        </div>
+      </button>
+      <button class="contact-btn" onclick="window.location='mailto:wolvesterritoryco@gmail.com'">
+        <div class="contact-btn-icon">✉️</div>
+        <div class="contact-btn-info">
+          <div class="contact-btn-title">Email</div>
+          <div class="contact-btn-sub">wolvesterritoryco@gmail.com</div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer" id="main-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">WOLVES TERRITORY</div>
+      <div class="footer-tagline">Moda masculina premium.<br>Elegancia para quienes aprecian el detalle.</div>
+      <div class="footer-social">
+        <a href="https://instagram.com/wolvesterritory" target="_blank" title="Instagram">📸</a>
+        <a href="https://wa.me/573001234567" target="_blank" title="WhatsApp">💬</a>
+        <a href="https://tiktok.com/@wolvesterritory" target="_blank" title="TikTok">🎵</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>TIENDA</h4>
+      <ul>
+        <li><span onclick="showView('home')">Colección</span></li>
+        <li><span onclick="showView('ofertas')">Ofertas</span></li>
+        <li><span onclick="showView('nosotros')">Nosotros</span></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>AYUDA</h4>
+      <ul>
+        <li><span onclick="showView('politicas')">Envíos y devoluciones</span></li>
+        <li><span onclick="showView('seguimiento')">Seguimiento de pedido</span></li>
+        <li><span onclick="window.open('https://wa.me/573043795035','_blank')">Contacto</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 Wolves Territory. Todos los derechos reservados.</div>
+    <div class="footer-payments">
+      <div class="footer-pay-badge">WOMPI</div>
+      <div class="footer-pay-badge">PSE</div>
+      <div class="footer-pay-badge">NEQUI</div>
+      <div class="footer-pay-badge">VISA</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+</div>
+
+<!-- Start of Rocket.Chat Livechat Script -->
+	<script type="text/javascript">
+	(function(w, d, s, u) {
+		w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;
+		var h = d.getElementsByTagName(s)[0], j = d.createElement(s);
+		j.async = true; j.src = 'https://chat.summo.com.co/livechat/rocketchat-livechat.min.js?_=201903270000';
+		h.parentNode.insertBefore(j, h);
+	})(window, document, 'script', 'https://chat.summo.com.co/livechat');
+	</script>
+
+<!-- BOTÓN FLOTANTE WHATSAPP -->
+<a href="https://wa.me/573001234567?text=Hola! Visité su tienda y tengo una pregunta." target="_blank"
+   style="position:fixed;bottom:20px;right:20px;z-index:500;width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(37,211,102,0.4);">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// ============================================================
+// CONFIGURACIÓN — Cambia estos datos por los tuyos
+// ============================================================
+const CONFIG = {
+  whatsapp: '573001234567',   // Tu número con código de país sin +
+  monedaMin: 200000,          // Monto mínimo para envío gratis
+  cupones: {
+    'WOLVES10': 10,
+    'BIENVENIDO': 15,
+    'VIP20': 20
+  }
+};
+
+// ============================================================
+// PRODUCTOS
+// ============================================================
+const products=[
+  {id:'p1',name:'Camiseta Wolf',price:155000,category:'Camiseta',img:'https://i.imgur.com/IJUrNyf.jpeg',desc:'Camisa de algodón premium con cuello italiano. Fit ligeramente oversized.',rating:4.8,reviews:[{user:'Carlos V.',text:'Tela suave, perfecta para eventos formales.',stars:5},{user:'Mariana T.',text:'El corte es espectacular.',stars:5}]},
+  {id:'p2',name:'Bermuda Origen',price:149000,category:'Bermuda',img:'https://i.imgur.com/8Of1Cic.jpeg',desc:'Bermuda de corte recto con tela premium de alta durabilidad.',rating:4.6,reviews:[{user:'Andrea M.',text:'Muy cómodo y elegante a la vez.',stars:5}]},
+  {id:'p3',name:'Hoodie Origen',price:320000,category:'Hoodies',img:'https://i.imgur.com/X9RvkIC.jpeg',desc:'Hoodie de algodón grueso 380gsm. Fit oversized, bolsillo canguro.',rating:4.9,reviews:[{user:'Juliana P.',text:'Vale cada peso, increíble calidad.',stars:5},{user:'Sebastián R.',text:'El mejor hoodie que he comprado.',stars:5}]},
+  {id:'p4',name:'Llavero Wolves',price:20000,category:'accesorios',img:'https://i.imgur.com/CtHIdia.png',desc:'Llavero metálico con grabado del logo Wolves Territory. Acabado premium.',rating:4.5,reviews:[{user:'Valentina H.',text:'Muy bien elaborado.',stars:4}]},
+  {id:'p5',name:'Polo Origen',price:130000,category:'tops',img:'https://i.imgur.com/s3gaysZ.jpeg',desc:'Polo de piqué premium. Ideal para looks casuales o semiformales.',rating:4.7,reviews:[{user:'Isabel C.',text:'Me encantó la textura, muy lujosa.',stars:5}]},
+  {id:'p6',name:'Gorra Origen',price:55000,category:'accesorios',img:'https://i.imgur.com/fayURa0.jpeg',desc:'Gorra estructurada con bordado del logo Wolves Territory.',rating:4.4,reviews:[{user:'Miguel A.',text:'Diseño impecable, muy elegante.',stars:4}]},
+];
+
+const pBg={tops:'#141210',pantalones:'#101412',Hoodies:'#131210',accesorios:'#111015'};
+const pEm={tops:'👔',Bermuda:'👖',Hoodies:'🧥',accesorios:'🎩'};
+
+let cart=[],cur=null,cFilter='todos',cStars=1,cSort='default';
+let descuento=0,cuponAplicado='',payMethod='wompi',lastOrder=null;
+
+// ============================================================
+// NAVEGACIÓN
+// ============================================================
+const allViews=['home','ofertas','product','cart','checkout','confirmacion','seguimiento','politicas','nosotros'];
+function showView(v){
+  allViews.forEach(x=>{
+    const el=document.getElementById('view-'+x);
+    if(el)el.style.display=x===v?'block':'none';
+  });
+  const footer=document.getElementById('main-footer');
+  if(footer)footer.style.display=['home','nosotros','politicas'].includes(v)?'block':'none';
+  if(v==='cart')renderCart();
+  if(v==='checkout')renderCheckout();
+  document.querySelectorAll('.nav-links span').forEach(s=>s.classList.remove('active'));
+  if(v==='home')document.querySelector('.nav-links span').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// BÚSQUEDA
+// ============================================================
+let searchOpen=false;
+function toggleSearch(){
+  searchOpen=!searchOpen;
+  const bar=document.getElementById('search-bar');
+  bar.classList.toggle('open',searchOpen);
+  if(searchOpen){document.getElementById('search-input').focus();}
+  else{document.getElementById('search-input').value='';applyFS();}
+}
+function doSearch(q){
+  q=q.toLowerCase().trim();
+  if(!q){applyFS();return;}
+  const res=products.filter(p=>p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q));
+  renderProducts(res);
+}
+
+// ============================================================
+// PRODUCTOS
+// ============================================================
+function renderProducts(list){
+  const g=document.getElementById('product-grid');
+  g.innerHTML='';
+  if(!list.length){g.innerHTML='<div class="no-results">No se encontraron productos</div>';return;}
+  list.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='p-card';
+    const imgTag=p.img?`<img class="p-card-img" src="${p.img}" alt="${p.name}" loading="lazy">`:`<div class="p-card-placeholder" style="background:${pBg[p.category]||'#111'};height:100%;">${pEm[p.category]||'👕'}</div>`;
+    d.innerHTML=`<div class="p-card-img-wrap">${imgTag}</div><div class="p-card-info"><div class="p-card-cat">${p.category}</div><div class="p-card-name">${p.name}</div><div class="p-card-row"><span class="p-card-price">$${p.price.toLocaleString('es-CO')}</span><span class="p-card-stars">${'★'.repeat(Math.round(p.rating))}</span></div></div>`;
+    d.onclick=()=>openP(p);
+    g.appendChild(d);
+  });
+}
+function filterP(cat,btn){
+  cFilter=cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');applyFS();
+}
+function sortP(v){cSort=v;applyFS();}
+function applyFS(){
+  let list=cFilter==='todos'?[...products]:products.filter(p=>p.category===cFilter);
+  if(cSort==='price-asc')list.sort((a,b)=>a.price-b.price);
+  else if(cSort==='price-desc')list.sort((a,b)=>b.price-a.price);
+  else if(cSort==='name')list.sort((a,b)=>a.name.localeCompare(b.name));
+  renderProducts(list);
+}
+function openP(p){
+  cur=p;showView('product');
+  const box=document.getElementById('detail-img');
+  box.innerHTML=p.img?`<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="${p.name}">`:`<div style="width:100%;height:100%;background:${pBg[p.category]||'#111'};display:flex;align-items:center;justify-content:center;font-size:80px;">${pEm[p.category]||'👕'}</div>`;
+  document.getElementById('detail-cat').textContent=p.category.toUpperCase();
+  document.getElementById('detail-name').textContent=p.name;
+  document.getElementById('detail-price').textContent='$'+p.price.toLocaleString('es-CO');
+  const op=document.getElementById('detail-oldprice');
+  if(p.oldPrice){op.textContent='$'+p.oldPrice.toLocaleString('es-CO');op.style.display='block';}else{op.style.display='none';}
+  document.getElementById('detail-desc').textContent=p.desc;
+  const s='★'.repeat(Math.round(p.rating))+'☆'.repeat(5-Math.round(p.rating));
+  document.getElementById('detail-stars').innerHTML=`<span style="color:var(--accent);font-size:13px;">${s}</span> <span style="color:var(--muted);font-size:12px;margin-left:4px;">${p.rating} (${p.reviews.length} opiniones)</span>`;
+  renderRvs(p.reviews);cStars=1;updateStUI();
+  document.querySelectorAll('.sz').forEach((b,i)=>{b.className='sz '+(i===0?'on':'off');});
+}
+
+// ============================================================
+// REVIEWS
+// ============================================================
+function renderRvs(reviews){
+  document.getElementById('reviews-list').innerHTML=reviews.map(r=>`<div style="border-bottom:0.5px solid var(--border);padding:12px 0;display:flex;gap:10px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--badge);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--accent);flex-shrink:0;">${r.user[0]}</div><div><div style="font-size:13px;font-weight:500;">${r.user}</div><div style="color:var(--accent);font-size:11px;">${'★'.repeat(r.stars)+'☆'.repeat(5-r.stars)}</div><div style="font-size:13px;color:var(--muted);margin-top:3px;">${r.text}</div></div></div>`).join('');
+}
+function setSt(n){cStars=n;updateStUI();}
+function updateStUI(){document.querySelectorAll('#star-input span').forEach((s,i)=>{s.style.color=i<cStars?'var(--accent)':'var(--muted)';});}
+function submitRv(){
+  const name=document.getElementById('rv-name').value.trim();
+  const text=document.getElementById('rv-text').value.trim();
+  if(!name||!text){toast('Completa tu nombre y comentario');return;}
+  cur.reviews.push({user:name,text,stars:cStars});
+  renderRvs(cur.reviews);
+  document.getElementById('rv-name').value='';document.getElementById('rv-text').value='';
+  cStars=1;updateStUI();toast('¡Opinión publicada!');
+}
+function selSz(btn){document.querySelectorAll('.sz').forEach(b=>b.className='sz off');btn.className='sz on';}
+
+// ============================================================
+// CARRITO
+// ============================================================
+function addToCart(){
+  if(!cur)return;
+  const sz=document.querySelector('.sz.on');
+  const talla=sz?sz.textContent:'M';
+  const key=cur.id+'_'+talla;
+  const i=cart.findIndex(x=>x._key===key);
+  if(i>-1)cart[i].qty++;else cart.push({...cur,qty:1,talla,_key:key});
+  updCount();toast(cur.name+' ('+talla+') añadido al carrito');
+}
+function buyViaWA(){
+  if(!cur)return;
+  const sz=document.querySelector('.sz.on');
+  const talla=sz?sz.textContent:'M';
+  const msg=`Hola! Me interesa comprar:\n\n*${cur.name}* (Talla ${talla})\nPrecio: $${cur.price.toLocaleString('es-CO')}\n\n¿Tienen disponibilidad?`;
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+function updCount(){
+  const t=cart.reduce((s,i)=>s+i.qty,0);
+  const el=document.getElementById('cart-count');
+  el.textContent=t;el.style.display=t>0?'inline':'none';
+}
+function calcTotals(){
+  const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const desc=cuponAplicado?Math.round(sub*descuento/100):0;
+  const envio=sub>=CONFIG.monedaMin?0:12000;
+  const total=sub-desc+envio;
+  return{sub,desc,envio,total};
+}
+function renderCart(){
+  const el=document.getElementById('cart-items');
+  const empty=document.getElementById('cart-empty');
+  const summary=document.getElementById('cart-summary');
+  if(!cart.length){el.innerHTML='';empty.style.display='block';summary.style.display='none';return;}
+  empty.style.display='none';summary.style.display='block';
+  el.innerHTML=cart.map((item,i)=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);"><div class="cart-thumb">${item.img?`<img src="${item.img}" alt="${item.name}">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:22px;">${pEm[item.category]||'👕'}</div>`}</div><div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.name}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">Talla: ${item.talla||'M'}</div><div style="font-size:12px;color:var(--accent);margin-top:3px;">$${item.price.toLocaleString('es-CO')}</div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0;"><button class="qty-btn" onclick="chQty(${i},-1)">−</button><span style="font-size:13px;min-width:16px;text-align:center;">${item.qty}</span><button class="qty-btn" onclick="chQty(${i},1)">+</button></div></div>`).join('');
+  const {sub,desc,envio,total}=calcTotals();
+  document.getElementById('sub-val').textContent='$'+sub.toLocaleString('es-CO');
+  const dr=document.getElementById('desc-row');
+  if(desc>0){dr.style.display='flex';document.getElementById('desc-label').textContent=`Descuento (${descuento}%)`;document.getElementById('desc-val').textContent='-$'+desc.toLocaleString('es-CO');}else{dr.style.display='none';}
+  document.getElementById('envio-val').textContent=envio===0?'Gratis':'$'+envio.toLocaleString('es-CO');
+  document.getElementById('tot-val').textContent='$'+total.toLocaleString('es-CO');
+}
+function chQty(i,d){
+  cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);
+  updCount();renderCart();
+}
+function aplicarCupon(){
+  const code=document.getElementById('cupon-input').value.trim().toUpperCase();
+  const msg=document.getElementById('cupon-msg');
+  if(CONFIG.cupones[code]){
+    descuento=CONFIG.cupones[code];cuponAplicado=code;
+    msg.textContent='✓ Cupón aplicado: '+descuento+'% de descuento';
+    msg.style.color='var(--success)';msg.style.display='block';
+    renderCart();toast('¡Cupón '+code+' aplicado!');
+  }else{
+    msg.textContent='Cupón no válido';msg.style.color='var(--danger)';msg.style.display='block';
+  }
+}
+
+// ============================================================
+// CHECKOUT
+// ============================================================
+function renderCheckout(){
+  const {total}=calcTotals();
+  document.getElementById('checkout-total').textContent='$'+total.toLocaleString('es-CO');
+  document.getElementById('checkout-items').innerHTML=cart.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted);"><span>${item.name} ×${item.qty} (${item.talla||'M'})</span><span>$${(item.price*item.qty).toLocaleString('es-CO')}</span></div>`).join('');
+}
+function selPay(el,method){
+  payMethod=method;
+  document.querySelectorAll('.pay-method').forEach(m=>m.classList.remove('selected'));
+  el.classList.add('selected');
+  ['wompi','nequi','efectivo','wa'].forEach(m=>{
+    document.getElementById('pay-info-'+m).style.display=m===method?'block':'none';
+  });
+}
+function confirmarPedido(){
+  const nombre=document.getElementById('ch-nombre').value.trim();
+  const apellido=document.getElementById('ch-apellido').value.trim();
+  const email=document.getElementById('ch-email').value.trim();
+  const tel=document.getElementById('ch-tel').value.trim();
+  const ciudad=document.getElementById('ch-ciudad').value;
+  const dir=document.getElementById('ch-dir').value.trim();
+  if(!nombre||!apellido||!tel||!ciudad||!dir){toast('Completa todos los campos requeridos');return;}
+  if(email&&!/\S+@\S+\.\S+/.test(email)){toast('El correo no es válido');return;}
+  const {total}=calcTotals();
+  const orderNum='WT-'+Date.now().toString().slice(-6);
+  lastOrder={num:orderNum,nombre:nombre+' '+apellido,tel,email,ciudad,dir,items:[...cart],total,payMethod,fecha:new Date().toLocaleDateString('es-CO')};
+  document.getElementById('confirm-num').textContent='PEDIDO '+orderNum;
+  document.getElementById('order-detail-box').innerHTML=`
+    <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;">DETALLE DEL PEDIDO</div>
+    ${cart.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted);"><span>${item.name} ×${item.qty}</span><span>$${(item.price*item.qty).toLocaleString('es-CO')}</span></div>`).join('')}
+    <div style="border-top:0.5px solid var(--border);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:500;"><span>Total</span><span style="color:var(--accent);">$${total.toLocaleString('es-CO')}</span></div>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted);">📍 ${ciudad} · ${dir}<br>📱 ${tel}</div>`;
+  cart=[];descuento=0;cuponAplicado='';updCount();
+  showView('confirmacion');
+}
+function enviarWA(){
+  if(!lastOrder)return;
+  const items=lastOrder.items.map(i=>`- ${i.name} ×${i.qty} (${i.talla||'M'}): $${(i.price*i.qty).toLocaleString('es-CO')}`).join('\n');
+  const msg=`Hola! Acabo de realizar el pedido *${lastOrder.num}*\n\n*Cliente:* ${lastOrder.nombre}\n*Tel:* ${lastOrder.tel}\n*Ciudad:* ${lastOrder.ciudad}\n*Dirección:* ${lastOrder.dir}\n\n*Productos:*\n${items}\n\n*Total:* $${lastOrder.total.toLocaleString('es-CO')}\n*Pago:* ${lastOrder.payMethod.toUpperCase()}\n\n¿Pueden confirmar el pedido?`;
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+// ============================================================
+// SEGUIMIENTO
+// ============================================================
+const pedidosEjemplo={
+  'WT-001234':{estado:2,items:'Camiseta Wolf (M)',ciudad:'Medellín',fecha:'01/04/2026'},
+  'WT-005678':{estado:3,items:'Hoodie Origen (L), Bermuda Origen (M)',ciudad:'Bogotá',fecha:'28/03/2026'},
+};
+function rastrearPedido(){
+  const num=document.getElementById('track-input').value.trim().toUpperCase();
+  const res=document.getElementById('track-result');
+  if(!num){toast('Ingresa tu número de pedido');return;}
+  const pedido=pedidosEjemplo[num];
+  if(!pedido){toast('Pedido no encontrado. Escríbenos por WhatsApp');return;}
+  res.style.display='block';
+  document.getElementById('track-num').textContent=num+' · '+pedido.items;
+  const pasos=[
+    {title:'Pedido recibido',sub:'Tu pedido fue confirmado'},
+    {title:'En preparación',sub:'Estamos alistando tus productos'},
+    {title:'Despachado',sub:'En camino con la transportadora'},
+    {title:'Entregado',sub:'¡Tu pedido llegó!'},
+  ];
+  document.getElementById('track-steps').innerHTML=pasos.map((p,i)=>{
+    const done=i<pedido.estado;const active=i===pedido.estado-1;
+    const isLast=i===pasos.length-1;
+    return`<div class="tracking-step"><div class="tracking-step-left"><div class="tracking-step-dot ${done?'done':''} ${active?'active':''}"></div>${!isLast?`<div class="tracking-step-line ${done?'done':''}"></div>`:''}</div><div class="tracking-step-content"><div class="tracking-step-title" style="color:${done?'var(--text)':'var(--muted)'}">${p.title}</div><div class="tracking-step-sub">${p.sub}</div></div></div>`;
+  }).join('');
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2800);
+}
+
+applyFS();
+</script>
