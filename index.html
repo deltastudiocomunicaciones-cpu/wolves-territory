@@ -245,6 +245,16 @@ input,textarea,select{outline:none;}
 .p-card:nth-child(4) { animation-delay: 0.20s; }
 .p-card:nth-child(5) { animation-delay: 0.25s; }
 .p-card:nth-child(6) { animation-delay: 0.30s; }
+	/* TRANSICIONES DE VISTA */
+#view-home, #view-ofertas, #view-product, 
+#view-cart, #view-checkout, #view-confirmacion,
+#view-seguimiento, #view-politicas, #view-nosotros {
+  animation: fadeIn 0.3s ease forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 
 <div style="background:var(--bg);overflow-x:hidden;position:relative;">
@@ -846,6 +856,12 @@ function showView(v){
   document.querySelectorAll('.nav-links span').forEach(s=>s.classList.remove('active'));
   if(v==='home')document.querySelector('.nav-links span').classList.add('active');
   window.scrollTo(0,0);
+  const activeView=document.getElementById('view-'+v);
+  if(activeView){
+    activeView.style.animation='none';
+    activeView.offsetHeight;
+    activeView.style.animation='fadeIn 0.3s ease forwards';
+  }
 }
 // ============================================================
 // BÚSQUEDA
