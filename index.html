@@ -749,8 +749,13 @@ function toggleSearch(){
   searchOpen=!searchOpen;
   const bar=document.getElementById('search-bar');
   bar.classList.toggle('open',searchOpen);
-  if(searchOpen){document.getElementById('search-input').focus();}
-  else{document.getElementById('search-input').value='';applyFS();}
+  if(searchOpen){
+    showView('home');
+    document.getElementById('search-input').focus();
+  } else {
+    document.getElementById('search-input').value='';
+    applyFS();
+  }
 }
 function doSearch(q){
   q=q.toLowerCase().trim();
