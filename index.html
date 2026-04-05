@@ -752,34 +752,20 @@ let descuento=0,cuponAplicado='',payMethod='wompi',lastOrder=null;
 // ============================================================
 // NAVEGACIÓN
 // ============================================================
-const allViews = ['home','ofertas','product','cart','checkout','confirmacion','seguimiento','politicas','nosotros'];
-
+const allViews=['home','ofertas','product','cart','checkout','confirmacion','seguimiento','politicas','nosotros'];
 function showView(v){
   allViews.forEach(x=>{
-    const el = document.getElementById('view-'+x);
-    if(el){
-      el.classList.remove('active');
-    }
+    const el=document.getElementById('view-'+x);
+    if(el)el.style.display=x===v?'block':'none';
   });
-
-  const current = document.getElementById('view-'+v);
-  if(current){
-    current.classList.add('active');
-  }
-
-  const footer = document.getElementById('main-footer');
-  if(footer){
-    footer.style.display = ['home','nosotros','politicas'].includes(v) ? 'block' : 'none';
-  }
-
-  if(v==='cart') renderCart();
-  if(v==='checkout') renderCheckout();
-}
+  const footer=document.getElementById('main-footer');
+  if(footer)footer.style.display=['home','nosotros','politicas'].includes(v)?'block':'none';
+  if(v==='cart')renderCart();
+  if(v==='checkout')renderCheckout();
   document.querySelectorAll('.nav-links span').forEach(s=>s.classList.remove('active'));
   if(v==='home')document.querySelector('.nav-links span').classList.add('active');
   window.scrollTo(0,0);
 }
-
 // ============================================================
 // BÚSQUEDA
 // ============================================================
