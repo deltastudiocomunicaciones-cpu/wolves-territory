@@ -195,6 +195,13 @@ a{color:inherit;text-decoration:none;}
 input,textarea,select{outline:none;}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:var(--text);border:0.5px solid var(--border2);border-left:3px solid var(--accent);border-radius:3px;padding:10px 18px;font-size:13px;display:none;z-index:999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
 .divider{border:none;border-top:0.5px solid var(--border);margin:16px 0;}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+#marquee-track:hover {
+  animation-play-state: paused;
+}
 #rc-widget-root {
   height: auto !important;
 }
@@ -203,7 +210,6 @@ input,textarea,select{outline:none;}
 #view-seguimiento {
   padding-top: 70px;
   min-height: 100vh;
-}
 }
   background-size: cover;
   background-position: center;
@@ -257,7 +263,29 @@ input,textarea,select{outline:none;}
 
 <!-- HOME -->
 <div id="view-home">
-  <div class="shipping-bar">Envío gratis en compras superiores a <span>$200.000</span> · Colombia</div>
+	
+  <!-- MARQUEE ANIMADO -->
+  <div style="background:#0a0a0a;border-bottom:0.5px solid var(--border);overflow:hidden;height:32px;display:flex;align-items:center;">
+    <div id="marquee-track" style="display:flex;gap:0;white-space:nowrap;animation:marquee 25s linear infinite;">
+      <span style="display:inline-flex;gap:32px;padding-right:32px;font-size:10px;letter-spacing:0.18em;color:var(--muted);">
+        <span style="color:var(--accent);">★</span> NUEVA TEMPORADA 2026
+        <span style="color:var(--accent);">★</span> ENVÍO GRATIS +$200.000
+        <span style="color:var(--accent);">★</span> CALIDAD PREMIUM
+        <span style="color:var(--accent);">★</span> WOLVES TERRITORY
+        <span style="color:var(--accent);">★</span> NEW SEASON 2026
+        <span style="color:var(--accent);">★</span> FREE SHIPPING +$200
+        <span style="color:var(--accent);">★</span> PREMIUM QUALITY
+        <span style="color:var(--accent);">★</span> WOLVES TERRITORY
+        <span style="color:var(--accent);">★</span> NUEVA TEMPORADA 2026
+        <span style="color:var(--accent);">★</span> ENVÍO GRATIS +$200.000
+        <span style="color:var(--accent);">★</span> CALIDAD PREMIUM
+        <span style="color:var(--accent);">★</span> NEW SEASON 2026
+        <span style="color:var(--accent);">★</span> FREE SHIPPING +$200
+        <span style="color:var(--accent);">★</span> PREMIUM QUALITY
+      </span>
+    </div>
+  </div>
+
   <div class="hero">
     <img class="hero-bg" src="https://i.imgur.com/7W2WBD6.jpeg" alt="Wolves Territory">
     <div class="hero-overlay">
