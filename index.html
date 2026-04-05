@@ -847,7 +847,15 @@ function buyViaRC(){
   const sz=document.querySelector('.sz.on');
   const talla=sz?sz.textContent:'M';
   const msg=`Hola! Me interesa comprar: ${cur.name} (Talla ${talla}) - $${cur.price.toLocaleString('es-CO')} ¿Tienen disponibilidad?`;
-  window.open(`https://chat.summo.com.co?msg=${encodeURIComponent(msg)}`,'_blank');
+  if(window.RocketChat){
+    RocketChat(function(){
+      this.setCustomField('producto', msg);
+      this.maximizeWidget();
+    });
+  } else {
+    window.open('https://chat.summo.com.co','_blank');
+  }
+}
 }
 function updCount(){
   const t=cart.reduce((s,i)=>s+i.qty,0);
