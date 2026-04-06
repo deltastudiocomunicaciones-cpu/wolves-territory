@@ -255,7 +255,26 @@ input,textarea,select{outline:none;}
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.p-card-img-wrap.square{aspect-ratio:1/1;}	
+.p-card-img-wrap.square{aspect-ratio:1/1;}
+
+/* EFECTO BRILLO BOTONES */
+.add-btn, .wa-btn, .order-btn, .hero-btn {
+  position: relative;
+  overflow: hidden;
+}
+.add-btn::after, .wa-btn::after, .order-btn::after, .hero-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.4s ease;
+}
+.add-btn:hover::after, .wa-btn:hover::after, .order-btn:hover::after, .hero-btn:hover::after {
+  left: 150%;
+}	
 </style>
 
 <div style="background:var(--bg);overflow-x:hidden;position:relative;">
