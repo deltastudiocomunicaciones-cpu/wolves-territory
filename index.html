@@ -406,6 +406,9 @@ input,textarea,select{outline:none;}
       <div id="detail-stars" style="margin-bottom:10px;"></div>
       <div id="detail-price" style="font-size:24px;font-weight:500;color:var(--accent);margin-bottom:4px;"></div>
       <div id="detail-oldprice" style="font-size:13px;color:var(--muted);text-decoration:line-through;margin-bottom:12px;display:none;"></div>
+		<div id="detail-stock" style="font-size:11px;color:var(--danger);letter-spacing:0.06em;margin-bottom:12px;display:none;">
+  ⚡ <span id="stock-num"></span>
+</div>
       <div id="detail-desc" style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;"></div>
       <div style="margin-bottom:18px;">
         <div style="font-size:11px;color:var(--muted);letter-spacing:0.08em;margin-bottom:8px;">TALLA</div>
@@ -924,6 +927,15 @@ function openP(p){
   document.getElementById('detail-price').textContent='$'+p.price.toLocaleString('es-CO');
   const op=document.getElementById('detail-oldprice');
   if(p.oldPrice){op.textContent='$'+p.oldPrice.toLocaleString('es-CO');op.style.display='block';}else{op.style.display='none';}
+	const stock=Math.floor(Math.random()*4)+1;
+const stockEl=document.getElementById('detail-stock');
+const stockNum=document.getElementById('stock-num');
+if(stock<=3){
+  stockNum.textContent='Solo quedan '+stock+' unidades';
+  stockEl.style.display='block';
+} else {
+  stockEl.style.display='none';
+}
   document.getElementById('detail-desc').textContent=p.desc;
   const s='★'.repeat(Math.round(p.rating))+'☆'.repeat(5-Math.round(p.rating));
   document.getElementById('detail-stars').innerHTML=`<span style="color:var(--accent);font-size:13px;">${s}</span> <span style="color:var(--muted);font-size:12px;margin-left:4px;">${p.rating} (${p.reviews.length} opiniones)</span>`;
