@@ -994,6 +994,8 @@ if(stock<=3){
   document.getElementById('detail-stars').innerHTML=`<span style="color:var(--accent);font-size:13px;">${s}</span> <span style="color:var(--muted);font-size:12px;margin-left:4px;">${p.rating} (${p.reviews.length} opiniones)</span>`;
   renderRvs(p.reviews);cStars=1;updateStUI();
   document.querySelectorAll('.sz').forEach((b,i)=>{b.className='sz '+(i===0?'on':'off');});
+const sizeSec=document.querySelector('.size-grid').parentElement;
+sizeSec.style.display=p.noTallas?'none':'block';
   const v=Math.floor(Math.random()*6)+2;
   document.getElementById('viewers-num').textContent=v;
 }
