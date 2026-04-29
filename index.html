@@ -1129,16 +1129,15 @@ function confirmarPedido(){
     ${cart.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted);"><span>${item.name} ×${item.qty}</span><span>$${(item.price*item.qty).toLocaleString('es-CO')}</span></div>`).join('')}
     <div style="border-top:0.5px solid var(--border);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:500;"><span>Total</span><span style="color:var(--accent);">$${total.toLocaleString('es-CO')}</span></div>
     <div style="margin-top:10px;font-size:12px;color:var(--muted);">📍 ${ciudad} · ${dir}<br>📱 ${tel}</div>`;
-  const {total}=calcTotals();
-const ref='WT-'+Date.now().toString().slice(-6);
-
-if(payMethod==='wompi'){
-  const wompiUrl=`https://checkout.wompi.co/p/?public-key=pub_test_5GVPGWBU5C1xHIKCAmmjQ5J4pgwdVSpQ&currency=COP&amount-in-cents=${total*100}&reference=${ref}&redirect-url=${encodeURIComponent('https://wolves-territory.co')}`;
-  cart=[];descuento=0;cuponAplicado='';updCount();
-  window.open(wompiUrl,'_blank');
-} else {
-  cart=[];descuento=0;cuponAplicado='';updCount();
-  showView('confirmacion');
+  if(payMethod==='wompi'){
+    const ref='WT-'+Date.now().toString().slice(-6);
+    const wompiUrl=`https://checkout.wompi.co/p/?public-key=pub_test_5GVPGWBU5C1xHIKCAmmjQ5J4pgwdVSpQ&currency=COP&amount-in-cents=${total*100}&reference=${ref}&redirect-url=${encodeURIComponent('https://wolves-territory.co')}`;
+    cart=[];descuento=0;cuponAplicado='';updCount();
+    window.open(wompiUrl,'_blank');
+  } else {
+    cart=[];descuento=0;cuponAplicado='';updCount();
+    showView('confirmacion');
+  }
 }
 function enviarWA(){
   if(!lastOrder)return;
