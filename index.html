@@ -1127,18 +1127,18 @@ function confirmarPedido(){
     ${cart.map(item=>`<div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--muted);"><span>${item.name} ×${item.qty}</span><span>$${(item.price*item.qty).toLocaleString('es-CO')}</span></div>`).join('')}
     <div style="border-top:0.5px solid var(--border);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:14px;font-weight:500;"><span>Total</span><span style="color:var(--accent);">$${total.toLocaleString('es-CO')}</span></div>
     <div style="margin-top:10px;font-size:12px;color:var(--muted);">📍 ${ciudad} · ${dir}<br>📱 ${tel}</div>`;
- if(payMethod==='wompi'){
+if(payMethod==='wompi'){
     const ref='WT-'+Date.now().toString().slice(-6);
     const amountCents=total*100;
     const cadena=ref+amountCents+'COP'+'test_integrity_wT08wGn7Ozn0dMFUoRSBCXhtxjsa1t7Z';
     const encoder=new TextEncoder();
     const data=encoder.encode(cadena);
+    cart=[];descuento=0;cuponAplicado='';updCount();
     crypto.subtle.digest('SHA-256',data).then(hashBuffer=>{
       const hashArray=Array.from(new Uint8Array(hashBuffer));
       const signature=hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
       const wompiUrl=`https://checkout.wompi.co/p/?public-key=pub_test_5GVPGWBU5C1xHIKCAmmjQ5J4pgwdVSpQ&currency=COP&amount-in-cents=${amountCents}&reference=${ref}&signature:integrity=${signature}&redirect-url=${encodeURIComponent('https://wolves-territory.co')}`;
-      cart=[];descuento=0;cuponAplicado='';updCount();
-      window.open(wompiUrl,'_blank');
+      window.location.href=wompiUrl;
     });
   } else {
     cart=[];descuento=0;cuponAplicado='';updCount();
