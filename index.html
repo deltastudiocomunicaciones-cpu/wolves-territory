@@ -1129,16 +1129,6 @@ function confirmarPedido(){
     <div style="margin-top:10px;font-size:12px;color:var(--muted);">📍 ${ciudad} · ${dir}<br>📱 ${tel}</div>`;
   if(payMethod==='wompi'){
     const ref='WT-'+Date.now().toString().slice(-6);
-const integritySecret='test_integrity_...'; // Tu llave de integridad de pruebas
-const amountCents=total*100;
-const currency='COP';
-const cadena=ref+amountCents+currency+integritySecret;
-const encoder=new TextEncoder();
-const data=encoder.encode(cadena);
-const hashBuffer=await crypto.subtle.digest('SHA-256',data);
-const hashArray=Array.from(new Uint8Array(hashBuffer));
-const signature=hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
-const wompiUrl=`https://checkout.wompi.co/p/?public-key=pub_test_5GVPGWBU5C1xHIKCAmmjQ5J4pgwdVSpQ&currency=COP&amount-in-cents=${amountCents}&reference=${ref}&signature:integrity=${signature}&redirect-url=${encodeURIComponent('https://wolves-territory.co')}`;
     const wompiUrl=`https://checkout.wompi.co/p/?public-key=pub_test_5GVPGWBU5C1xHIKCAmmjQ5J4pgwdVSpQ&currency=COP&amount-in-cents=${total*100}&reference=${ref}&redirect-url=${encodeURIComponent('https://wolves-territory.co')}`;
     cart=[];descuento=0;cuponAplicado='';updCount();
     window.open(wompiUrl,'_blank');
