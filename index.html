@@ -856,8 +856,6 @@ window.addEventListener('load', function(){
 <div id="toast"></div>
 </div>
 
-</script>
-
 <!-- BOTÓN FLOTANTE WHATSAPP -->
 <a href="https://wa.me/573043795035?text=Hola! Visité su tienda y tengo una pregunta." target="_blank"
    style="position:fixed;bottom:80px;right:20px;z-index:500;width:52px;height:52px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(37,211,102,0.4);">
@@ -1199,12 +1197,28 @@ function aplicarYCerrar(){
   toast('¡Cupón BIENVENIDO aplicado! 15% de descuento');
 }
 
+// Capturar retorno de Wompi
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const ref=params.get('id');
+  const status=params.get('status');
+  if(ref&&status){
+    if(status==='APPROVED'){
+      document.getElementById('confirm-num').textContent='PEDIDO '+ref;
+      document.getElementById('order-detail-box').innerHTML=`
+        <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:var(--muted);margin-bottom:10px;">PAGO APROBADO</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Referencia Wompi: <strong style="color:var(--accent);">${ref}</strong></div>
+        <div style="font-size:13px;color:var(--muted);">Te contactaremos por WhatsApp para confirmar el despacho.</div>`;
+      showView('confirmacion');
+    } else if(status==='DECLINED'){
+      toast('Pago rechazado. Intenta con otro método de pago.');
+    } else if(status==='PENDING'){
+      toast('Pago pendiente. Te avisaremos cuando se confirme.');
+    }
+  }
+})();
+
 mostrarPopup();
-	function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.style.display='block';
-  clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2800);
-}
 
 applyFS();
 </script>
