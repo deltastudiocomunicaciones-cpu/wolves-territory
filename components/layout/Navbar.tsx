@@ -12,56 +12,90 @@ export default function Navbar() {
   const { totalItems } = useCart();
 
   const navLinks = [
-    { label: "NEW", href: "/#new" },
-    { label: "SHOP", href: "/#coleccion" },
-    { label: "COLLECTIONS", href: "/#collections" },
-    { label: "CAPS", href: "/#caps" },
-    { label: "APPAREL", href: "/#apparel" },
-    { label: "STORES", href: "/#stores" },
-    { label: "WOLVES", href: "/#nosotros" },
-  ];
+  {
+    label: "NEW",
+    href: "/#coleccion",
+  },
+  {
+    label: "SHOP",
+    href: "/#coleccion",
+  },
+  {
+    label: "COLLECTIONS",
+    href: "/#collections",
+  },
+  {
+    label: "CAPS",
+    href: "/?category=Cap#coleccion",
+  },
+  {
+    label: "APPAREL",
+    href: "/?category=Hoodie#coleccion",
+  },
+  {
+    label: "STORES",
+    href: "/#stores",
+  },
+];
 
   return (
     <>
       {/* ANNOUNCEMENT BAR */}
       <div className="fixed top-0 z-[60] w-full border-b border-white/10 bg-black text-white">
-        <div className="flex h-8 items-center justify-center px-4 text-[9px] font-medium uppercase tracking-[0.28em] text-white/55">
+        <div className="flex h-8 items-center justify-center px-4 text-center text-[9px] font-medium uppercase tracking-[0.22em] text-white/55 md:tracking-[0.28em]">
           Free shipping on selected orders · Secure payments · Colombia
         </div>
       </div>
 
       {/* NAVBAR */}
-      <nav className="fixed top-8 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-10 lg:px-14">
-          
+      <nav className="fixed top-8 z-50 w-full border-b border-white/10 bg-black/85 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-8 lg:px-12 xl:px-14">
+
           {/* BRAND */}
           <Link
             href="/"
-            className="shrink-0 text-[13px] font-semibold uppercase tracking-[0.24em] text-white"
+            className="group flex shrink-0 items-center gap-3"
           >
-            WOLVES TERRITORY
+            <img
+              src="/images/wolves-isotipo.png"
+              alt="Wolves Territory"
+              className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105 md:h-10"
+            />
+
+            <div className="hidden flex-col leading-none sm:flex">
+              <span className="text-[12px] font-semibold uppercase tracking-[0.28em] text-white md:text-[13px]">
+                WOLVES
+              </span>
+
+              <span className="mt-1 text-[7px] font-medium uppercase tracking-[0.42em] text-[#c9a96e] md:text-[8px]">
+                TERRITORY
+              </span>
+            </div>
           </Link>
 
           {/* DESKTOP NAV */}
-          <div className="hidden items-center gap-7 lg:flex">
+          <div className="hidden items-center gap-4 md:flex lg:gap-6 xl:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/50 transition hover:text-white"
+                className="relative text-[9px] font-medium uppercase tracking-[0.18em] text-white/50 transition-colors duration-300 hover:text-white lg:text-[10px] lg:tracking-[0.22em]"
               >
                 {link.label}
+
+                <span className="absolute -bottom-2 left-0 h-px w-0 bg-[#c9a96e] transition-all duration-300 hover:w-full" />
               </Link>
             ))}
           </div>
 
           {/* ACTIONS */}
-          <div className="flex items-center gap-5">
+          <div className="flex shrink-0 items-center gap-4 lg:gap-5">
+
             {/* SEARCH */}
             <button
               type="button"
               aria-label="Search"
-              className="text-white/60 transition hover:text-white"
+              className="text-white/55 transition-colors hover:text-white"
             >
               <svg
                 width="18"
@@ -80,7 +114,7 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Account"
-              className="hidden text-white/60 transition hover:text-white sm:block"
+              className="hidden text-white/55 transition-colors hover:text-white sm:block"
             >
               <svg
                 width="18"
@@ -100,7 +134,7 @@ export default function Navbar() {
               type="button"
               aria-label="Cart"
               onClick={() => setCartOpen(true)}
-              className="relative text-white/60 transition hover:text-white"
+              className="relative text-white/55 transition-colors hover:text-white"
             >
               <svg
                 width="18"
@@ -115,7 +149,7 @@ export default function Navbar() {
               </svg>
 
               {totalItems > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[9px] font-bold text-black">
+                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#c9a96e] px-1 text-[9px] font-bold text-black">
                   {totalItems}
                 </span>
               )}
@@ -125,26 +159,37 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Menu"
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="flex w-5 flex-col gap-1.5 lg:hidden"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((current) => !current)}
+              className="flex w-5 flex-col gap-1.5 md:hidden"
             >
-              <span className="h-px w-5 bg-white/80" />
-              <span className="h-px w-5 bg-white/80" />
+              <span
+                className={`h-px w-5 bg-white/80 transition-transform duration-300 ${
+                  menuOpen ? "translate-y-[3.5px] rotate-45" : ""
+                }`}
+              />
+
+              <span
+                className={`h-px w-5 bg-white/80 transition-transform duration-300 ${
+                  menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""
+                }`}
+              />
             </button>
           </div>
         </div>
 
         {/* MOBILE DRAWER */}
         {menuOpen && (
-          <div className="border-t border-white/10 bg-[#0b0b0b] lg:hidden">
+          <div className="border-t border-white/10 bg-[#080808] md:hidden">
             <div className="flex min-h-[calc(100vh-96px)] flex-col justify-between px-6 py-10">
+
               <div className="flex flex-col gap-7">
                 {navLinks.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
                     onClick={() => setMenuOpen(false)}
-                    className="border-b border-white/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-white"
+                    className="border-b border-white/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-white transition hover:text-[#c9a96e]"
                   >
                     {link.label}
                   </Link>
@@ -152,11 +197,19 @@ export default function Navbar() {
               </div>
 
               <div className="mt-12 border-t border-white/10 pt-8">
-                <p className="text-[9px] uppercase tracking-[0.3em] text-white/30">
-                  Wolves Territory
-                </p>
+                <div className="flex items-center gap-3">
+                  <img
+                    src="/images/wolves-isotipo.png"
+                    alt=""
+                    className="h-8 w-auto opacity-75"
+                  />
 
-                <p className="mt-3 max-w-xs text-sm leading-6 text-white/50">
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/35">
+                    Wolves Territory
+                  </p>
+                </div>
+
+                <p className="mt-4 max-w-xs text-sm leading-6 text-white/50">
                   Designed for men who move with intention.
                 </p>
               </div>

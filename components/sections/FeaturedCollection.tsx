@@ -38,7 +38,7 @@ export default function FeaturedCollection() {
 
         <article className="group relative overflow-hidden rounded-3xl">
           <img
-            src="/images/gorra-origen.png"
+            src="/images/gorra-origen.jpeg"
             alt="Gorra Origen"
             className="h-[650px] w-full object-cover transition duration-700 group-hover:scale-105"
           />

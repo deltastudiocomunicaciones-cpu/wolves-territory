@@ -1,10 +1,13 @@
 export interface Product {
   id: number | string;
-  slug?: string;
+  slug: string;
   name: string;
   category: string;
   price: number;
   image: string;
+
+  images?: string[];
+
   collection?: string;
   featured?: boolean;
   description?: string;
@@ -17,7 +20,7 @@ export const products: Product[] = [
     name: "Origen Hoodie Black",
     category: "Hoodie",
     price: 410000,
-    image: "/products/origen-hoodie-black.jpg",
+    image: "/products/origen-hoodie-black.png",
     featured: true,
     description:
       "Heavyweight premium hoodie built for intentional men.",
@@ -25,17 +28,28 @@ export const products: Product[] = [
   },
 
   {
-    id: 2,
-    slug: "origen-tshirt-black",
-    name: "Origen T-Shirt Black",
-    category: "T-Shirt",
-    price: 220000,
-    image: "/products/origen-tshirt-black.png",
-    featured: true,
-    description:
-      "Premium oversized t-shirt with Wolves Territory identity.",
-    collection: "Origen",
-  },
+  id: 2,
+  slug: "origen-tshirt-black",
+  name: "Origen T-Shirt Black",
+  category: "T-Shirt",
+  price: 220000,
+
+  image: "/products/origen-tshirt-black.png",
+
+  images: [
+    "/products/origen-tshirt-black.png",
+    "/products/origen-tshirt-black.png",
+    "/products/origen-tshirt-black.png",
+    "/products/origen-tshirt-black.png",
+  ],
+
+  featured: true,
+
+  description:
+    "Premium oversized t-shirt with Wolves Territory identity.",
+
+  collection: "Origen",
+},
 
   {
     id: 3,
@@ -56,7 +70,7 @@ export const products: Product[] = [
     name: "Origen Short Beige",
     category: "Short",
     price: 300000,
-    image: "/products/origen-short-beige.jpeg",
+    image: "/products/origen-short-beige.png",
     description:
       "Premium athletic short for movement and comfort.",
     collection: "Origen",
@@ -152,7 +166,7 @@ export const products: Product[] = [
     name: "Origen Llavero",
     category: "Accessory",
     price: 22000,
-    image: "/products/origen-keychain.jpg",
+    image: "/products/origen-keychain.png",
     collection: "Origen",
   },
 ];

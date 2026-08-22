@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+
 import { products } from "@/data/products";
 import ProductCard from "@/components/ui/ProductCard";
 
@@ -12,18 +14,52 @@ const categories = [
   { label: "SHORTS", value: "Short" },
   { label: "CAPS", value: "Cap" },
   { label: "ACCESSORIES", value: "Accessory" },
+  { label: "APPAREL", value: "Apparel" },
 ];
 
 export default function ProductGrid() {
-  const [activeCategory, setActiveCategory] = useState("all");
+  const searchParams = useSearchParams();
+
+  const [activeCategory, setActiveCategory] =
+    useState("all");
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+
+    if (!category) return;
+
+    const validCategory = categories.find(
+      (item) =>
+        item.value.toLowerCase() ===
+        category.toLowerCase()
+    );
+
+    if (validCategory) {
+      setActiveCategory(validCategory.value);
+    }
+  }, [searchParams]);
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === "all") return products;
+  if (activeCategory === "all") {
+    return products;
+  }
 
-    return products.filter(
-      (product) => product.category === activeCategory
+  if (activeCategory === "Apparel") {
+    return products.filter((product) =>
+      [
+        "Hoodie",
+        "T-Shirt",
+        "Polo",
+        "Short",
+      ].includes(product.category)
     );
-  }, [activeCategory]);
+  }
+
+  return products.filter(
+    (product) =>
+      product.category === activeCategory
+  );
+}, [activeCategory]);
 
   return (
     <section
