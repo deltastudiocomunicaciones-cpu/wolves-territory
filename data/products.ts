@@ -22,17 +22,30 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    id: 1,
-    slug: "origen-hoodie-black",
-    name: "Origen Hoodie Black",
-    category: "Hoodie",
-    price: 449000,
-    image: "/products/origen-hoodie-black.png",
-    featured: true,
-    description:
-      "Heavyweight premium hoodie built for intentional men.",
-    collection: "Origen",
-  },
+  id: 1,
+  slug: "origen-hoodie-black",
+  name: "Origen Hoodie Black",
+  category: "Hoodie",
+  price: 449000,
+
+  // Imagen principal de la card
+  image: "/products/origen-hoodie-black.png",
+
+  // Galería del hoodie
+  images: [
+    "/products/origen-hoodie-black.png",
+    "/products/origen-hoodie-black-1.png",
+    "/products/origen-hoodie-black-2.png",
+    "/products/origen-hoodie-black-3.png",
+    "/products/origen-hoodie-black-4.png",
+  ],
+
+  featured: true,
+  collection: "Origen",
+
+  description:
+    "Heavyweight premium hoodie built for intentional men.",
+},
 
  {
   id: 2,
@@ -63,6 +76,7 @@ export const products: Product[] = [
         "/products/origen-tshirt-black-2.png",
         "/products/origen-tshirt-black-3.png",
         "/products/origen-tshirt-black-4.png",
+        "/products/origen-tshirt-black-1.png",
       ],
     },
 
@@ -76,6 +90,7 @@ export const products: Product[] = [
         "/products/origen-tshirt-white-2.png",
         "/products/origen-tshirt-white-3.png",
         "/products/origen-tshirt-white-4.png",
+        "/products/origen-tshirt-white-1.png",
       ],
     },
 
@@ -89,6 +104,7 @@ export const products: Product[] = [
         "/products/origen-tshirt-red-2.png",
         "/products/origen-tshirt-red-3.png",
         "/products/origen-tshirt-red-4.png",
+        "/products/origen-tshirt-red-1.png",
       ],
     },
   ],
@@ -101,32 +117,73 @@ export const products: Product[] = [
 },
 
   {
-    id: 3,
-    slug: "origen-polo-gray",
-    name: "Origen Polo Gray",
-    category: "Polo",
-    price: 279000,
-    image: "/products/origen-polo-gray.png",
-    featured: true,
-    description:
-      "Minimalist premium polo inspired by discipline and territory.",
-    collection: "Origen",
-  },
+  id: 3,
+  slug: "origen-polo-gray",
+  name: "Origen Polo Gray",
+  category: "Polo",
+  price: 279000,
+
+  // Imagen principal de la card
+  image: "/products/origen-polo-gray.png",
+
+  // Galería del polo gris
+  images: [
+    "/products/origen-polo-gray.png",
+    "/products/origen-polo-gray-2.png",
+    "/products/origen-polo-gray-3.png",
+    "/products/origen-polo-gray-4.png",
+    "/products/origen-polo-gray-1.png",
+  ],
+
+  variants: [
+    {
+      color: "Gray",
+      colorHex: "#7a7a7a",
+      slug: "origen-polo-gray",
+      image: "/products/origen-polo-gray.png",
+
+      images: [
+        "/products/origen-polo-gray-1.png",
+        "/products/origen-polo-gray-2.png",
+        "/products/origen-polo-gray-3.png",
+        "/products/origen-polo-gray-4.png",
+      ],
+    },
+  ],
+
+  featured: true,
+  collection: "Origen",
+
+  description:
+    "Minimalist premium polo inspired by discipline and territory.",
+},
 
   {
-    id: 4,
-    slug: "origen-short-beige",
-    name: "Origen Short Beige",
-    category: "Short",
-    price: 299000,
-    image: "/products/origen-short-beige.png",
-    description:
-      "Premium athletic short for movement and comfort.",
-    collection: "Origen",
-  },
+  id: 4,
+  slug: "origen-short-beige",
+  name: "Origen Short Beige",
+  category: "Short",
+  price: 299000,
+
+  // Imagen principal de la card
+  image: "/products/origen-short-beige.png",
+
+  // Galería del short
+  images: [
+    "/products/origen-short-beige.png",
+    "/products/origen-short-beige-1.png",
+    "/products/origen-short-beige-2.png",
+    "/products/origen-short-beige-3.png",
+  ],
+
+  collection: "Origen",
+
+  description:
+    "Premium athletic short for movement and comfort.",
+},
 
   {
-    id: "cap-origen",
+    id: 5, 
     slug: "origen-cap",
     name: "Origen",
     category: "Cap",
@@ -138,8 +195,8 @@ export const products: Product[] = [
   },
 
   {
-    id: "cap-delta-black",
-    slug: "wt-delta-black",
+    id: 6,
+    slug: "origen-cap-black",
     name: "WT Delta Black",
     category: "Cap",
     price: 219900,
@@ -150,8 +207,8 @@ export const products: Product[] = [
   },
 
   {
-    id: "cap-delta-white",
-    slug: "wt-delta-white",
+    id: 7,
+    slug: "origen-cap-white",
     name: "WT Delta White",
     category: "Cap",
     price: 219900,
@@ -162,7 +219,19 @@ export const products: Product[] = [
   },
 
   {
-    id: "cap-alpha-black",
+    id: 8,
+    slug: "origen-cap-red",
+    name: "WT Alpha Red",
+    category: "Cap",
+    price: 169900,
+    image: "/products/caps/alpha-red.png",
+    collection: "Performance",
+    description:
+      "Red performance cap with Flexfit 180AP base.",
+  },
+
+  {
+    id: 9,
     slug: "wt-alpha-black",
     name: "WT Alpha Black",
     category: "Cap",
@@ -173,20 +242,9 @@ export const products: Product[] = [
       "Classic premium black cap with Flexfit 110P base.",
   },
 
+ 
   {
-    id: "cap-alpha-red",
-    slug: "wt-alpha-red",
-    name: "WT Alpha Red",
-    category: "Cap",
-    price: 169900,
-    image: "/products/caps/alpha-red.png",
-    collection: "Classic",
-    description:
-      "Classic premium red cap with Flexfit 110P base.",
-  },
-
-  {
-    id: "cap-trail-black-white",
+    id: 11,
     slug: "wt-trail-black-white",
     name: "WT Trail Black / White",
     category: "Cap",
@@ -198,7 +256,7 @@ export const products: Product[] = [
   },
 
   {
-    id: "cap-trail-heather-white",
+    id: 12,
     slug: "wt-trail-heather-white",
     name: "WT Trail Heather / White",
     category: "Cap",
@@ -210,7 +268,7 @@ export const products: Product[] = [
   },
 
   {
-    id: 12,
+    id: 13,
     slug: "origen-llavero",
     name: "Origen Llavero",
     category: "Accessory",
