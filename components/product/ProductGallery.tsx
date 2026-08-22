@@ -13,6 +13,12 @@ export default function ProductGallery({
       ? product.images
       : [product.image];
 
+     useEffect(() => {
+  setActiveImage(
+    product.images?.[0] ?? product.image
+  );
+}, [product.image, product.images]); 
+
   const [activeImage, setActiveImage] = useState(
     gallery[0]
   );

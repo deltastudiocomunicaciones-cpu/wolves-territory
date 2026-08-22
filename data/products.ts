@@ -1,3 +1,11 @@
+export interface ProductVariant {
+  color: string;
+  colorHex: string;
+  slug: string;
+  image: string;
+  images: string[];
+}
+
 export interface Product {
   id: number | string;
   slug: string;
@@ -5,9 +13,8 @@ export interface Product {
   category: string;
   price: number;
   image: string;
-
   images?: string[];
-
+  variants?: ProductVariant[];
   collection?: string;
   featured?: boolean;
   description?: string;
@@ -19,7 +26,7 @@ export const products: Product[] = [
     slug: "origen-hoodie-black",
     name: "Origen Hoodie Black",
     category: "Hoodie",
-    price: 410000,
+    price: 449000,
     image: "/products/origen-hoodie-black.png",
     featured: true,
     description:
@@ -27,28 +34,70 @@ export const products: Product[] = [
     collection: "Origen",
   },
 
-  {
+ {
   id: 2,
   slug: "origen-tshirt-black",
-  name: "Origen T-Shirt Black",
+  name: "Origen T-Shirt",
   category: "T-Shirt",
-  price: 220000,
+  price: 249000,
 
+  // Esta es la imagen que aparece en la CARD del catálogo
   image: "/products/origen-tshirt-black.png",
 
+  // Galería actual de la camiseta negra
   images: [
     "/products/origen-tshirt-black.png",
-    "/products/origen-tshirt-black.png",
-    "/products/origen-tshirt-black.png",
-    "/products/origen-tshirt-black.png",
+    "/products/origen-tshirt-black-2.png",
+    "/products/origen-tshirt-black-3.png",
+    "/products/origen-tshirt-black-4.png",
+  ],
+
+  variants: [
+    {
+      color: "Black",
+      colorHex: "#111111",
+      slug: "origen-tshirt-black",
+      image: "/products/origen-tshirt-black.png",
+      images: [
+        "/products/origen-tshirt-black.png",
+        "/products/origen-tshirt-black-2.png",
+        "/products/origen-tshirt-black-3.png",
+        "/products/origen-tshirt-black-4.png",
+      ],
+    },
+
+    {
+      color: "White",
+      colorHex: "#f5f5f2",
+      slug: "origen-tshirt-white",
+      image: "/products/origen-tshirt-white.png",
+      images: [
+        "/products/origen-tshirt-white.png",
+        "/products/origen-tshirt-white-2.png",
+        "/products/origen-tshirt-white-3.png",
+        "/products/origen-tshirt-white-4.png",
+      ],
+    },
+
+    {
+      color: "Red",
+      colorHex: "#d71920",
+      slug: "origen-tshirt-red",
+      image: "/products/origen-tshirt-red.png",
+      images: [
+        "/products/origen-tshirt-red.png",
+        "/products/origen-tshirt-red-2.png",
+        "/products/origen-tshirt-red-3.png",
+        "/products/origen-tshirt-red-4.png",
+      ],
+    },
   ],
 
   featured: true,
+  collection: "Origen",
 
   description:
     "Premium oversized t-shirt with Wolves Territory identity.",
-
-  collection: "Origen",
 },
 
   {
@@ -56,7 +105,7 @@ export const products: Product[] = [
     slug: "origen-polo-gray",
     name: "Origen Polo Gray",
     category: "Polo",
-    price: 230000,
+    price: 279000,
     image: "/products/origen-polo-gray.png",
     featured: true,
     description:
@@ -69,7 +118,7 @@ export const products: Product[] = [
     slug: "origen-short-beige",
     name: "Origen Short Beige",
     category: "Short",
-    price: 300000,
+    price: 299000,
     image: "/products/origen-short-beige.png",
     description:
       "Premium athletic short for movement and comfort.",

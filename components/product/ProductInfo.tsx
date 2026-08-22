@@ -1,11 +1,21 @@
-import { Product } from "@/data/products";
+import {
+  Product,
+  ProductVariant,
+} from "@/data/products";
+
 import { formatPrice } from "@/lib/product";
 import ProductActions from "./ProductActions";
 
 export default function ProductInfo({
   product,
+  selectedVariant,
+  onVariantChange,
 }: {
   product: Product;
+  selectedVariant?: ProductVariant | null;
+  onVariantChange?: (
+    variant: ProductVariant
+  ) => void;
 }) {
   return (
     <section className="bg-[#f4f1eb]">
@@ -61,6 +71,69 @@ export default function ProductInfo({
                 "Designed with the Wolves Territory philosophy of identity, precision and presence."}
             </p>
           </div>
+
+          {/* COLOR VARIANTS */}
+          {product.variants &&
+            product.variants.length > 0 && (
+              <div className="mt-10">
+                <div className="mb-4 flex items-center justify-between">
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.26em] text-black">
+                    Color
+                  </p>
+
+                  <p className="text-[9px] uppercase tracking-[0.22em] text-black/40">
+                    {selectedVariant?.color ?? "Select"}
+                  </p>
+                </div>
+
+                <div className="flex gap-4">
+                  {product.variants.map((variant) => {
+                    const active =
+                      selectedVariant?.slug ===
+                      variant.slug;
+
+                    return (
+                      <button
+                        key={variant.slug}
+                        type="button"
+                        onClick={() =>
+                          onVariantChange?.(variant)
+                        }
+                        aria-label={`Seleccionar color ${variant.color}`}
+                        title={variant.color}
+                        className="group flex flex-col items-center gap-2"
+                      >
+                        <span
+                          className={`flex h-12 w-12 items-center justify-center border transition-all duration-300 ${
+                            active
+                              ? "border-black"
+                              : "border-black/15 hover:border-black/50"
+                          }`}
+                        >
+                          <span
+                            className="h-7 w-7 rounded-full border border-black/10"
+                            style={{
+                              backgroundColor:
+                                variant.colorHex,
+                            }}
+                          />
+                        </span>
+
+                        <span
+                          className={`text-[8px] uppercase tracking-[0.16em] transition ${
+                            active
+                              ? "text-black"
+                              : "text-black/35 group-hover:text-black"
+                          }`}
+                        >
+                          {variant.color}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
           {/* ACTIONS */}
           <ProductActions product={product} />
