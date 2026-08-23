@@ -47,10 +47,12 @@ export default function CheckoutForm() {
     : null; 
 
     const checkoutItems = items.map((item) => ({
-      productId: item.product.id,
-      quantity: item.quantity,
-      size: item.size ?? null,
-    }));
+  productId: item.product.id,
+  quantity: item.quantity,
+  color: item.color ?? null,
+  size: item.size ?? null,
+  sku: item.sku ?? null,
+}));
 
     try {
       setLoading(true);

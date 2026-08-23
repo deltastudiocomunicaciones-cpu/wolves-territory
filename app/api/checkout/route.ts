@@ -7,7 +7,10 @@ import { createOrder } from "@/lib/order-store";
 type CheckoutItem = {
   productId: string | number;
   quantity: number;
+
+  color?: string | null;
   size?: string | null;
+  sku?: string | null;
 };
 
 type CheckoutPayload = {
@@ -99,14 +102,18 @@ export async function POST(request: Request) {
         );
       }
 
-      return {
-        productId: product.id,
-        name: product.name,
-        quantity: item.quantity,
-        size: item.size ?? null,
-        unitPrice: product.price,
-        subtotal: product.price * item.quantity,
-      };
+     return {
+  productId: product.id,
+  name: product.name,
+  quantity: item.quantity,
+
+  color: item.color ?? null,
+  size: item.size ?? null,
+  sku: item.sku ?? null,
+
+  unitPrice: product.price,
+  subtotal: product.price * item.quantity,
+};
     });
 
     const publicKey = process.env.WOMPI_PUBLIC_KEY;

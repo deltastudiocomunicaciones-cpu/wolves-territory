@@ -82,21 +82,22 @@ export async function createOrder(
    * CREAR ITEMS DE LA ORDEN
    */
   const items = order.items.map(
-    (item) => ({
-      order_id: createdOrder.id,
+  (item) => ({
+    order_id: createdOrder.id,
 
-      product_id:
-        String(item.productId),
+    product_id: String(item.productId),
+    product_name: item.name,
 
-      product_name: item.name,
+    quantity: item.quantity,
 
-      quantity: item.quantity,
-      size: item.size ?? null,
+    color: item.color ?? null,
+    size: item.size ?? null,
+    sku: item.sku ?? null,
 
-      unit_price: item.unitPrice,
-      subtotal: item.subtotal,
-    })
-  );
+    unit_price: item.unitPrice,
+    subtotal: item.subtotal,
+  })
+);
 
   const { error: itemsError } =
     await supabase

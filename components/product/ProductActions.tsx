@@ -1,13 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Product } from "@/data/products";
+import {
+  Product,
+  ProductVariant,
+} from "@/data/products";
 import { useCart } from "@/components/cart/CartProvider";
 
 export default function ProductActions({
   product,
+  selectedVariant,
 }: {
   product: Product;
+  selectedVariant?: ProductVariant | null;
 }) {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -18,7 +23,9 @@ export default function ProductActions({
     product.category !== "Cap" &&
     product.category !== "Accessory";
 
-  const sizes = ["S", "M", "L", "XL"];
+  const sizes = ["M", "L", "XL", "XXL"];
+  const selectedColor =
+  selectedVariant?.color ?? null;
 
   function decreaseQuantity() {
     setQuantity((current) => Math.max(1, current - 1));
@@ -34,11 +41,21 @@ export default function ProductActions({
       return;
     }
 
-    addItem(
-      product,
-      quantity,
+    const sku =
+  requiresSize
+    ? selectedVariant?.skuBase &&
       selectedSize
-    );
+      ? `${selectedVariant.skuBase}-${selectedSize}`
+      : null
+    : selectedVariant?.skuBase ?? null;
+
+   addItem(
+  product,
+  quantity,
+  selectedSize,
+  selectedColor,
+  sku
+);
   }
 
   function handleBuyNow() {

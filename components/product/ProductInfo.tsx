@@ -136,8 +136,10 @@ export default function ProductInfo({
             )}
 
           {/* ACTIONS */}
-          <ProductActions product={product} />
-
+          <ProductActions
+  product={product}
+  selectedVariant={selectedVariant}
+/>
           {/* TRUST */}
           <div className="mt-10 grid grid-cols-3 gap-4 border-t border-black/10 pt-7">
             <div>

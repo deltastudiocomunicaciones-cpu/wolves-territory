@@ -1,3 +1,6 @@
+import {
+  processOrderInventory,
+} from "@/lib/inventory-store";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 
@@ -244,21 +247,36 @@ export async function POST(request: Request) {
        * cuando Wompi confirma APPROVED.
        */
       if (status === "APPROVED") {
-        console.log(
-          "COMMISSION STEP START:",
-          transaction.reference
-        );
+  console.log(
+    "COMMISSION STEP START:",
+    transaction.reference
+  );
 
-        const commission =
-          await createEarnedCommission(
-            transaction.reference
-          );
+  const commission =
+    await createEarnedCommission(
+      transaction.reference
+    );
 
-        console.log(
-          "COMMISSION STEP RESULT:",
-          commission
-        );
-      }
+  console.log(
+    "COMMISSION STEP RESULT:",
+    commission
+  );
+
+  console.log(
+    "INVENTORY STEP START:",
+    transaction.reference
+  );
+
+  const inventoryResult =
+    await processOrderInventory(
+      transaction.reference
+    );
+
+  console.log(
+    "INVENTORY STEP RESULT:",
+    inventoryResult
+  );
+}
     }
 
     /*

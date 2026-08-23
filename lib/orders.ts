@@ -9,8 +9,13 @@ export type OrderStatus =
 export interface OrderItem {
   productId: string | number;
   name: string;
+
   quantity: number;
+
+  color?: string | null;
   size?: string | null;
+  sku?: string | null;
+
   unitPrice: number;
   subtotal: number;
 }
