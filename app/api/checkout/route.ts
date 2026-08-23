@@ -139,6 +139,15 @@ if (normalizedPartnerCode) {
 
   const supabase = getSupabaseAdmin();
 
+  console.log("SUPABASE PARTNER CHECK:", {
+  urlConfigured: Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+  ),
+  serviceRoleConfigured: Boolean(
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  ),
+});
+
   const { data, error } = await supabase
     .from("partners")
     .select(
@@ -149,15 +158,17 @@ if (normalizedPartnerCode) {
     .maybeSingle();
 
   if (error) {
-    console.error(
-      "PARTNER LOOKUP ERROR:",
-      error
-    );
+  console.error("PARTNER LOOKUP ERROR:", {
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+    code: error.code,
+  });
 
-    throw new Error(
-      "No fue posible validar el vendedor."
-    );
-  }
+  throw new Error(
+    "No fue posible validar el vendedor."
+  );
+}
 
   if (data) {
     partner = data;
