@@ -5,6 +5,7 @@ import {
   updateOrderStatus,
   createEarnedCommission,
 } from "@/lib/order-store";
+
 type WompiEvent = {
   event: string;
 
@@ -47,10 +48,10 @@ export async function POST(request: Request) {
     /*
      * 1. SECRETO DE EVENTOS
      */
-    const eventsSecret =
+    const rawEventsSecret =
       process.env.WOMPI_EVENTS_SECRET;
 
-    if (!eventsSecret) {
+    if (!rawEventsSecret) {
       console.error(
         "WOMPI_EVENTS_SECRET is missing"
       );
@@ -63,6 +64,13 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    /*
+     * Limpiamos espacios / saltos accidentales
+     * en la variable de entorno.
+     */
+    const eventsSecret =
+      rawEventsSecret.replace(/\s+/g, "");
 
     /*
      * 2. LEER EVENTO WOMPI
@@ -86,8 +94,7 @@ export async function POST(request: Request) {
     }
 
     /*
-     * 3. OBTENER LOS VALORES QUE WOMPI USÓ
-     *    PARA CONSTRUIR LA FIRMA
+     * 3. OBTENER VALORES FIRMADOS
      */
     const propertyValues =
       body.signature.properties.map(
@@ -123,10 +130,6 @@ export async function POST(request: Request) {
       .update(stringToSign)
       .digest("hex");
 
-    /*
-     * Wompi puede enviar el checksum
-     * en header o en signature.checksum.
-     */
     const receivedChecksum =
       request.headers.get(
         "x-event-checksum"
@@ -166,8 +169,7 @@ export async function POST(request: Request) {
     }
 
     /*
-     * 6. SOLO NOS INTERESA POR AHORA
-     *    transaction.updated
+     * 6. SOLO TRANSACTION.UPDATED
      */
     if (
       body.event !==
@@ -208,8 +210,7 @@ export async function POST(request: Request) {
     }
 
     /*
-     * 8. SOLO ACEPTAMOS ESTADOS
-     *    QUE CONOCEMOS
+     * 8. ESTADOS SOPORTADOS
      */
     const allowedStatuses = [
       "APPROVED",
@@ -221,49 +222,70 @@ export async function POST(request: Request) {
     type AllowedStatus =
       (typeof allowedStatuses)[number];
 
-   if (
-  allowedStatuses.includes(
-    transaction.status as AllowedStatus
-  )
-) {
-  const status =
-    transaction.status as AllowedStatus;
+    if (
+      allowedStatuses.includes(
+        transaction.status as AllowedStatus
+      )
+    ) {
+      const status =
+        transaction.status as AllowedStatus;
 
-  await updateOrderStatus(
-    transaction.reference,
-    status,
-    transaction.id
-  );
+      /*
+       * Actualizamos primero la orden.
+       */
+      await updateOrderStatus(
+        transaction.reference,
+        status,
+        transaction.id
+      );
 
-  /*
-   * Solo reconocemos comisión
-   * cuando Wompi confirma APPROVED.
-   */
-  if (status === "APPROVED") {
-    await createEarnedCommission(
-      transaction.reference
-    );
-  }
-}
+      /*
+       * Solo reconocemos la comisión
+       * cuando Wompi confirma APPROVED.
+       */
+      if (status === "APPROVED") {
+        console.log(
+          "COMMISSION STEP START:",
+          transaction.reference
+        );
 
+        const commission =
+          await createEarnedCommission(
+            transaction.reference
+          );
+
+        console.log(
+          "COMMISSION STEP RESULT:",
+          commission
+        );
+      }
+    }
+
+    /*
+     * 9. LOG DEL WEBHOOK VALIDADO
+     */
     console.log(
       "WOMPI VERIFIED WEBHOOK",
       {
         environment:
           body.environment,
+
         transactionId:
           transaction.id,
+
         reference:
           transaction.reference,
+
         status:
           transaction.status,
+
         amountInCents:
           transaction.amount_in_cents,
       }
     );
 
     /*
-     * 9. RESPONDER RÁPIDO A WOMPI
+     * 10. RESPUESTA A WOMPI
      */
     return NextResponse.json({
       received: true,
