@@ -12,6 +12,10 @@ import {
   getSupabaseBrowser,
 } from "@/lib/supabase-browser";
 
+/* =========================================================
+ * TYPES
+ * ========================================================= */
+
 type SellerPartner = {
   id: string;
   code: string;
@@ -36,7 +40,36 @@ type SellerCommission = {
   earned_at: string | null;
 };
 
-function formatPrice(value: number) {
+type SellerSettlement = {
+  id: string;
+  reference: string;
+
+  period_start: string;
+  period_end: string;
+
+  sales_base_amount: number;
+  commission_amount: number;
+  commission_count: number;
+
+  status:
+    | "READY"
+    | "PAID"
+    | "CANCELLED";
+
+  payment_method: string | null;
+  payment_reference: string | null;
+
+  paid_at: string | null;
+  created_at: string;
+};
+
+/* =========================================================
+ * FORMATTERS
+ * ========================================================= */
+
+function formatPrice(
+  value: number
+) {
   return new Intl.NumberFormat(
     "es-CO",
     {
@@ -47,7 +80,42 @@ function formatPrice(value: number) {
   ).format(value);
 }
 
-function formatDate(value: string) {
+function formatDate(
+  value: string
+) {
+  /*
+   * Evita desplazamiento de fecha
+   * cuando Supabase devuelve YYYY-MM-DD.
+   */
+  if (
+    /^\d{4}-\d{2}-\d{2}$/.test(
+      value
+    )
+  ) {
+    const [
+      year,
+      month,
+      day,
+    ] = value
+      .split("-")
+      .map(Number);
+
+    return new Intl.DateTimeFormat(
+      "es-CO",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }
+    ).format(
+      new Date(
+        year,
+        month - 1,
+        day
+      )
+    );
+  }
+
   return new Intl.DateTimeFormat(
     "es-CO",
     {
@@ -55,48 +123,81 @@ function formatDate(value: string) {
       month: "short",
       year: "numeric",
     }
-  ).format(new Date(value));
+  ).format(
+    new Date(value)
+  );
 }
 
-export default function SellerPage() {
-  const router = useRouter();
+/* =========================================================
+ * PAGE
+ * ========================================================= */
 
-  const [partner, setPartner] =
+export default function SellerPage() {
+  const router =
+    useRouter();
+
+  const [
+    partner,
+    setPartner,
+  ] =
     useState<SellerPartner | null>(
       null
     );
 
-  const [orders, setOrders] =
+  const [
+    orders,
+    setOrders,
+  ] =
     useState<SellerOrder[]>([]);
 
   const [
     commissions,
     setCommissions,
-  ] = useState<SellerCommission[]>(
-    []
-  );
+  ] =
+    useState<
+      SellerCommission[]
+    >([]);
 
-  const [loading, setLoading] =
+  const [
+    settlements,
+    setSettlements,
+  ] =
+    useState<
+      SellerSettlement[]
+    >([]);
+
+  const [
+    loading,
+    setLoading,
+  ] =
     useState(true);
 
-  const [error, setError] =
+  const [
+    error,
+    setError,
+  ] =
     useState("");
 
-  const [copied, setCopied] =
+  const [
+    copied,
+    setCopied,
+  ] =
     useState(false);
 
-  /*
-   * CARGAR SELLER
-   */
+  /* =======================================================
+   * LOAD SELLER DATA
+   * ======================================================= */
+
   useEffect(() => {
     async function loadSeller() {
       try {
         const supabase =
           getSupabaseBrowser();
 
-        /*
-         * 1. USUARIO AUTENTICADO
-         */
+        /* -----------------------------------------------
+         * USER
+         * ----------------------------------------------- */
+
         const {
           data: userData,
           error: userError,
@@ -114,12 +215,13 @@ export default function SellerPage() {
           return;
         }
 
-        /*
-         * 2. PARTNER
+        /* -----------------------------------------------
+         * PARTNER
          *
-         * RLS garantiza que solo
-         * pueda obtener su propia fila.
-         */
+         * RLS devuelve únicamente
+         * el partner del usuario autenticado.
+         * ----------------------------------------------- */
+
         const {
           data: partnerData,
           error: partnerError,
@@ -133,7 +235,10 @@ export default function SellerPage() {
             commission_rate
             `
           )
-          .eq("active", true)
+          .eq(
+            "active",
+            true
+          )
           .maybeSingle();
 
         if (
@@ -145,59 +250,99 @@ export default function SellerPage() {
           );
         }
 
-        /*
-         * 3. ÓRDENES + COMISIONES
+        /* -----------------------------------------------
+         * ORDERS + COMMISSIONS + SETTLEMENTS
          *
-         * También están protegidas
-         * por RLS.
-         */
+         * Todas protegidas mediante RLS.
+         * ----------------------------------------------- */
+
         const [
           ordersResult,
           commissionsResult,
-        ] = await Promise.all([
-          supabase
-            .from("orders")
-            .select(
-              `
-              id,
-              reference,
-              total,
-              status,
-              created_at
-              `
-            )
-            .eq(
-              "status",
-              "APPROVED"
-            )
-            .order(
-              "created_at",
-              {
-                ascending: false,
-              }
-            ),
+          settlementsResult,
+        ] =
+          await Promise.all([
+            supabase
+              .from("orders")
+              .select(
+                `
+                id,
+                reference,
+                total,
+                status,
+                created_at
+                `
+              )
+              .eq(
+                "status",
+                "APPROVED"
+              )
+              .order(
+                "created_at",
+                {
+                  ascending:
+                    false,
+                }
+              ),
 
-          supabase
-            .from("commissions")
-            .select(
-              `
-              id,
-              order_reference,
-              commission_amount,
-              commission_rate,
-              status,
-              earned_at
-              `
-            )
-            .order(
-              "earned_at",
-              {
-                ascending: false,
-              }
-            ),
-        ]);
+            supabase
+              .from(
+                "commissions"
+              )
+              .select(
+                `
+                id,
+                order_reference,
+                commission_amount,
+                commission_rate,
+                status,
+                earned_at
+                `
+              )
+              .order(
+                "earned_at",
+                {
+                  ascending:
+                    false,
+                }
+              ),
 
-        if (ordersResult.error) {
+            supabase
+              .from(
+                "seller_settlements"
+              )
+              .select(
+                `
+                id,
+                reference,
+                period_start,
+                period_end,
+                sales_base_amount,
+                commission_amount,
+                commission_count,
+                status,
+                payment_method,
+                payment_reference,
+                paid_at,
+                created_at
+                `
+              )
+              .order(
+                "created_at",
+                {
+                  ascending:
+                    false,
+                }
+              ),
+          ]);
+
+        /* -----------------------------------------------
+         * ERRORS
+         * ----------------------------------------------- */
+
+        if (
+          ordersResult.error
+        ) {
           console.error(
             "SELLER ORDERS ERROR:",
             ordersResult.error
@@ -221,16 +366,39 @@ export default function SellerPage() {
           );
         }
 
+        if (
+          settlementsResult.error
+        ) {
+          console.error(
+            "SELLER SETTLEMENTS ERROR:",
+            settlementsResult.error
+          );
+
+          throw new Error(
+            "No fue posible cargar tus liquidaciones."
+          );
+        }
+
+        /* -----------------------------------------------
+         * STATE
+         * ----------------------------------------------- */
+
         setPartner(
           partnerData
         );
 
         setOrders(
-          ordersResult.data ?? []
+          ordersResult.data ??
+            []
         );
 
         setCommissions(
           commissionsResult.data ??
+            []
+        );
+
+        setSettlements(
+          settlementsResult.data ??
             []
         );
       } catch (error) {
@@ -252,21 +420,44 @@ export default function SellerPage() {
     loadSeller();
   }, [router]);
 
-  /*
-   * MÉTRICAS
-   */
+  /* =======================================================
+   * METRICS
+   * ======================================================= */
+
   const metrics =
     useMemo(() => {
+      /*
+       * Ventas APPROVED
+       */
       const totalSales =
         orders.reduce(
-          (total, order) =>
+          (
+            total,
+            order
+          ) =>
             total +
-            Number(order.total),
+            Number(
+              order.total
+            ),
           0
         );
 
-      const earnedCommission =
-        commissions.reduce(
+      /*
+       * Solo consideramos comisión
+       * vigente: PENDING / EARNED / PAID.
+       *
+       * REVERSED no forma parte
+       * de la comisión generada efectiva.
+       */
+      const validCommissions =
+        commissions.filter(
+          (commission) =>
+            commission.status !==
+            "REVERSED"
+        );
+
+      const generatedCommission =
+        validCommissions.reduce(
           (
             total,
             commission
@@ -280,7 +471,7 @@ export default function SellerPage() {
         );
 
       const paidCommission =
-        commissions
+        validCommissions
           .filter(
             (commission) =>
               commission.status ===
@@ -300,8 +491,26 @@ export default function SellerPage() {
           );
 
       const pendingCommission =
-        earnedCommission -
-        paidCommission;
+        validCommissions
+          .filter(
+            (commission) =>
+              commission.status ===
+                "EARNED" ||
+              commission.status ===
+                "PENDING"
+          )
+          .reduce(
+            (
+              total,
+              commission
+            ) =>
+              total +
+              Number(
+                commission
+                  .commission_amount
+              ),
+            0
+          );
 
       return {
         approvedSales:
@@ -309,17 +518,21 @@ export default function SellerPage() {
 
         totalSales,
 
-        earnedCommission,
+        generatedCommission,
 
         paidCommission,
 
         pendingCommission,
       };
-    }, [orders, commissions]);
+    }, [
+      orders,
+      commissions,
+    ]);
 
-  /*
+  /* =======================================================
    * REFERRAL LINK
-   */
+   * ======================================================= */
+
   const referralLink =
     typeof window !==
       "undefined" &&
@@ -327,11 +540,14 @@ export default function SellerPage() {
       ? `${window.location.origin}/?ref=${partner.code}`
       : "";
 
-  /*
-   * COPY LINK
-   */
+  /* =======================================================
+   * COPY
+   * ======================================================= */
+
   async function copyReferralLink() {
-    if (!referralLink) return;
+    if (!referralLink) {
+      return;
+    }
 
     try {
       await navigator.clipboard.writeText(
@@ -350,11 +566,14 @@ export default function SellerPage() {
     }
   }
 
-  /*
+  /* =======================================================
    * SHARE
-   */
+   * ======================================================= */
+
   async function shareReferralLink() {
-    if (!referralLink) return;
+    if (!referralLink) {
+      return;
+    }
 
     if (
       typeof navigator !==
@@ -365,9 +584,12 @@ export default function SellerPage() {
         await navigator.share({
           title:
             "Wolves Territory",
+
           text:
             "Descubre Wolves Territory con mi enlace personal.",
-          url: referralLink,
+
+          url:
+            referralLink,
         });
 
         return;
@@ -379,9 +601,10 @@ export default function SellerPage() {
     await copyReferralLink();
   }
 
-  /*
+  /* =======================================================
    * LOGOUT
-   */
+   * ======================================================= */
+
   async function handleLogout() {
     const supabase =
       getSupabaseBrowser();
@@ -395,9 +618,10 @@ export default function SellerPage() {
     router.refresh();
   }
 
-  /*
+  /* =======================================================
    * LOADING
-   */
+   * ======================================================= */
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black text-white">
@@ -408,13 +632,18 @@ export default function SellerPage() {
     );
   }
 
-  /*
+  /* =======================================================
    * ERROR
-   */
-  if (error || !partner) {
+   * ======================================================= */
+
+  if (
+    error ||
+    !partner
+  ) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
         <div className="max-w-md text-center">
+
           <p className="text-[10px] uppercase tracking-[0.3em] text-red-400">
             Seller Portal
           </p>
@@ -426,23 +655,32 @@ export default function SellerPage() {
 
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={
+              handleLogout
+            }
             className="mt-8 border-b border-white/30 pb-2 text-[9px] uppercase tracking-[0.24em] text-white"
           >
             Regresar al login
           </button>
+
         </div>
       </main>
     );
   }
 
+  /* =======================================================
+   * UI
+   * ======================================================= */
+
   return (
     <main className="min-h-screen bg-[#f2f0eb] text-black">
 
-      {/* =========================
+      {/* =================================================
           TOP BAR
-      ========================= */}
+      ================================================= */}
+
       <header className="border-b border-black/10 px-6 py-5 md:px-10 lg:px-14">
+
         <div className="mx-auto flex max-w-[1500px] items-center justify-between">
 
           <div>
@@ -457,7 +695,9 @@ export default function SellerPage() {
 
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={
+              handleLogout
+            }
             className="text-[9px] font-medium uppercase tracking-[0.22em] text-black/40 transition hover:text-black"
           >
             Sign Out
@@ -468,12 +708,14 @@ export default function SellerPage() {
 
       <div className="mx-auto max-w-[1500px] px-6 py-12 md:px-10 lg:px-14 lg:py-16">
 
-        {/* =========================
+        {/* =================================================
             HERO
-        ========================= */}
+        ================================================= */}
+
         <section className="grid gap-10 border-b border-black/10 pb-14 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
 
           <div>
+
             <p className="text-[9px] uppercase tracking-[0.32em] text-black/35">
               Personal Territory
             </p>
@@ -483,9 +725,11 @@ export default function SellerPage() {
               <br />
               {partner.name}.
             </h1>
+
           </div>
 
           <div className="lg:text-right">
+
             <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
               Seller Code
             </p>
@@ -500,23 +744,27 @@ export default function SellerPage() {
 
             <p className="mt-2 text-xl font-semibold">
               {
-                partner.commission_rate
+                partner
+                  .commission_rate
               }
               %
             </p>
+
           </div>
 
         </section>
 
-        {/* =========================
+        {/* =================================================
             METRICS
-        ========================= */}
-        <section className="grid border-b border-black/10 md:grid-cols-2 lg:grid-cols-4">
+        ================================================= */}
+
+        <section className="grid border-b border-black/10 sm:grid-cols-2 xl:grid-cols-5">
 
           <Metric
             label="Ventas aprobadas"
             value={String(
-              metrics.approvedSales
+              metrics
+                .approvedSales
             )}
           />
 
@@ -530,25 +778,37 @@ export default function SellerPage() {
           <Metric
             label="Comisión generada"
             value={formatPrice(
-              metrics.earnedCommission
+              metrics
+                .generatedCommission
             )}
           />
 
           <Metric
-            label="Pendiente de pago"
+            label="Pagado"
             value={formatPrice(
-              metrics.pendingCommission
+              metrics
+                .paidCommission
+            )}
+          />
+
+          <Metric
+            label="Pendiente"
+            value={formatPrice(
+              metrics
+                .pendingCommission
             )}
           />
 
         </section>
 
-        {/* =========================
+        {/* =================================================
             REFERRAL LINK
-        ========================= */}
+        ================================================= */}
+
         <section className="grid gap-8 border-b border-black/10 py-14 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
 
           <div>
+
             <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
               Your Network
             </p>
@@ -565,16 +825,21 @@ export default function SellerPage() {
               desde él quedan asociadas
               automáticamente a tu código.
             </p>
+
           </div>
 
           <div>
+
             <div className="border border-black/15 bg-white/25 p-5">
+
               <p className="break-all text-xs leading-6 text-black/65">
                 {referralLink}
               </p>
+
             </div>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
+
               <button
                 type="button"
                 onClick={
@@ -596,18 +861,221 @@ export default function SellerPage() {
               >
                 Share
               </button>
+
             </div>
+
           </div>
 
         </section>
 
-        {/* =========================
+        {/* =================================================
+            SETTLEMENTS
+        ================================================= */}
+
+        <section className="grid gap-10 border-b border-black/10 py-14 lg:grid-cols-[0.65fr_1.35fr]">
+
+          {/* LEFT */}
+
+          <div>
+
+            <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+              Payments
+            </p>
+
+            <h2 className="mt-4 text-3xl font-semibold uppercase tracking-[-0.04em] md:text-4xl">
+              Mis
+              <br />
+              liquidaciones.
+            </h2>
+
+            <p className="mt-5 max-w-sm text-sm leading-7 text-black/45">
+              Consulta tus comisiones
+              agrupadas para pago y el
+              estado financiero de cada
+              liquidación.
+            </p>
+
+            <div className="mt-9 grid grid-cols-2 gap-6 lg:grid-cols-1">
+
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
+                  Total pagado
+                </p>
+
+                <p className="mt-2 text-2xl font-semibold">
+                  {formatPrice(
+                    metrics
+                      .paidCommission
+                  )}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
+                  Pendiente
+                </p>
+
+                <p className="mt-2 text-2xl font-semibold">
+                  {formatPrice(
+                    metrics
+                      .pendingCommission
+                  )}
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* RIGHT */}
+
+          <div className="space-y-3">
+
+            {settlements.length ===
+            0 ? (
+              <div className="border border-black/10 p-6">
+
+                <p className="text-sm text-black/40">
+                  Aún no tienes
+                  liquidaciones.
+                </p>
+
+              </div>
+            ) : (
+              settlements.map(
+                (
+                  settlement
+                ) => (
+                  <article
+                    key={
+                      settlement.id
+                    }
+                    className="border border-black/10 p-5 md:p-6"
+                  >
+
+                    <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+
+                      <div>
+
+                        <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
+                          Liquidación
+                        </p>
+
+                        <p className="mt-2 break-all text-[10px] font-semibold uppercase tracking-[0.12em]">
+                          {
+                            settlement
+                              .reference
+                          }
+                        </p>
+
+                        <p className="mt-3 text-[9px] uppercase tracking-[0.18em] text-black/40">
+                          {formatDate(
+                            settlement
+                              .period_start
+                          )}
+
+                          {" — "}
+
+                          {formatDate(
+                            settlement
+                              .period_end
+                          )}
+                        </p>
+
+                      </div>
+
+                      <SettlementStatus
+                        status={
+                          settlement
+                            .status
+                        }
+                      />
+
+                    </div>
+
+                    <div className="mt-6 grid grid-cols-2 gap-5 border-t border-black/10 pt-5 md:grid-cols-3">
+
+                      <SettlementMetric
+                        label="Ventas asociadas"
+                        value={formatPrice(
+                          Number(
+                            settlement
+                              .sales_base_amount
+                          )
+                        )}
+                      />
+
+                      <SettlementMetric
+                        label="Comisión"
+                        value={formatPrice(
+                          Number(
+                            settlement
+                              .commission_amount
+                          )
+                        )}
+                      />
+
+                      <SettlementMetric
+                        label="Ventas incluidas"
+                        value={String(
+                          settlement
+                            .commission_count
+                        )}
+                      />
+
+                    </div>
+
+                    {settlement.status ===
+                      "PAID" &&
+                      settlement.paid_at && (
+                        <div className="mt-5 border-t border-black/10 pt-5">
+
+                          <p className="text-[8px] uppercase tracking-[0.18em] text-black/35">
+                            Información
+                            de pago
+                          </p>
+
+                          <p className="mt-2 text-xs leading-6 text-black/60">
+
+                            {formatDate(
+                              settlement
+                                .paid_at
+                            )}
+
+                            {settlement
+                              .payment_method
+                              ? ` · ${settlement.payment_method}`
+                              : ""}
+
+                            {settlement
+                              .payment_reference
+                              ? ` · ${settlement.payment_reference}`
+                              : ""}
+
+                          </p>
+
+                        </div>
+                      )}
+
+                  </article>
+                )
+              )
+            )}
+
+          </div>
+
+        </section>
+
+        {/* =================================================
             RECENT ACTIVITY
-        ========================= */}
+        ================================================= */}
+
         <section className="py-14">
 
           <div className="flex items-end justify-between gap-6">
+
             <div>
+
               <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
                 Performance
               </p>
@@ -617,17 +1085,23 @@ export default function SellerPage() {
                 <br />
                 reciente.
               </h2>
+
             </div>
 
             <p className="hidden text-[9px] uppercase tracking-[0.2em] text-black/35 md:block">
               Approved Sales
             </p>
+
           </div>
 
-          {/* DESKTOP */}
+          {/* ===============================================
+              DESKTOP TABLE
+          =============================================== */}
+
           <div className="mt-10 hidden md:block">
 
             <div className="grid grid-cols-[1fr_1.4fr_1fr_1fr] border-b border-black/15 pb-4">
+
               <TableLabel>
                 Fecha
               </TableLabel>
@@ -643,123 +1117,61 @@ export default function SellerPage() {
               <TableLabel>
                 Comisión
               </TableLabel>
+
             </div>
 
-            {orders.length === 0 ? (
+            {orders.length ===
+            0 ? (
               <EmptyState />
             ) : (
               orders
-                .slice(0, 10)
-                .map((order) => {
-                  const commission =
-                    commissions.find(
-                      (item) =>
-                        item.order_reference ===
-                        order.reference
-                    );
-
-                  return (
-                    <div
-                      key={order.id}
-                      className="grid grid-cols-[1fr_1.4fr_1fr_1fr] items-center border-b border-black/10 py-5"
-                    >
-                      <p className="text-xs text-black/55">
-                        {formatDate(
-                          order.created_at
-                        )}
-                      </p>
-
-                      <p className="text-[10px] font-medium uppercase tracking-[0.12em]">
-                        {
+                .slice(
+                  0,
+                  10
+                )
+                .map(
+                  (order) => {
+                    const commission =
+                      commissions.find(
+                        (
+                          item
+                        ) =>
+                          item.order_reference ===
                           order.reference
+                      );
+
+                    return (
+                      <div
+                        key={
+                          order.id
                         }
-                      </p>
+                        className="grid grid-cols-[1fr_1.4fr_1fr_1fr] items-center border-b border-black/10 py-5"
+                      >
 
-                      <p className="text-xs font-medium">
-                        {formatPrice(
-                          Number(
-                            order.total
-                          )
-                        )}
-                      </p>
-
-                      <div>
-                        <p className="text-xs font-medium">
-                          {formatPrice(
-                            Number(
-                              commission
-                                ?.commission_amount ??
-                                0
-                            )
+                        <p className="text-xs text-black/55">
+                          {formatDate(
+                            order
+                              .created_at
                           )}
                         </p>
 
-                        <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-black/35">
-                          {commission?.status ??
-                            "—"}
+                        <p className="text-[10px] font-medium uppercase tracking-[0.12em]">
+                          {
+                            order.reference
+                          }
                         </p>
-                      </div>
-                    </div>
-                  );
-                })
-            )}
 
-          </div>
-
-          {/* MOBILE */}
-          <div className="mt-8 space-y-3 md:hidden">
-
-            {orders.length === 0 ? (
-              <EmptyState />
-            ) : (
-              orders
-                .slice(0, 10)
-                .map((order) => {
-                  const commission =
-                    commissions.find(
-                      (item) =>
-                        item.order_reference ===
-                        order.reference
-                    );
-
-                  return (
-                    <article
-                      key={order.id}
-                      className="border border-black/10 p-5"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-[8px] uppercase tracking-[0.2em] text-black/35">
-                            {
-                              formatDate(
-                                order.created_at
-                              )
-                            }
-                          </p>
-
-                          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.1em]">
-                            {
-                              order.reference
-                            }
-                          </p>
-                        </div>
-
-                        <p className="text-sm font-semibold">
+                        <p className="text-xs font-medium">
                           {formatPrice(
                             Number(
                               order.total
                             )
                           )}
                         </p>
-                      </div>
 
-                      <div className="mt-5 flex items-end justify-between border-t border-black/10 pt-4">
                         <div>
-                          <p className="text-[8px] uppercase tracking-[0.2em] text-black/35">
-                            Commission
-                          </p>
 
-                          <p className="mt-1 text-sm font-semibold">
+                          <p className="text-xs font-medium">
                             {formatPrice(
                               Number(
                                 commission
@@ -768,16 +1180,118 @@ export default function SellerPage() {
                               )
                             )}
                           </p>
+
+                          <p className="mt-1 text-[8px] uppercase tracking-[0.16em] text-black/35">
+                            {commission
+                              ?.status ??
+                              "—"}
+                          </p>
+
                         </div>
 
-                        <p className="text-[8px] font-semibold uppercase tracking-[0.18em]">
-                          {commission?.status ??
-                            "—"}
-                        </p>
                       </div>
-                    </article>
-                  );
-                })
+                    );
+                  }
+                )
+            )}
+
+          </div>
+
+          {/* ===============================================
+              MOBILE CARDS
+          =============================================== */}
+
+          <div className="mt-8 space-y-3 md:hidden">
+
+            {orders.length ===
+            0 ? (
+              <EmptyState />
+            ) : (
+              orders
+                .slice(
+                  0,
+                  10
+                )
+                .map(
+                  (order) => {
+                    const commission =
+                      commissions.find(
+                        (
+                          item
+                        ) =>
+                          item.order_reference ===
+                          order.reference
+                      );
+
+                    return (
+                      <article
+                        key={
+                          order.id
+                        }
+                        className="border border-black/10 p-5"
+                      >
+
+                        <div className="flex items-start justify-between gap-4">
+
+                          <div>
+
+                            <p className="text-[8px] uppercase tracking-[0.2em] text-black/35">
+                              {formatDate(
+                                order
+                                  .created_at
+                              )}
+                            </p>
+
+                            <p className="mt-2 break-all text-[10px] font-semibold uppercase tracking-[0.1em]">
+                              {
+                                order.reference
+                              }
+                            </p>
+
+                          </div>
+
+                          <p className="shrink-0 text-sm font-semibold">
+                            {formatPrice(
+                              Number(
+                                order.total
+                              )
+                            )}
+                          </p>
+
+                        </div>
+
+                        <div className="mt-5 flex items-end justify-between border-t border-black/10 pt-4">
+
+                          <div>
+
+                            <p className="text-[8px] uppercase tracking-[0.2em] text-black/35">
+                              Commission
+                            </p>
+
+                            <p className="mt-1 text-sm font-semibold">
+                              {formatPrice(
+                                Number(
+                                  commission
+                                    ?.commission_amount ??
+                                    0
+                                )
+                              )}
+                            </p>
+
+                          </div>
+
+                          <p className="text-[8px] font-semibold uppercase tracking-[0.18em]">
+                            {commission
+                              ?.status ??
+                              "—"}
+                          </p>
+
+                        </div>
+
+                      </article>
+                    );
+                  }
+                )
             )}
 
           </div>
@@ -789,9 +1303,10 @@ export default function SellerPage() {
   );
 }
 
-/*
+/* =========================================================
  * METRIC
- */
+ * ========================================================= */
+
 function Metric({
   label,
   value,
@@ -800,25 +1315,106 @@ function Metric({
   value: string;
 }) {
   return (
-    <div className="border-b border-black/10 py-8 md:border-r md:px-7 lg:border-b-0 first:md:pl-0 last:md:border-r-0">
+    <div className="border-b border-black/10 py-8 sm:border-r sm:px-6 xl:border-b-0 first:sm:pl-0 last:sm:border-r-0">
+
       <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
         {label}
       </p>
 
-      <p className="mt-4 text-2xl font-semibold tracking-[-0.03em] lg:text-3xl">
+      <p className="mt-4 text-2xl font-semibold tracking-[-0.03em] xl:text-3xl">
         {value}
       </p>
+
     </div>
   );
 }
 
-/*
+/* =========================================================
+ * SETTLEMENT METRIC
+ * ========================================================= */
+
+function SettlementMetric({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div>
+
+      <p className="text-[8px] uppercase tracking-[0.18em] text-black/35">
+        {label}
+      </p>
+
+      <p className="mt-2 text-sm font-semibold">
+        {value}
+      </p>
+
+    </div>
+  );
+}
+
+/* =========================================================
+ * SETTLEMENT STATUS
+ * ========================================================= */
+
+function SettlementStatus({
+  status,
+}: {
+  status:
+    | "READY"
+    | "PAID"
+    | "CANCELLED";
+}) {
+  if (
+    status === "PAID"
+  ) {
+    return (
+      <span className="inline-flex w-fit items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.2em] text-emerald-700">
+
+        <span className="h-2 w-2 rounded-full bg-emerald-600" />
+
+        Pagada
+
+      </span>
+    );
+  }
+
+  if (
+    status === "READY"
+  ) {
+    return (
+      <span className="inline-flex w-fit items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.2em] text-amber-700">
+
+        <span className="h-2 w-2 rounded-full bg-amber-500" />
+
+        Pendiente de pago
+
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex w-fit items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.2em] text-black/35">
+
+      <span className="h-2 w-2 rounded-full bg-black/30" />
+
+      Cancelada
+
+    </span>
+  );
+}
+
+/* =========================================================
  * TABLE LABEL
- */
+ * ========================================================= */
+
 function TableLabel({
   children,
 }: {
-  children: React.ReactNode;
+  children:
+    React.ReactNode;
 }) {
   return (
     <p className="text-[8px] font-semibold uppercase tracking-[0.22em] text-black/35">
@@ -827,15 +1423,19 @@ function TableLabel({
   );
 }
 
-/*
+/* =========================================================
  * EMPTY STATE
- */
+ * ========================================================= */
+
 function EmptyState() {
   return (
     <div className="border-b border-black/10 py-12">
+
       <p className="text-sm text-black/40">
-        Aún no tienes ventas aprobadas.
+        Aún no tienes ventas
+        aprobadas.
       </p>
+
     </div>
   );
 }
