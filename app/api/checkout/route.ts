@@ -12,6 +12,7 @@ type CheckoutItem = {
 
 type CheckoutPayload = {
   items: CheckoutItem[];
+
   customer: {
     firstName: string;
     lastName: string;
@@ -23,6 +24,8 @@ type CheckoutPayload = {
     city: string;
     department: string;
   };
+
+  partnerCode?: string | null;
 };
 
 export async function POST(request: Request) {
@@ -118,19 +121,75 @@ export async function POST(request: Request) {
 
     const now = new Date().toISOString();
 
-    await createOrder({
-      reference,
-      status: "CREATED",
-      customer: body.customer,
-      items: orderItems,
-      subtotal: totalCOP,
-      shipping: 0,
-      discount: 0,
-      total: totalCOP,
-      currency: "COP",
-      createdAt: now,
-      updatedAt: now,
-    });
+  const normalizedPartnerCode =
+  body.partnerCode?.trim().toUpperCase() || null;
+
+let partner:
+  | {
+      id: string;
+      code: string;
+      commission_rate: number;
+    }
+  | null = null;
+
+if (normalizedPartnerCode) {
+  const { getSupabaseAdmin } = await import(
+    "@/lib/supabase-server"
+  );
+
+  const supabase = getSupabaseAdmin();
+
+  const { data, error } = await supabase
+    .from("partners")
+    .select(
+      "id, code, commission_rate"
+    )
+    .eq("code", normalizedPartnerCode)
+    .eq("active", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error(
+      "PARTNER LOOKUP ERROR:",
+      error
+    );
+
+    throw new Error(
+      "No fue posible validar el vendedor."
+    );
+  }
+
+  if (data) {
+    partner = data;
+  }
+}  
+
+const commissionRate =
+  partner?.commission_rate ?? 0;
+
+const commissionAmount = Math.round(
+  totalCOP * (commissionRate / 100)
+);
+
+   await createOrder({
+  reference,
+  status: "CREATED",
+  customer: body.customer,
+  items: orderItems,
+  subtotal: totalCOP,
+  shipping: 0,
+  discount: 0,
+  total: totalCOP,
+  currency: "COP",
+
+  partnerId: partner?.id ?? null,
+  partnerCode: partner?.code ?? null,
+  commissionRate,
+  commissionAmount,
+
+  createdAt: now,
+  updatedAt: now,
+});
 
     const currency = "COP";
     const amountInCents = totalCOP * 100;

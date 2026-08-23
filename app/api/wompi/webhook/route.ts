@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 
-import { updateOrderStatus } from "@/lib/order-store";
-
+import {
+  updateOrderStatus,
+  createEarnedCommission,
+} from "@/lib/order-store";
 type WompiEvent = {
   event: string;
 
@@ -219,17 +221,30 @@ export async function POST(request: Request) {
     type AllowedStatus =
       (typeof allowedStatuses)[number];
 
-    if (
-      allowedStatuses.includes(
-        transaction.status as AllowedStatus
-      )
-    ) {
-      await updateOrderStatus(
-        transaction.reference,
-        transaction.status as AllowedStatus,
-        transaction.id
-      );
-    }
+   if (
+  allowedStatuses.includes(
+    transaction.status as AllowedStatus
+  )
+) {
+  const status =
+    transaction.status as AllowedStatus;
+
+  await updateOrderStatus(
+    transaction.reference,
+    status,
+    transaction.id
+  );
+
+  /*
+   * Solo reconocemos comisión
+   * cuando Wompi confirma APPROVED.
+   */
+  if (status === "APPROVED") {
+    await createEarnedCommission(
+      transaction.reference
+    );
+  }
+}
 
     console.log(
       "WOMPI VERIFIED WEBHOOK",

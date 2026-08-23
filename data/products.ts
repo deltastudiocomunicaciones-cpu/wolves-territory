@@ -192,6 +192,13 @@ export const products: Product[] = [
     collection: "Origen",
     description:
       "First season Wolves Territory cap.",
+
+images: [
+  "/products/caps/origen.png",
+  "/products/caps/origen-side.png",
+  "/products/caps/origen-back.png",
+],
+
   },
 
   {
@@ -204,6 +211,13 @@ export const products: Product[] = [
     collection: "Performance",
     description:
       "Performance cap with Flexfit 180AP base and premium construction.",
+
+images: [
+  "/products/caps/delta-black.png",
+  "/products/caps/delta-black-side.png",
+  "/products/caps/delta-black-back.png",
+],
+
   },
 
   {
@@ -216,6 +230,13 @@ export const products: Product[] = [
     collection: "Performance",
     description:
       "White performance cap with Flexfit 180AP base.",
+
+images: [
+  "/products/caps/delta-white.png",
+  "/products/caps/delta-white-side.png",
+  "/products/caps/delta-white-back.png",
+],
+
   },
 
   {
@@ -228,6 +249,13 @@ export const products: Product[] = [
     collection: "Performance",
     description:
       "Red performance cap with Flexfit 180AP base.",
+
+images: [
+  "/products/caps/alpha-red.png",
+  "/products/caps/alpha-red-side.png",
+  "/products/caps/alpha-red-back.png",
+],
+
   },
 
   {
@@ -253,6 +281,13 @@ export const products: Product[] = [
     collection: "Trucker",
     description:
       "Black and white trucker cap with Flexfit 110MT base.",
+
+images: [
+  "/products/caps/trail-black-white.png",
+  "/products/caps/trail-black-white-side.png",
+  "/products/caps/trail-black-white-back.png",
+],
+
   },
 
   {
@@ -265,6 +300,13 @@ export const products: Product[] = [
     collection: "Trucker",
     description:
       "Heather and white trucker cap with Flexfit 110MT base.",
+
+images: [
+  "/products/caps/trail-heather-white.png",
+  "/products/caps/trail-heather-white-side.png",
+  "/products/caps/trail-heather-white-back.png",
+],
+
   },
 
   {

@@ -5,7 +5,6 @@ export type OrderStatus =
   | "DECLINED"
   | "VOIDED"
   | "ERROR";
-  
 
 export interface OrderItem {
   productId: string | number;
@@ -42,6 +41,13 @@ export interface Order {
 
   currency: "COP";
 
+  // RED COMERCIAL
+  partnerId?: string | null;
+  partnerCode?: string | null;
+  commissionRate?: number;
+  commissionAmount?: number;
+
+  // WOMPI
   wompiTransactionId?: string;
 
   createdAt: string;

@@ -1,3 +1,5 @@
+
+import ReferralCapture from "@/components/partners/ReferralCapture";
 import { Suspense } from "react";
 
 import ProductGrid from "@/components/sections/ProductGrid";
@@ -20,6 +22,8 @@ export default function Home() {
         }
       >
         <ProductGrid />
+
+        <ReferralCapture />
       </Suspense>
     </main>
   );

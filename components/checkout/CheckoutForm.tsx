@@ -39,6 +39,13 @@ export default function CheckoutForm() {
       ).trim(),
     };
 
+   const partnerCode =
+  typeof window !== "undefined"
+    ? localStorage.getItem(
+        "wolves_partner_ref"
+      )
+    : null; 
+
     const checkoutItems = items.map((item) => ({
       productId: item.product.id,
       quantity: item.quantity,
@@ -56,6 +63,7 @@ export default function CheckoutForm() {
         body: JSON.stringify({
           items: checkoutItems,
           customer,
+          partnerCode,
         }),
       });
 
