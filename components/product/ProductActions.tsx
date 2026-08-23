@@ -41,14 +41,12 @@ export default function ProductActions({
       return;
     }
 
-    const sku =
+   const sku =
   requiresSize
-    ? selectedVariant?.skuBase &&
-      selectedSize
+    ? selectedVariant?.skuBase && selectedSize
       ? `${selectedVariant.skuBase}-${selectedSize}`
       : null
-    : selectedVariant?.skuBase ?? null;
-
+    : product.sku ?? selectedVariant?.skuBase ?? null;
    addItem(
   product,
   quantity,

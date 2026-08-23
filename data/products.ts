@@ -18,6 +18,9 @@ export interface Product {
   image: string;
   images?: string[];
 
+  // SKU directo para productos sin talla
+  sku?: string;
+
   variants?: ProductVariant[];
 
   collection?: string;
@@ -249,6 +252,7 @@ export const products: Product[] = [
     name: "Origen",
     category: "Cap",
     price: 80000,
+    sku: "WT-CAP-ORIGEN",
 
     image: "/products/caps/origen.png",
 
@@ -270,6 +274,7 @@ export const products: Product[] = [
     name: "WT Delta Black",
     category: "Cap",
     price: 219900,
+    sku: "WT-CAP-DELTA-BLK",
 
     image: "/products/caps/delta-black.png",
 
@@ -291,7 +296,7 @@ export const products: Product[] = [
     name: "WT Delta White",
     category: "Cap",
     price: 219900,
-
+    sku: "WT-CAP-DELTA-WHT",
     image: "/products/caps/delta-white.png",
 
     images: [
@@ -312,6 +317,7 @@ export const products: Product[] = [
     name: "WT Alpha Red",
     category: "Cap",
     price: 169900,
+    sku: "WT-CAP-ALPHA-RED",
 
     image: "/products/caps/alpha-red.png",
 
@@ -333,6 +339,7 @@ export const products: Product[] = [
     name: "WT Alpha Black",
     category: "Cap",
     price: 169900,
+    sku: "WT-CAP-ALPHA-BLK",
 
     image: "/products/caps/alpha-black.png",
 
@@ -343,11 +350,12 @@ export const products: Product[] = [
   },
 
   {
-    id: 11,
+    id: 10,
     slug: "wt-trail-black-white",
     name: "WT Trail Black / White",
     category: "Cap",
     price: 139900,
+    sku: "WT-CAP-TRAIL-BLK-WHT",
 
     image: "/products/caps/trail-black-white.png",
 
@@ -364,11 +372,12 @@ export const products: Product[] = [
   },
 
   {
-    id: 12,
+    id: 11,
     slug: "wt-trail-heather-white",
     name: "WT Trail Heather / White",
     category: "Cap",
     price: 139900,
+    sku: "WT-CAP-TRAIL-HEATHER-WHT",
 
     image: "/products/caps/trail-heather-white.png",
 
@@ -393,6 +402,7 @@ export const products: Product[] = [
     name: "Origen Llavero",
     category: "Accessory",
     price: 22000,
+    sku: "WT-ACC-KEYCHAIN",
 
     image: "/products/origen-keychain.png",
 
