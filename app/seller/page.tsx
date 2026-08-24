@@ -63,6 +63,36 @@ type SellerSettlement = {
   created_at: string;
 };
 
+type SellerPayoutAccount = {
+  id: string;
+
+  payout_method: string;
+
+  bank_name:
+    | string
+    | null;
+
+  account_type:
+    | string
+    | null;
+
+  account_last4:
+    string;
+
+  verified:
+    boolean;
+
+  verified_at:
+    | string
+    | null;
+
+  active:
+    boolean;
+
+  created_at:
+    string;
+};
+
 /* =========================================================
  * FORMATTERS
  * ========================================================= */
@@ -166,6 +196,14 @@ export default function SellerPage() {
       SellerSettlement[]
     >([]);
 
+    const [
+  payoutAccount,
+  setPayoutAccount,
+] =
+  useState<
+    SellerPayoutAccount | null
+  >(null);
+
   const [
     loading,
     setLoading,
@@ -250,6 +288,24 @@ export default function SellerPage() {
           );
         }
 
+        const {
+  data: sessionData,
+  error: sessionError,
+} =
+  await supabase.auth.getSession();
+
+const accessToken =
+  sessionData.session?.access_token;
+
+if (
+  sessionError ||
+  !accessToken
+) {
+  throw new Error(
+    "No fue posible validar tu sesión Seller."
+  );
+}
+
         /* -----------------------------------------------
          * ORDERS + COMMISSIONS + SETTLEMENTS
          *
@@ -257,11 +313,12 @@ export default function SellerPage() {
          * ----------------------------------------------- */
 
         const [
-          ordersResult,
-          commissionsResult,
-          settlementsResult,
-        ] =
-          await Promise.all([
+  ordersResult,
+  commissionsResult,
+  settlementsResult,
+  payoutResponse,
+] =
+  await Promise.all([
             supabase
               .from("orders")
               .select(
@@ -328,13 +385,42 @@ export default function SellerPage() {
                 `
               )
               .order(
-                "created_at",
-                {
-                  ascending:
-                    false,
-                }
-              ),
-          ]);
+  "created_at",
+  {
+    ascending:
+      false,
+  }
+),
+
+fetch(
+  "/api/seller/payout",
+  {
+    method: "GET",
+
+    headers: {
+      Authorization:
+        `Bearer ${accessToken}`,
+    },
+
+    cache: "no-store",
+  }
+),
+]);
+
+const payoutData =
+  await payoutResponse.json();
+
+if (!payoutResponse.ok) {
+  console.error(
+    "SELLER PAYOUT ERROR:",
+    payoutData
+  );
+
+  throw new Error(
+    payoutData.error ??
+      "No fue posible cargar tu configuración de pagos."
+  );
+}
 
         /* -----------------------------------------------
          * ERRORS
@@ -401,6 +487,11 @@ export default function SellerPage() {
           settlementsResult.data ??
             []
         );
+
+        setPayoutAccount(
+  payoutData.payoutAccount ??
+    null
+);
       } catch (error) {
         console.error(
           "SELLER DASHBOARD ERROR:",
@@ -419,6 +510,8 @@ export default function SellerPage() {
 
     loadSeller();
   }, [router]);
+
+
 
   /* =======================================================
    * METRICS
@@ -754,6 +847,16 @@ export default function SellerPage() {
 
         </section>
 
+            {/* =================================================
+    FINANCIAL SETUP
+================================================= */}
+
+<FinancialSetup
+  payoutAccount={payoutAccount}
+  onConfigure={() =>
+    router.push("/seller/payout")
+  }
+/>
         {/* =================================================
             METRICS
         ================================================= */}
@@ -1306,7 +1409,165 @@ export default function SellerPage() {
 /* =========================================================
  * METRIC
  * ========================================================= */
+function FinancialSetup({
+  payoutAccount,
+  onConfigure,
+}: {
+  payoutAccount: SellerPayoutAccount | null;
+  onConfigure: () => void;
+}) {
+  /* ===============================================
+   * SIN CUENTA REGISTRADA
+   * =============================================== */
 
+  if (!payoutAccount) {
+    return (
+      <section className="border-b border-black/10 py-8">
+        <div className="grid gap-8 border border-black/10 bg-[#D9E3E8] p-6 md:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+
+          <div>
+            <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#187E83]">
+              Financial Setup
+            </p>
+
+            <div className="mt-4 flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-amber-500" />
+
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/55">
+                Configuración pendiente
+              </p>
+            </div>
+
+            <h2 className="mt-5 text-2xl font-semibold uppercase leading-[0.95] tracking-[-0.04em] md:text-3xl">
+              Configura tus pagos.
+            </h2>
+
+            <p className="mt-4 max-w-xl text-sm leading-7 text-black/50">
+              Registra la cuenta donde deseas recibir
+              tus futuras comisiones y liquidaciones.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onConfigure}
+            className="group flex min-w-64 items-center justify-between bg-black px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#187E83]"
+          >
+            Completar configuración
+
+            <span className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </button>
+
+        </div>
+      </section>
+    );
+  }
+
+  /* ===============================================
+   * CUENTA PENDIENTE DE VERIFICACIÓN
+   * =============================================== */
+
+  if (!payoutAccount.verified) {
+    return (
+      <section className="border-b border-black/10 py-8">
+        <div className="grid gap-8 border border-black/10 bg-[#EEF2F3] p-6 md:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+
+          <div>
+            <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#187E83]">
+              Financial Setup
+            </p>
+
+            <div className="mt-4 flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-amber-500" />
+
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-amber-700">
+                Cuenta en verificación
+              </p>
+            </div>
+
+            <h2 className="mt-5 text-2xl font-semibold uppercase tracking-[-0.04em]">
+              Información recibida.
+            </h2>
+
+            <p className="mt-4 max-w-xl text-sm leading-7 text-black/50">
+              Wolves Territory está validando tu
+              información financiera antes de habilitar
+              tus pagos.
+            </p>
+          </div>
+
+          <div className="border-l border-black/10 pl-6">
+            <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
+              Destino registrado
+            </p>
+
+            <p className="mt-3 text-sm font-semibold">
+              {payoutAccount.bank_name ??
+                "Entidad financiera"}
+            </p>
+
+            <p className="mt-2 text-xs text-black/45">
+              •••• {payoutAccount.account_last4}
+            </p>
+          </div>
+
+        </div>
+      </section>
+    );
+  }
+
+  /* ===============================================
+   * CUENTA VERIFICADA
+   * =============================================== */
+
+  return (
+    <section className="border-b border-black/10 py-8">
+      <div className="grid gap-8 border border-[#187E83]/20 bg-[#83C8C5]/20 p-6 md:p-8 lg:grid-cols-[1fr_auto] lg:items-center">
+
+        <div>
+          <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#187E83]">
+            Financial Setup
+          </p>
+
+          <div className="mt-4 flex items-center gap-3">
+            <span className="h-2 w-2 rounded-full bg-emerald-600" />
+
+            <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-emerald-700">
+              Cuenta verificada
+            </p>
+          </div>
+
+          <h2 className="mt-5 text-2xl font-semibold uppercase tracking-[-0.04em]">
+            Payout Ready.
+          </h2>
+
+          <p className="mt-4 max-w-xl text-sm leading-7 text-black/50">
+            Tu perfil financiero está habilitado para
+            recibir futuras liquidaciones de Wolves Territory.
+          </p>
+        </div>
+
+        <div className="border-l border-black/10 pl-6">
+          <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
+            Cuenta autorizada
+          </p>
+
+          <p className="mt-3 text-sm font-semibold">
+            {payoutAccount.bank_name ??
+              "Entidad financiera"}
+          </p>
+
+          <p className="mt-2 text-xs text-black/45">
+            •••• {payoutAccount.account_last4}
+          </p>
+        </div>
+
+      </div>
+    </section>
+  );
+}
 function Metric({
   label,
   value,

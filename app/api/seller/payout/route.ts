@@ -28,6 +28,183 @@ function clean(
   return value?.trim() ?? "";
 }
 
+export async function GET(
+  request: Request
+) {
+  try {
+    const authHeader =
+      request.headers.get(
+        "authorization"
+      );
+
+    const accessToken =
+      authHeader?.startsWith(
+        "Bearer "
+      )
+        ? authHeader.slice(7)
+        : null;
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          error:
+            "Sesión Seller inválida.",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const supabase =
+      getSupabaseAdmin();
+
+    /* ==========================================
+     * AUTH
+     * ========================================== */
+
+    const {
+      data: userData,
+      error: userError,
+    } =
+      await supabase.auth.getUser(
+        accessToken
+      );
+
+    if (
+      userError ||
+      !userData.user
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Sesión Seller inválida.",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    /* ==========================================
+     * SELLER
+     * ========================================== */
+
+    const {
+      data: partner,
+      error: partnerError,
+    } = await supabase
+      .from("partners")
+      .select(`
+        id,
+        code,
+        type,
+        active
+      `)
+      .eq(
+        "auth_user_id",
+        userData.user.id
+      )
+      .eq(
+        "active",
+        true
+      )
+      .maybeSingle();
+
+    if (
+      partnerError ||
+      !partner ||
+      partner.type !== "SELLER"
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Seller no autorizado.",
+        },
+        {
+          status: 403,
+        }
+      );
+    }
+
+    /* ==========================================
+     * PAYOUT ACCOUNT
+     *
+     * Nunca devolvemos account_number completo.
+     * ========================================== */
+
+    const {
+      data: payoutAccount,
+      error: payoutError,
+    } = await supabase
+      .from(
+        "partner_payout_accounts"
+      )
+      .select(`
+        id,
+        payout_method,
+        bank_name,
+        account_type,
+        account_last4,
+        verified,
+        verified_at,
+        active,
+        created_at
+      `)
+      .eq(
+        "partner_id",
+        partner.id
+      )
+      .eq(
+        "active",
+        true
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false,
+        }
+      )
+      .limit(1)
+      .maybeSingle();
+
+    if (payoutError) {
+      console.error(
+        "SELLER PAYOUT LOAD ERROR:",
+        payoutError
+      );
+
+      throw new Error(
+        "No fue posible consultar tu configuración de pagos."
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+
+      payoutAccount:
+        payoutAccount ?? null,
+    });
+  } catch (error) {
+    console.error(
+      "SELLER PAYOUT GET ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "No fue posible consultar tu configuración de pagos.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
 export async function POST(
   request: Request
 ) {
