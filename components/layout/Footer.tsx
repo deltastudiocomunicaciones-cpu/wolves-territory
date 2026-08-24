@@ -236,11 +236,19 @@ export default function Footer() {
                 Una marca del
               </p>
 
+              <a
+                href="https://www.grupoayc.co"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visitar Grupo Análisis & Consultorías"
+                className="mt-5 inline-block transition duration-300 hover:opacity-70"
+           >
               <img
-                src="/images/brands/grupo-ayc.png"
-                alt="Grupo Análisis & Consultorías"
-                className="mt-5 h-auto w-[190px] object-contain"
-              />
+               src="/images/brands/grupo-ayc.png"
+               alt="Grupo Análisis & Consultorías"
+               className="h-auto w-[190px] object-contain"
+           />
+              </a>
 
               <p className="mt-4 max-w-xs text-[8px] uppercase leading-5 tracking-[0.18em] text-[#101820]/35">
                 Grupo Análisis & Consultorías
@@ -272,11 +280,19 @@ export default function Footer() {
                 Plataforma desarrollada por
               </p>
 
-              <img
-                src="/images/brands/fasi.png"
-                alt="FASI"
-                className="mt-5 h-auto w-[130px] object-contain"
-              />
+              <a
+              href="https://www.fasi.com.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visitar FASI"
+              className="mt-5 inline-block transition duration-300 hover:opacity-70"
+              >
+             <img
+             src="/images/brands/fasi.png"
+             alt="FASI"
+             className="h-auto w-[130px] object-contain"
+             />
+             </a>
 
             </div>
 
