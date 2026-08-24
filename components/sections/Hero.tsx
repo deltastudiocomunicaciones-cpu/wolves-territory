@@ -3,7 +3,7 @@ export default function Hero() {
     <section className="relative min-h-[100svh] overflow-hidden bg-black">
       {/* BACKGROUND */}
       <img
-        src="/images/hero-wolves.jpg"
+        src="/images/hero-wolves.png"
         alt="Wolves Territory Campaign"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />

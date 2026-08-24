@@ -2,13 +2,14 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white">
+    <footer>
 
       {/* =====================================================
-          TRUST STRIP
+          TRUST STRIP · BLACK
       ===================================================== */}
 
-      <section className="border-b border-white/10">
+      <section className="border-b border-white/10 bg-black text-white">
+
         <div className="mx-auto grid max-w-[1600px] grid-cols-2 lg:grid-cols-4">
 
           <TrustItem
@@ -36,13 +37,15 @@ export default function Footer() {
           />
 
         </div>
+
       </section>
 
       {/* =====================================================
-          MAIN FOOTER
+          MAIN FOOTER · ICE
       ===================================================== */}
 
-      <section className="px-6 py-16 md:px-10 lg:px-14 lg:py-20">
+      <section className="bg-[#EEF2F3] px-6 py-16 text-[#101820] md:px-10 lg:px-14 lg:py-20">
+
         <div className="mx-auto max-w-[1600px]">
 
           <div className="grid gap-14 lg:grid-cols-[1.35fr_0.65fr_0.65fr_0.7fr]">
@@ -51,7 +54,7 @@ export default function Footer() {
 
             <div className="max-w-lg">
 
-              <p className="text-[9px] uppercase tracking-[0.38em] text-[#c9a96e]">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.38em] text-[#187E83]">
                 Wolves Territory
               </p>
 
@@ -61,12 +64,12 @@ export default function Footer() {
                 the Territory.
               </h2>
 
-              <p className="mt-8 max-w-sm text-sm leading-7 text-white/45">
+              <p className="mt-8 max-w-sm text-sm leading-7 text-[#101820]/50">
                 Una marca construida desde la disciplina,
                 la identidad y el territorio.
               </p>
 
-              <p className="mt-8 text-[9px] uppercase tracking-[0.24em] text-white/25">
+              <p className="mt-8 text-[9px] uppercase tracking-[0.24em] text-[#101820]/30">
                 Medellín · Colombia
               </p>
 
@@ -76,16 +79,16 @@ export default function Footer() {
 
             <FooterColumn title="Shop">
 
-              <FooterLink href="/">
+              <FooterLink href="/#coleccion">
                 New Drop
               </FooterLink>
 
-              <FooterLink href="/#shop">
+              <FooterLink href="/#coleccion">
                 Shop All
               </FooterLink>
 
-              <FooterLink href="/cart">
-                Your Bag
+              <FooterLink href="/">
+                Wolves Territory
               </FooterLink>
 
             </FooterColumn>
@@ -102,8 +105,8 @@ export default function Footer() {
                 Seller Login
               </FooterLink>
 
-              <FooterLink href="/">
-                Wolves Territory
+              <FooterLink href="/#collections">
+                Collections
               </FooterLink>
 
             </FooterColumn>
@@ -114,20 +117,20 @@ export default function Footer() {
 
               <a
                 href="mailto:wolvesterritoryco@gmail.com"
-                className="text-sm text-white/45 transition hover:text-white"
+                className="text-sm text-[#101820]/55 transition-colors duration-300 hover:text-[#187E83]"
               >
                 Contacto
               </a>
 
-              <p className="text-sm text-white/35">
+              <p className="text-sm text-[#101820]/45">
                 Envíos
               </p>
 
-              <p className="text-sm text-white/35">
+              <p className="text-sm text-[#101820]/45">
                 Cambios
               </p>
 
-              <p className="text-sm text-white/35">
+              <p className="text-sm text-[#101820]/45">
                 Privacidad
               </p>
 
@@ -136,28 +139,32 @@ export default function Footer() {
           </div>
 
         </div>
+
       </section>
 
       {/* =====================================================
-          SELLER NETWORK CTA
+          SELLER NETWORK · POWDER
       ===================================================== */}
 
-      <section className="border-y border-white/10 px-6 py-14 md:px-10 lg:px-14">
-        <div className="mx-auto grid max-w-[1600px] gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+      <section className="border-y border-[#101820]/10 bg-[#D9E3E8] px-6 py-16 text-[#101820] md:px-10 lg:px-14 lg:py-20">
+
+        <div className="mx-auto grid max-w-[1600px] gap-12 lg:grid-cols-[1fr_auto] lg:items-end">
+
+          {/* COPY */}
 
           <div>
 
-            <p className="text-[9px] uppercase tracking-[0.32em] text-[#c9a96e]">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#187E83]">
               Seller Network
             </p>
 
-            <h3 className="mt-5 max-w-3xl text-4xl font-semibold uppercase leading-[0.92] tracking-[-0.05em] md:text-5xl lg:text-6xl">
+            <h3 className="mt-5 max-w-3xl text-4xl font-semibold uppercase leading-[0.92] tracking-[-0.05em] text-[#101820] md:text-5xl lg:text-6xl">
               Haz parte
               <br />
               del territorio.
             </h3>
 
-            <p className="mt-6 max-w-xl text-sm leading-7 text-white/45">
+            <p className="mt-6 max-w-xl text-sm leading-7 text-[#101820]/55">
               Empieza una aventura vendiendo Wolves Territory.
               Construye tu red, comparte la marca y genera
               ingresos desde tu propio territorio.
@@ -165,56 +172,131 @@ export default function Footer() {
 
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+          {/* WOLVES SIGNATURE + ACTIONS */}
 
-            <Link
-              href="/seller/apply"
-              className="group flex min-w-64 items-center justify-between bg-white px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-black transition hover:bg-[#c9a96e]"
-            >
-              Quiero ser Seller
+          <div className="flex flex-col items-start lg:items-end">
 
-              <span className="transition-transform duration-300 group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
+            <div className="mb-7 flex w-full justify-start lg:justify-end">
 
-            <Link
-              href="/seller/login"
-              className="group flex min-w-64 items-center justify-between border border-white/20 px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-white transition hover:border-white"
-            >
-              Ya soy Seller
+              <img
+                src="/images/brands/wolves-territory.png"
+                alt="Wolves Territory"
+                className="h-auto w-[190px] object-contain md:w-[220px]"
+              />
 
-              <span className="transition-transform duration-300 group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
+            </div>
+
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:flex-col">
+
+              <Link
+                href="/seller/apply"
+                className="group flex min-w-64 items-center justify-between bg-[#101820] px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-white transition duration-300 hover:bg-[#187E83]"
+              >
+                Quiero ser Seller
+
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+
+              <Link
+                href="/seller/login"
+                className="group flex min-w-64 items-center justify-between border border-[#101820]/25 px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#101820] transition duration-300 hover:border-[#101820] hover:bg-[#EEF2F3]"
+              >
+                Ya soy Seller
+
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+
+            </div>
 
           </div>
 
         </div>
+
       </section>
 
       {/* =====================================================
-          BOTTOM
+          INSTITUTIONAL SIGNATURE · ICE
       ===================================================== */}
 
-      <section className="px-6 py-7 md:px-10 lg:px-14">
+      <section className="bg-[#EEF2F3] px-6 py-12 text-[#101820] md:px-10 lg:px-14 lg:py-14">
 
-        <div className="mx-auto flex max-w-[1600px] flex-col gap-5 text-[8px] uppercase tracking-[0.22em] text-white/25 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto max-w-[1600px]">
 
-          <p>
-            Wolves Territory © {new Date().getFullYear()}
-          </p>
+          <div className="grid gap-12 md:grid-cols-3 md:items-center">
 
-          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            {/* GRUPO A&C */}
 
-            <span>
-              Built for Territory
-            </span>
+            <div>
 
-            <span>
-              Colombia
-            </span>
+              <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#101820]/35">
+                Una marca del
+              </p>
+
+              <img
+                src="/images/brands/grupo-ayc.png"
+                alt="Grupo Análisis & Consultorías"
+                className="mt-5 h-auto w-[190px] object-contain"
+              />
+
+              <p className="mt-4 max-w-xs text-[8px] uppercase leading-5 tracking-[0.18em] text-[#101820]/35">
+                Grupo Análisis & Consultorías
+              </p>
+
+            </div>
+
+            {/* WOLVES CENTRAL SIGNATURE */}
+
+            <div className="md:text-center">
+
+              <p className="text-[10px] font-semibold uppercase tracking-[0.32em]">
+                Wolves Territory
+              </p>
+
+              <p className="mt-3 text-[8px] uppercase tracking-[0.24em] text-[#101820]/35">
+                Derechos reservados · 2025
+              </p>
+
+              <div className="mx-auto mt-6 hidden h-px w-20 bg-[#101820]/15 md:block" />
+
+            </div>
+
+            {/* FASI */}
+
+            <div className="md:flex md:flex-col md:items-end md:text-right">
+
+              <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#101820]/35">
+                Plataforma desarrollada por
+              </p>
+
+              <img
+                src="/images/brands/fasi.png"
+                alt="FASI"
+                className="mt-5 h-auto w-[130px] object-contain"
+              />
+
+            </div>
+
+          </div>
+
+          {/* MICRO SIGNATURE */}
+
+          <div className="mt-12 border-t border-[#101820]/10 pt-6">
+
+            <div className="flex flex-col gap-3 text-[7px] uppercase tracking-[0.24em] text-[#101820]/25 sm:flex-row sm:items-center sm:justify-between">
+
+              <p>
+                Wolves Territory · Medellín · Colombia
+              </p>
+
+              <p>
+                Built for Territory
+              </p>
+
+            </div>
 
           </div>
 
@@ -246,7 +328,7 @@ function TrustItem({
         {eyebrow}
       </p>
 
-      <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em]">
+      <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-white">
         {title}
       </p>
 
@@ -272,7 +354,7 @@ function FooterColumn({
   return (
     <div>
 
-      <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-white/30">
+      <p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#101820]/35">
         {title}
       </p>
 
@@ -298,7 +380,7 @@ function FooterLink({
   return (
     <Link
       href={href}
-      className="text-sm text-white/45 transition hover:text-white"
+      className="text-sm text-[#101820]/55 transition-colors duration-300 hover:text-[#187E83]"
     >
       {children}
     </Link>
