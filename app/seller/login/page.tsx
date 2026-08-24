@@ -1,27 +1,49 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import {
+  FormEvent,
+  useState,
+} from "react";
 
-import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import {
+  useRouter,
+} from "next/navigation";
+
+import {
+  getSupabaseBrowser,
+} from "@/lib/supabase-browser";
 
 export default function SellerLoginPage() {
-  const router = useRouter();
+  const router =
+    useRouter();
 
-  const [email, setEmail] =
+  const [
+    email,
+    setEmail,
+  ] =
     useState("");
 
-  const [password, setPassword] =
+  const [
+    password,
+    setPassword,
+  ] =
     useState("");
 
-  const [loading, setLoading] =
+  const [
+    loading,
+    setLoading,
+  ] =
     useState(false);
 
-  const [error, setError] =
+  const [
+    error,
+    setError,
+  ] =
     useState("");
 
   async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
+    event:
+      FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
 
@@ -36,10 +58,12 @@ export default function SellerLoginPage() {
         data,
         error: signInError,
       } =
-        await supabase.auth.signInWithPassword({
-          email: email.trim(),
-          password,
-        });
+        await supabase.auth
+          .signInWithPassword({
+            email:
+              email.trim(),
+            password,
+          });
 
       if (signInError) {
         throw signInError;
@@ -52,12 +76,13 @@ export default function SellerLoginPage() {
       }
 
       /*
-       * Confirmamos además que este usuario
-       * pertenece a un partner activo.
+       * Confirmamos que este usuario
+       * pertenece a un Seller activo.
        *
-       * La RLS que creamos garantiza
-       * que solo pueda leer su propia fila.
+       * RLS garantiza que únicamente
+       * pueda leer su propio partner.
        */
+
       const {
         data: partner,
         error: partnerError,
@@ -74,7 +99,10 @@ export default function SellerLoginPage() {
           active
           `
         )
-        .eq("active", true)
+        .eq(
+          "active",
+          true
+        )
         .maybeSingle();
 
       if (partnerError) {
@@ -83,7 +111,8 @@ export default function SellerLoginPage() {
 
       if (
         !partner ||
-        partner.type !== "SELLER"
+        partner.type !==
+          "SELLER"
       ) {
         await supabase.auth.signOut();
 
@@ -92,7 +121,10 @@ export default function SellerLoginPage() {
         );
       }
 
-      router.push("/seller");
+      router.push(
+        "/seller"
+      );
+
       router.refresh();
     } catch (error) {
       console.error(
@@ -111,75 +143,118 @@ export default function SellerLoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="mx-auto grid min-h-screen max-w-[1600px] lg:grid-cols-2">
+    <main className="min-h-screen bg-[#EEF2F3] text-[#101820]">
 
-        {/* BRAND */}
-        <section className="relative hidden overflow-hidden border-r border-white/10 lg:flex lg:flex-col lg:justify-between lg:p-16">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#171717] via-black to-black" />
+      <div className="mx-auto grid min-h-screen max-w-[1800px] lg:grid-cols-[1fr_1fr]">
 
-          <div className="relative z-10">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-[#c9a96e]">
+        {/* =================================================
+            EDITORIAL IMAGE
+        ================================================= */}
+
+        <section className="relative min-h-[55vh] overflow-hidden bg-[#101820] lg:min-h-screen">
+
+          <img
+            src="/images/seller/seller-login-hero.png"
+            alt="Wolves Territory Seller Portal"
+            className="absolute inset-0 h-full w-full object-cover object-[80%_05%]"
+          />
+
+          {/* OVERLAY */}
+
+          <div className="absolute inset-0 bg-gradient-to-t from-[#101820]/70 via-[#101820]/10 to-transparent" />
+
+          {/* BRAND */}
+
+          <div className="absolute left-6 top-8 z-10 md:left-10 md:top-10 lg:left-14 lg:top-14">
+
+            <p className="text-[9px] font-semibold uppercase tracking-[0.36em] text-white">
               Wolves Territory
             </p>
 
-            <p className="mt-3 text-[9px] uppercase tracking-[0.3em] text-white/35">
-              Seller Network
+            <p className="mt-2 text-[8px] uppercase tracking-[0.3em] text-white/45">
+              Comunidad de vendedores
             </p>
+
           </div>
 
-          <div className="relative z-10 max-w-xl">
-            <h1 className="text-6xl font-semibold uppercase leading-[0.9] tracking-[-0.05em]">
-              Your
+          {/* MESSAGE */}
+
+          <div className="absolute bottom-8 left-6 right-6 z-10 text-white md:bottom-10 md:left-10 md:right-10 lg:bottom-14 lg:left-14 lg:right-14">
+
+            <p className="text-[8px] uppercase tracking-[0.3em] text-[#83C8C5]">
+              Tu Territorio
+            </p>
+
+            <h1 className="mt-4 max-w-xl text-4xl font-semibold uppercase leading-[0.9] tracking-[-0.055em] md:text-5xl lg:text-6xl">
+              Construye.
               <br />
-              Territory.
+              Comparte.
+              <br />
+              Crece.
             </h1>
 
-            <p className="mt-8 max-w-md text-sm leading-7 text-white/45">
-              Accede a tus ventas, comisiones,
-              enlace personal y rendimiento dentro
-              de la red comercial Wolves Territory.
+            <p className="mt-7 max-w-md text-sm leading-7 text-white/55">
+              Accede a tus ventas,
+              comisiones, liquidaciones
+              y herramientas dentro de
+              la red comercial Wolves
+              Territory.
             </p>
-          </div>
 
-          <div className="relative z-10 text-[9px] uppercase tracking-[0.3em] text-white/25">
-            Colombia · 2026
-          </div>
-        </section>
+            <div className="mt-8 flex items-center justify-between border-t border-white/20 pt-5">
 
-        {/* LOGIN */}
-        <section className="flex min-h-screen items-center justify-center bg-[#f2f0eb] px-6 py-16 text-black md:px-12">
-          <div className="w-full max-w-md">
-
-            <div className="lg:hidden">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#9b7a43]">
-                Wolves Territory
+              <p className="text-[7px] uppercase tracking-[0.24em] text-white/35">
+                Portal para vendedores
               </p>
+
+              <p className="text-[7px] uppercase tracking-[0.24em] text-white/35">
+                Colombia
+              </p>
+
             </div>
 
-            <p className="mt-8 text-[9px] uppercase tracking-[0.3em] text-black/35 lg:mt-0">
-              Seller Portal
+          </div>
+
+        </section>
+
+        {/* =================================================
+            LOGIN · ICE
+        ================================================= */}
+
+        <section className="flex min-h-[70vh] items-center justify-center bg-[#EEF2F3] px-6 py-16 text-[#101820] md:px-12 lg:min-h-screen">
+
+          <div className="w-full max-w-md">
+
+            <p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#187E83]">
+              Portal para vendedores
             </p>
 
-            <h2 className="mt-4 text-4xl font-semibold uppercase tracking-[-0.04em] md:text-5xl">
-              Welcome
+            <h2 className="mt-5 text-4xl font-semibold uppercase leading-[0.94] tracking-[-0.05em] md:text-5xl">
+              Bienvenido
               <br />
-              Back.
+              Lobo.
             </h2>
 
-            <p className="mt-5 max-w-sm text-sm leading-6 text-black/45">
+            <p className="mt-6 max-w-sm text-sm leading-7 text-[#101820]/50">
               Ingresa con las credenciales
-              asignadas por Wolves Territory.
+              de tu cuenta Wolves Territory
+              Seller.
             </p>
 
             <form
-              onSubmit={handleSubmit}
+              onSubmit={
+                handleSubmit
+              }
               className="mt-10 space-y-5"
             >
+
+              {/* EMAIL */}
+
               <div>
+
                 <label
                   htmlFor="email"
-                  className="mb-3 block text-[9px] font-semibold uppercase tracking-[0.24em] text-black/45"
+                  className="mb-3 block text-[9px] font-semibold uppercase tracking-[0.24em] text-[#101820]/45"
                 >
                   Email
                 </label>
@@ -189,21 +264,29 @@ export default function SellerLoginPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  value={email}
-                  onChange={(event) =>
+                  value={
+                    email
+                  }
+                  onChange={(
+                    event
+                  ) =>
                     setEmail(
                       event.target.value
                     )
                   }
-                  className="h-14 w-full border border-black/15 bg-transparent px-4 text-base outline-none transition focus:border-black"
                   placeholder="you@email.com"
+                  className="h-14 w-full border border-[#101820]/15 bg-white/30 px-4 text-base outline-none transition placeholder:text-[#101820]/25 focus:border-[#187E83]"
                 />
+
               </div>
 
+              {/* PASSWORD */}
+
               <div>
+
                 <label
                   htmlFor="password"
-                  className="mb-3 block text-[9px] font-semibold uppercase tracking-[0.24em] text-black/45"
+                  className="mb-3 block text-[9px] font-semibold uppercase tracking-[0.24em] text-[#101820]/45"
                 >
                   Password
                 </label>
@@ -213,29 +296,42 @@ export default function SellerLoginPage() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  value={password}
-                  onChange={(event) =>
+                  value={
+                    password
+                  }
+                  onChange={(
+                    event
+                  ) =>
                     setPassword(
                       event.target.value
                     )
                   }
-                  className="h-14 w-full border border-black/15 bg-transparent px-4 text-base outline-none transition focus:border-black"
                   placeholder="••••••••"
+                  className="h-14 w-full border border-[#101820]/15 bg-white/30 px-4 text-base outline-none transition placeholder:text-[#101820]/25 focus:border-[#187E83]"
                 />
+
               </div>
+
+              {/* ERROR */}
 
               {error && (
                 <div className="border border-red-500/20 bg-red-500/5 p-4">
+
                   <p className="text-xs leading-5 text-red-700">
                     {error}
                   </p>
+
                 </div>
               )}
 
+              {/* BUTTON */}
+
               <button
                 type="submit"
-                disabled={loading}
-                className="group flex w-full items-center justify-between bg-black px-6 py-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-white transition hover:bg-[#c9a96e] hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={
+                  loading
+                }
+                className="group flex w-full items-center justify-between bg-[#101820] px-6 py-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-white transition duration-300 hover:bg-[#187E83] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading
                   ? "Entering..."
@@ -244,20 +340,29 @@ export default function SellerLoginPage() {
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →
                 </span>
+
               </button>
+
             </form>
 
-            <div className="mt-10 border-t border-black/10 pt-6">
-              <p className="text-[9px] leading-5 tracking-[0.08em] text-black/35">
-                Acceso exclusivo para vendedores
-                autorizados de Wolves Territory.
+            {/* FOOTER */}
+
+            <div className="mt-10 border-t border-[#101820]/10 pt-6">
+
+              <p className="text-[9px] leading-5 tracking-[0.08em] text-[#101820]/35">
+                Acceso exclusivo para
+                vendedores autorizados
+                de Wolves Territory.
               </p>
+
             </div>
 
           </div>
+
         </section>
 
       </div>
+
     </main>
   );
 }
