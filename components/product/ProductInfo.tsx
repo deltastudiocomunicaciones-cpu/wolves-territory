@@ -144,7 +144,7 @@ export default function ProductInfo({
           <div className="mt-10 grid grid-cols-3 gap-4 border-t border-black/10 pt-7">
             <div>
               <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
-                Shipping
+                Envíos
               </p>
 
               <p className="mt-2 text-[10px] leading-5 text-black/65">
@@ -154,21 +154,21 @@ export default function ProductInfo({
 
             <div>
               <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
-                Payments
+                Pagos
               </p>
 
               <p className="mt-2 text-[10px] leading-5 text-black/65">
-                Secure checkout
+                Checkout seguro
               </p>
             </div>
 
             <div>
               <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
-                Support
+                Soporte
               </p>
 
               <p className="mt-2 text-[10px] leading-5 text-black/65">
-                Wolves Care
+                wolves care
               </p>
             </div>
           </div>

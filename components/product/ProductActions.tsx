@@ -76,14 +76,14 @@ export default function ProductActions({
         <div>
           <div className="mb-4 flex items-center justify-between">
             <p className="text-[9px] font-semibold uppercase tracking-[0.26em] text-black">
-              Select Size
+              Selecciona tu talla
             </p>
 
             <button
               type="button"
               className="text-[9px] uppercase tracking-[0.2em] text-black/40 underline-offset-4 transition hover:text-black hover:underline"
             >
-              Size Guide
+              Guía de Tallas
             </button>
           </div>
 
@@ -113,7 +113,7 @@ export default function ProductActions({
       {/* QUANTITY */}
       <div className={requiresSize ? "mt-8" : ""}>
         <p className="mb-4 text-[9px] font-semibold uppercase tracking-[0.26em] text-black">
-          Quantity
+          Cantidad
         </p>
 
         <div className="flex h-12 w-36 items-center justify-between border border-black/15">
@@ -144,7 +144,7 @@ export default function ProductActions({
         <span className="h-2 w-2 rounded-full bg-emerald-600" />
 
         <p className="text-[9px] uppercase tracking-[0.22em] text-black/45">
-          Available · Ready to ship
+          Disponible · Listo para envío
         </p>
       </div>
 
@@ -155,7 +155,7 @@ export default function ProductActions({
           onClick={handleAddToBag}
           className="group flex w-full items-center justify-between bg-black px-6 py-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-white transition hover:bg-[#c9a96e] hover:text-black"
         >
-          Add to Bag
+          Añadir al Carrito
 
           <span className="transition-transform duration-300 group-hover:translate-x-1">
             +
@@ -167,7 +167,7 @@ export default function ProductActions({
           onClick={handleBuyNow}
           className="flex w-full items-center justify-center border border-black/20 px-6 py-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-black transition hover:border-black"
         >
-          Buy Now
+          Comprar Ahora
         </button>
       </div>
 
@@ -178,7 +178,7 @@ export default function ProductActions({
         </p>
 
         <p className="text-[9px] leading-5 tracking-[0.08em] text-black/40">
-          Shipping available throughout Colombia.
+          Envíos disponibles en Colombia.
         </p>
       </div>
     </div>

@@ -15,11 +15,11 @@ export default function Navbar() {
   const navLinks = [
     {
       label: "NEW",
-      href: "/#coleccion",
+      href: "/#current-drop",
     },
     {
       label: "SHOP",
-      href: "/#coleccion",
+      href: "/#shop",
     },
     {
       label: "COLECCIONES",
@@ -27,16 +27,13 @@ export default function Navbar() {
     },
     {
       label: "CAPS",
-      href: "/?category=Cap#coleccion",
+      href: "/?category=Cap#shop",
     },
     {
       label: "APPAREL",
-      href: "/?category=Hoodie#coleccion",
+      href: "/?category=Hoodie#shop",
     },
-    {
-      label: "TIENDAS",
-      href: "/#stores",
-    },
+    
   ];
 
   return (
@@ -59,32 +56,18 @@ export default function Navbar() {
 
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-8 lg:px-12 xl:px-14">
 
-          {/* =================================================
-              BRAND
-          ================================================= */}
-
-          <Link
-            href="/"
-            className="group flex shrink-0 items-center gap-3"
-          >
-            <img
-              src="/images/wolves-isotipo.png"
-              alt="Wolves Territory"
-              className="h-9 w-auto object-contain transition-transform duration-300 group-hover:scale-105 md:h-10"
-            />
-
-            <div className="hidden flex-col leading-none sm:flex">
-
-              <span className="text-[12px] font-semibold uppercase tracking-[0.28em] text-[#101820] md:text-[13px]">
-                WOLVES
-              </span>
-
-              <span className="mt-1 text-[7px] font-semibold uppercase tracking-[0.42em] text-[#187E83] md:text-[8px]">
-                TERRITORY
-              </span>
-
-            </div>
-          </Link>
+          {/* BRAND */}
+<Link
+  href="/"
+  aria-label="Wolves Territory Home"
+  className="group flex shrink-0 items-center"
+>
+  <img
+  src="/images/wolves-logo-black.png"
+  alt="Wolves Territory"
+  className="h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-[1.03] md:h-20"
+/>
+</Link>
 
           {/* =================================================
               DESKTOP NAV
@@ -92,19 +75,27 @@ export default function Navbar() {
 
           <div className="hidden items-center gap-4 md:flex lg:gap-6 xl:gap-8">
 
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="group relative text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/60 transition-colors duration-300 hover:text-[#101820] lg:text-[10px] lg:tracking-[0.22em]"
-              >
-                {link.label}
+  {navLinks.map((link) => (
+    <Link
+      key={link.label}
+      href={link.href}
+      className="group relative text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/60 transition-colors duration-300 hover:text-[#101820] lg:text-[10px] lg:tracking-[0.22em]"
+    >
+      {link.label}
 
-                <span className="absolute -bottom-2 left-0 h-px w-0 bg-[#187E83] transition-all duration-300 group-hover:w-full" />
-              </Link>
-            ))}
+      <span className="absolute -bottom-2 left-0 h-px w-0 bg-[#187E83] transition-all duration-300 group-hover:w-full" />
+    </Link>
+  ))}
 
-          </div>
+  {/* TIENDAS · PRÓXIMAMENTE */}
+  <span
+    className="cursor-default text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/25 lg:text-[10px] lg:tracking-[0.22em]"
+    title="Próximamente"
+  >
+    TIENDAS
+  </span>
+
+</div>
 
           {/* =================================================
               ACTIONS
@@ -233,6 +224,12 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+
+               <span
+    className="border-b border-[#101820]/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-[#101820]/25"
+  >
+    TIENDAS
+  </span> 
 
               </div>
 

@@ -59,9 +59,9 @@ export default function Footer() {
               </p>
 
               <h2 className="mt-6 text-5xl font-semibold uppercase leading-[0.86] tracking-[-0.06em] md:text-6xl">
-                Wear
+                Usa
                 <br />
-                the Territory.
+                el Territorio.
               </h2>
 
               <p className="mt-8 max-w-sm text-sm leading-7 text-[#101820]/50">
@@ -84,7 +84,7 @@ export default function Footer() {
               </FooterLink>
 
               <FooterLink href="/#coleccion">
-                Shop All
+                Tienda
               </FooterLink>
 
               <FooterLink href="/">
@@ -102,11 +102,11 @@ export default function Footer() {
               </FooterLink>
 
               <FooterLink href="/seller/login">
-                Seller Login
+                Vendedor Login
               </FooterLink>
 
               <FooterLink href="/#collections">
-                Collections
+                Colecciones
               </FooterLink>
 
             </FooterColumn>
@@ -155,7 +155,7 @@ export default function Footer() {
           <div>
 
             <p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#187E83]">
-              Seller Network
+              comunidad de vendedores
             </p>
 
             <h3 className="mt-5 max-w-3xl text-4xl font-semibold uppercase leading-[0.92] tracking-[-0.05em] text-[#101820] md:text-5xl lg:text-6xl">
@@ -192,7 +192,7 @@ export default function Footer() {
                 href="/seller/apply"
                 className="group flex min-w-64 items-center justify-between bg-[#101820] px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-white transition duration-300 hover:bg-[#187E83]"
               >
-                Quiero ser Seller
+                Quiero ser Lobo
 
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →
@@ -203,7 +203,7 @@ export default function Footer() {
                 href="/seller/login"
                 className="group flex min-w-64 items-center justify-between border border-[#101820]/25 px-6 py-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#101820] transition duration-300 hover:border-[#101820] hover:bg-[#EEF2F3]"
               >
-                Ya soy Seller
+                Ya soy Lobo
 
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →
@@ -309,7 +309,7 @@ export default function Footer() {
               </p>
 
               <p>
-                Built for Territory
+                Diseñado para el Territorio
               </p>
 
             </div>

@@ -1,8 +1,9 @@
 export default function FeaturedCollection() {
   return (
     <section
-      id="coleccion"
+      id="current-drop"
       className="
+        scroll-mt-28
         bg-[linear-gradient(135deg,#D9E3E8_0%,#B8D1DF_45%,#83C8C5_100%)]
         px-6 py-32 text-[#101820] md:px-12
       "
@@ -12,11 +13,11 @@ export default function FeaturedCollection() {
         {/* HEADER */}
         <div className="mb-20 text-center">
           <p className="text-xs font-semibold tracking-[0.4em] text-[#187E83]">
-            CURRENT DROP
+            DROP ACTUAL
           </p>
 
           <h2 className="mt-4 text-4xl font-black uppercase tracking-[-0.03em] md:text-6xl">
-            ORIGEN COLLECTION
+            COLECCIÓN ORIGEN
           </h2>
 
           <div className="mx-auto mt-7 h-px w-16 bg-[#101820]/20" />
@@ -65,11 +66,11 @@ export default function FeaturedCollection() {
             <div className="absolute bottom-0 left-0 w-full p-8 md:p-10">
 
               <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#83C8C5]">
-                MOVEMENT
+                MOVIMIENTO
               </p>
 
               <h3 className="mt-3 text-3xl font-black uppercase tracking-[-0.025em] text-white md:text-4xl">
-                ORIGEN SHORT
+                ORIGEN T-SHIRT
               </h3>
 
               <div className="mt-6 h-px w-10 bg-white/45 transition-all duration-500 group-hover:w-20" />

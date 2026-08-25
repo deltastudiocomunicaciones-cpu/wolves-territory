@@ -23,25 +23,25 @@ export default function Hero() {
               <span className="h-px w-10 shrink-0 bg-[#c9a96e]" />
 
               <p className="text-[9px] font-medium uppercase tracking-[0.4em] text-[#c9a96e] sm:text-[10px] md:text-[11px]">
-                Origen · First Season
+                Origen · Primera Colección
               </p>
             </div>
 
             <h1 className="max-w-[1050px] text-[clamp(4.4rem,8.2vw,9rem)] font-black uppercase leading-[0.78] tracking-[-0.06em] text-white">
-              Wear
+              Usa
               <br />
-              The
+              el
               <br />
-              Territory
+              Territorio
             </h1>
           </div>
 
           {/* RIGHT */}
           <div className="w-full max-w-[390px] lg:justify-self-end lg:pb-2 xl:pb-4">
             <p className="max-w-sm text-[13px] leading-6 text-white/60 md:text-sm md:leading-7 xl:text-[15px]">
-              Designed for men who move with intention.
-              A wardrobe built around presence, discipline
-              and identity.
+              Diseñado para hombres que se mueven con intención.
+              Una vestimenta construida en torno a la presencia, la disciplina
+              y la identidad.
             </p>
 
             <div className="mt-7 flex flex-col gap-4 md:mt-8 md:gap-5">
@@ -60,7 +60,7 @@ export default function Hero() {
                 href="#nosotros"
                 className="group inline-flex items-center justify-between border-b border-white/15 pb-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-white/55 transition hover:border-white/40 hover:text-white md:text-xs md:tracking-[0.28em]"
               >
-                Discover Wolves
+                Descubre Wolves territory
 
                 <span className="transition-transform duration-300 group-hover:translate-x-2">
                   →

@@ -12,9 +12,9 @@ const categories = [
   { label: "T-SHIRTS", value: "T-Shirt" },
   { label: "POLOS", value: "Polo" },
   { label: "SHORTS", value: "Short" },
-  { label: "CAPS", value: "Cap" },
-  { label: "ACCESSORIES", value: "Accessory" },
-  { label: "APPAREL", value: "Apparel" },
+  { label: "GORRAS", value: "Cap" },
+  { label: "ACCESORIOS", value: "Accessory" },
+  { label: "VESTIMENTA", value: "Apparel" },
 ];
 
 export default function ProductGrid() {
@@ -73,7 +73,7 @@ export default function ProductGrid() {
             <span className="h-px w-10 bg-black" />
 
             <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-black/50">
-              Wolves Territory · Collection 01
+              Wolves Territory · Colección 01
             </p>
           </div>
 
@@ -86,8 +86,8 @@ export default function ProductGrid() {
 
             <div className="max-w-md lg:justify-self-end">
               <p className="text-sm leading-7 text-black/55">
-                A curated wardrobe built around identity,
-                precision and presence.
+                Una vestimenta cuidadosamente construida en torno a la identidad,
+                la precisión y la presencia.
               </p>
 
               <p className="mt-5 text-[10px] uppercase tracking-[0.3em] text-black/35">
@@ -161,8 +161,8 @@ export default function ProductGrid() {
               </p>
 
               <p className="mt-4 max-w-xl text-xl font-medium leading-8 md:text-2xl">
-                Designed to become part of your territory,
-                not part of a season.
+                Diseñado para convertirse en parte de tu territorio,
+                no solo parte de una temporada.
               </p>
             </div>
 
@@ -170,7 +170,7 @@ export default function ProductGrid() {
               href="#coleccion"
               className="group flex w-full max-w-xs items-center justify-between border-b border-black/25 pb-4 text-[10px] font-bold uppercase tracking-[0.28em] transition hover:border-black md:w-72"
             >
-              Explore All
+              Explorar Todo
 
               <span className="transition-transform duration-300 group-hover:translate-x-2">
                 →
