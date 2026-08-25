@@ -475,7 +475,7 @@ export default function SellerApplyPage() {
               </button>
 
               <p className="text-center text-[7px] uppercase tracking-[0.23em] text-[#101820]/25">
-                Wolves Territory · Seller Network · Colombia
+                Wolves Territory · Comunidad de vendedores · Colombia
               </p>
 
             </form>

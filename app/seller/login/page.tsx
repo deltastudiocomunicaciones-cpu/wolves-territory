@@ -29,6 +29,9 @@ export default function SellerLoginPage() {
   ] =
     useState("");
 
+  const [showPassword, setShowPassword] =
+  useState(false);  
+
   const [
     loading,
     setLoading,
@@ -283,34 +286,69 @@ export default function SellerLoginPage() {
               {/* PASSWORD */}
 
               <div>
+  <label
+    htmlFor="password"
+    className="mb-3 block text-[9px] font-semibold uppercase tracking-[0.24em] text-[#101820]/45"
+  >
+    Password
+  </label>
 
-                <label
-                  htmlFor="password"
-                  className="mb-3 block text-[9px] font-semibold uppercase tracking-[0.24em] text-[#101820]/45"
-                >
-                  Password
-                </label>
+  <div className="relative">
+    <input
+      id="password"
+      type={showPassword ? "text" : "password"}
+      autoComplete="current-password"
+      required
+      value={password}
+      onChange={(event) =>
+        setPassword(event.target.value)
+      }
+      placeholder="••••••••"
+      className="h-14 w-full border border-[#101820]/15 bg-white/30 px-4 pr-12 text-base outline-none transition placeholder:text-[#101820]/25 focus:border-[#187E83]"
+    />
 
-                <input
-                  id="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={
-                    password
-                  }
-                  onChange={(
-                    event
-                  ) =>
-                    setPassword(
-                      event.target.value
-                    )
-                  }
-                  placeholder="••••••••"
-                  className="h-14 w-full border border-[#101820]/15 bg-white/30 px-4 text-base outline-none transition placeholder:text-[#101820]/25 focus:border-[#187E83]"
-                />
-
-              </div>
+    <button
+      type="button"
+      onClick={() =>
+        setShowPassword((current) => !current)
+      }
+      aria-label={
+        showPassword
+          ? "Ocultar contraseña"
+          : "Mostrar contraseña"
+      }
+      className="absolute right-4 top-1/2 -translate-y-1/2 text-[#101820]/40 transition hover:text-[#101820]"
+    >
+      {showPassword ? (
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
+          <path d="M3 3l18 18" />
+          <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8" />
+          <path d="M9.9 4.2A10.7 10.7 0 0 1 12 4c5.5 0 9 5 9 8a10.5 10.5 0 0 1-2.1 3.6" />
+          <path d="M6.6 6.6C4.3 8 3 10.3 3 12c0 3 3.5 8 9 8a10.5 10.5 0 0 0 4.1-.8" />
+        </svg>
+      ) : (
+        <svg
+          width="19"
+          height="19"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        >
+          <path d="M2.5 12s3.5-7 9.5-7 9.5 7 9.5 7-3.5 7-9.5 7-9.5-7-9.5-7Z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+      )}
+    </button>
+  </div>
+</div>
 
               {/* ERROR */}
 
@@ -335,7 +373,7 @@ export default function SellerLoginPage() {
               >
                 {loading
                   ? "Entering..."
-                  : "Enter Seller Portal"}
+                  : "Entra la Portal vendedor"}
 
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →

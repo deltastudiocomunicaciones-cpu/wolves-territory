@@ -782,7 +782,7 @@ if (!payoutResponse.ok) {
             </p>
 
             <p className="mt-1 text-[8px] uppercase tracking-[0.25em] text-black/35">
-              Seller Network
+              Comunidad de vendedores
             </p>
           </div>
 
@@ -793,7 +793,7 @@ if (!payoutResponse.ok) {
             }
             className="text-[9px] font-medium uppercase tracking-[0.22em] text-black/40 transition hover:text-black"
           >
-            Sign Out
+            Cerrar sesión
           </button>
 
         </div>
@@ -802,50 +802,62 @@ if (!payoutResponse.ok) {
       <div className="mx-auto max-w-[1500px] px-6 py-12 md:px-10 lg:px-14 lg:py-16">
 
         {/* =================================================
-            HERO
-        ================================================= */}
+    HERO
+================================================= */}
 
-        <section className="grid gap-10 border-b border-black/10 pb-14 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
+<section className="relative grid min-h-[420px] gap-10 overflow-hidden border-b border-black/10 px-0 py-12 md:min-h-[500px] lg:min-h-[600px] lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
+  {/* FOTO ATMOSFÉRICA */}
+  <img
+    src="/images/seller-territory-hero.png"
+    alt=""
+    className="pointer-events-none absolute inset-0 h-full w-full object-cover object-[30%_10%] opacity-[180]"
+  />
 
-          <div>
+  {/* SUAVE VELO PARA MANTENER LEGIBILIDAD */}
+  <div className="pointer-events-none absolute inset-0 bg-[#f2f0eb]/5" />
 
-            <p className="text-[9px] uppercase tracking-[0.32em] text-black/35">
-              Personal Territory
-            </p>
+  {/* IZQUIERDA */}
+  <div className="relative z-10">
 
-            <h1 className="mt-5 text-5xl font-semibold uppercase leading-[0.9] tracking-[-0.055em] md:text-7xl lg:text-8xl">
-              Hola,
-              <br />
-              {partner.name}.
-            </h1>
+    <p className="text-[9px] uppercase tracking-[0.32em] text-white/80">
+      Territorio Personal
+    </p>
 
-          </div>
+    
+   <h1 className="mt-5 font-semibold uppercase leading-[0.92] tracking-[-0.04em] text-white">
+  <span className="block text-4xl md:text-5xl lg:text-6xl">
+    Hola,
+  </span>
 
-          <div className="lg:text-right">
+  <span className="mt-2 block max-w-2xl text-3xl md:text-4xl lg:text-4xl">
+    {partner.name}.
+  </span>
+</h1>
 
-            <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
-              Seller Code
-            </p>
+  </div>
 
-            <p className="mt-2 text-xl font-semibold uppercase tracking-[0.05em]">
-              {partner.code}
-            </p>
+  {/* DERECHA */}
+  <div className="relative z-10 lg:text-right">
 
-            <p className="mt-6 text-[9px] uppercase tracking-[0.25em] text-black/35">
-              Referral Commission
-            </p>
+    <p className="text-[9px] uppercase tracking-[0.25em] text-white/95">
+      Código de vendedor
+    </p>
 
-            <p className="mt-2 text-xl font-semibold">
-              {
-                partner
-                  .commission_rate
-              }
-              %
-            </p>
+    <p className="mt-2 text-xl font-semibold uppercase tracking-[0.05em] text-white">
+      {partner.code}
+    </p>
 
-          </div>
+    <p className="mt-6 text-[9px] uppercase tracking-[0.25em] text-white/95">
+      Comisión de referidos
+    </p>
 
-        </section>
+    <p className="mt-2 text-xl font-semibold uppercase tracking-[0.05em] text-white">
+      {partner.commission_rate}%
+    </p>
+
+  </div>
+
+</section>
 
             {/* =================================================
     FINANCIAL SETUP
