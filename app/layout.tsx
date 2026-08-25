@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "https://www.wolves-territory.co/og/wolves-territory-og.png",
+        url: "https://www.wolves-territory.co/og/wolves-territory-og-v2.png",
         width: 1200,
         height: 630,
         alt: "Wolves Territory",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
       "Identidad, disciplina y territorio.",
 
     images: [
-      "https://www.wolves-territory.co/og/wolves-territory-og.png",
+      "https://www.wolves-territory.co/og/wolves-territory-og-v2.png",
     ],
   },
 };

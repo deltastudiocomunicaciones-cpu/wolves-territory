@@ -343,6 +343,12 @@ export const products: Product[] = [
 
     image: "/products/caps/alpha-black.png",
 
+     images: [
+      "/products/caps/alpha-black.png",
+      "/products/caps/alpha-black-side.png",
+      "/products/caps/alpha-black-back.png",
+    ],
+
     collection: "Classic",
 
     description:
