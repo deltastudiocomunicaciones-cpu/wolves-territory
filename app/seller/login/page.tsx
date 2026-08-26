@@ -9,6 +9,8 @@ import {
   useRouter,
 } from "next/navigation";
 
+import Link from "next/link";
+
 import {
   getSupabaseBrowser,
 } from "@/lib/supabase-browser";
@@ -348,6 +350,15 @@ export default function SellerLoginPage() {
       )}
     </button>
   </div>
+</div>
+
+<div className="flex justify-end">
+  <Link
+    href="/seller/forgot-password"
+    className="text-[9px] font-semibold uppercase tracking-[0.18em] text-black/40 transition hover:text-[#187E83]"
+  >
+    ¿Olvidaste tu contraseña?
+  </Link>
 </div>
 
               {/* ERROR */}
