@@ -67,7 +67,6 @@ create table if not exists public.store_evaluations (
   constraint store_evaluations_code_unique unique (evaluation_code),
   constraint store_evaluations_code_not_blank check (btrim(evaluation_code) <> ''),
   constraint store_evaluations_number_positive check (evaluation_number > 0),
-  constraint store_evaluations_store_number_unique unique (store_id, evaluation_number),
   constraint store_evaluations_review_round_positive check (current_review_round > 0),
   constraint store_evaluations_total_score_range
     check (total_score is null or total_score between 0 and 100),
@@ -82,20 +81,40 @@ create table if not exists public.store_evaluations (
       (final_decision = 'PENDING' and final_decision_at is null and final_decision_by is null)
       or
       (final_decision <> 'PENDING' and final_decision_at is not null)
-    )
+    ),
+
+  -- Composite keys exist before child tables use them as FK targets.
+  constraint store_evaluations_id_methodology_unique
+    unique (id, methodology_id),
+  constraint store_evaluations_id_store_unique
+    unique (id, store_id),
+  constraint store_evaluations_id_store_location_unique
+    unique (id, store_id, location_id)
 );
 
 comment on table public.store_evaluations is
   'Historical qualification/decision dossier for one Store and optional Location under one immutable methodology version.';
 
 comment on column public.store_evaluations.location_id is
-  'Structurally nullable because methodologies may be organization-only. Context validation will require it for methodologies containing LOCATION/COMBINED criteria or gates.';
+  'Structurally nullable because methodologies may be organization-only. Context validation requires it for methodologies containing LOCATION/COMBINED criteria or gates.';
+
+-- Evaluation numbering is contextual. Each Location can have Evaluation #1,
+-- #2, etc. Organization-only evaluations use their own Store-level sequence.
+create unique index if not exists store_evaluations_location_number_unique
+  on public.store_evaluations(store_id, location_id, evaluation_number)
+  where location_id is not null;
+
+create unique index if not exists store_evaluations_organization_number_unique
+  on public.store_evaluations(store_id, evaluation_number)
+  where location_id is null;
 
 -- Complete the current Location qualification snapshot FK introduced in 03B-003.
+-- The composite FK proves that the selected current evaluation belongs to the
+-- same Store AND the exact Location whose snapshot is being updated.
 alter table public.commercial_store_locations
-  add constraint commercial_store_locations_current_evaluation_fk
-  foreign key (current_evaluation_id)
-  references public.store_evaluations(id)
+  add constraint commercial_store_locations_current_evaluation_context_fk
+  foreign key (current_evaluation_id, store_id, id)
+  references public.store_evaluations(id, store_id, location_id)
   on delete restrict;
 
 -- -----------------------------------------------------------------------------
@@ -142,11 +161,6 @@ create table if not exists public.store_evaluation_items (
 
 comment on table public.store_evaluation_items is
   'Instantiated scored criteria for one evaluation. NULL score means not evaluated; zero is never used as a substitute for missing assessment.';
-
--- Composite key required by the contextual FK above.
-alter table public.store_evaluations
-  add constraint store_evaluations_id_methodology_unique
-  unique (id, methodology_id);
 
 -- -----------------------------------------------------------------------------
 -- GATE CHECKS — NON-SCORED ELIGIBILITY
@@ -256,12 +270,12 @@ create index if not exists store_evaluation_reviews_evaluation_round_idx
 -- COMMAND-FUNCTION BOUNDARY
 -- -----------------------------------------------------------------------------
 -- The following invariants intentionally belong to command/validation functions
--- and will NOT be trusted to clients:
+-- and are not trusted to clients:
 --
 -- create_store_evaluation():
 --   * accepts only an ACTIVE methodology;
 --   * assigns evaluation_code from DB sequence;
---   * assigns the next evaluation_number atomically;
+--   * assigns the next evaluation_number atomically in its Store/Location context;
 --   * validates Store/Location context;
 --   * requires location when methodology contains LOCATION/COMBINED scope;
 --   * instantiates every active criterion into store_evaluation_items;
@@ -285,7 +299,7 @@ create index if not exists store_evaluation_reviews_evaluation_round_idx
 --   * calculates total_score;
 --   * derives classification from methodology bands;
 --   * evaluates critical gates independently from score;
---   * generates system recommendation using a future approved matrix;
+--   * generates system recommendation only after the matrix is explicitly approved;
 --   * freezes substantive evaluation data for review.
 --
 -- finalize_store_evaluation():
