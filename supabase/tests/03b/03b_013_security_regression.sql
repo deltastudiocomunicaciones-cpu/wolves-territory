@@ -1,0 +1,357 @@
+-- 03B Commercial Platform
+-- 03B-013 Security & Regression Test Matrix
+-- Architecture Freeze: V1
+--
+-- PURPOSE
+--   Adversarial verification plan for the 03B kernel.
+--   We do not prove security by UI behavior. We attempt to violate boundaries
+--   at database/function level and require explicit denial or zero-row results.
+--
+-- IMPORTANT
+--   This suite is intentionally NOT executed against production here.
+--   Run only after:
+--     1. the real Wolves Territory Supabase project is identified;
+--     2. migrations 03B-001..012 are reconciled and applied in a safe env;
+--     3. the pending permission matrices / governance quorum / recommendation
+--        matrix required by the scenario have been explicitly configured.
+--
+-- Test identities below are fixtures, not real users.
+
+begin;
+
+-- Keep this file transactionally disposable when adapted to pgTAP/CI.
+-- The executable harness will create fixture UUIDs/auth JWT contexts in a
+-- dedicated test database. This file freezes the security assertions now.
+
+-- =============================================================================
+-- A. TENANT / STORE ISOLATION
+-- =============================================================================
+-- A01 OWNER Store A can SELECT Store A.
+--     EXPECT: exactly Store A.
+--
+-- A02 OWNER Store A attempts SELECT Store B by known UUID.
+--     EXPECT: 0 rows.
+--     PROVES: no cross-Store leakage / IDOR.
+--
+-- A03 User with no membership attempts Store A/B reads.
+--     EXPECT: 0 rows unless separately authorized by platform permission.
+--
+-- A04 Suspended membership attempts same reads/operations.
+--     EXPECT: no effective Store authority.
+--
+-- A05 Revoked membership attempts same reads/operations.
+--     EXPECT: no effective Store authority.
+--
+-- A06 Browser client attempts direct INSERT/UPDATE/DELETE on commercial_stores.
+--     EXPECT: denied; controlled command path only for writes.
+
+-- =============================================================================
+-- B. LOCATION SCOPE
+-- =============================================================================
+-- B01 ALL_LOCATIONS member of Store A accesses A/Poblado and A/Laureles.
+--     EXPECT: allowed subject to permission.
+--
+-- B02 SELECTED_LOCATIONS member scoped only to A/Poblado accesses A/Poblado.
+--     EXPECT: allowed subject to permission.
+--
+-- B03 Same member swaps UUID to A/Laureles.
+--     EXPECT: 0 rows / denied.
+--
+-- B04 Same member swaps UUID to Store B location.
+--     EXPECT: 0 rows / denied.
+--
+-- B05 NO_LOCATION_ACCESS membership with zero child rows accesses any location.
+--     EXPECT: 0 rows.
+--
+-- B06 SELECTED_LOCATIONS membership with zero child rows.
+--     EXPECT: 0 rows, NEVER interpreted as ALL_LOCATIONS.
+--
+-- B07 Attempt to create membership-location row where location belongs to a
+--     different Store than membership.
+--     EXPECT: composite FK violation.
+
+-- =============================================================================
+-- C. ROLE != PERMISSION
+-- =============================================================================
+-- C01 Active membership whose role lacks evaluation.score calls scoring command.
+--     EXPECT: permission denial.
+--
+-- C02 EVALUATOR with evaluation.score modifies score through command.
+--     EXPECT: allowed only in valid workflow state/context.
+--
+-- C03 PARTNER_REVIEWER attempts to alter evaluation item score.
+--     EXPECT: denied even though reviewer can submit own review.
+--
+-- C04 FINANCE role attempts evaluation.finalize without mapped permission.
+--     EXPECT: denied.
+--
+-- C05 User holding multiple roles receives union only of ACTIVE mapped
+--     permissions; no numeric role hierarchy exists.
+--     EXPECT: unmapped capability remains denied.
+
+-- =============================================================================
+-- D. GOVERNANCE / MAKER-CHECKER
+-- =============================================================================
+-- D01 Evaluation creator/preparer attempts sole final approval when
+--     allow_self_approval=false.
+--     EXPECT: WT03B_SELF_APPROVAL_FORBIDDEN (or stable equivalent).
+--
+-- D02 User has evaluation.finalize permission but partner quorum incomplete.
+--     EXPECT: governance block.
+--
+-- D03 Critical gate FAIL + numerical score 95/ELITE.
+--     EXPECT: APPROVED decision denied.
+--     PROVES: score != approval.
+--
+-- D04 Required evidence incomplete + otherwise eligible evaluation.
+--     EXPECT: APPROVED decision denied.
+--
+-- D05 HOLD attempted before HOLD lifecycle configured.
+--     EXPECT: WT03B_HOLD_LIFECYCLE_NOT_CONFIGURED.
+--
+-- D06 SUPERADMIN attempts to bypass FK/data integrity.
+--     EXPECT: database constraint still wins.
+--     PROVES: SUPERADMIN != DB owner / integrity bypass.
+--
+-- D07 Same human holds EVALUATOR + SUPERADMIN and prepared evaluation.
+--     EXPECT: maker-checker evaluates actual user identity, not role names;
+--             self-approval remains denied when policy forbids it.
+
+-- =============================================================================
+-- E. EVALUATION INTEGRITY / SERVER-SIDE CALCULATION
+-- =============================================================================
+-- E01 Client submits score=4 for criterion max=5 weight=5.
+--     EXPECT: server derives weighted_score=4.00.
+--
+-- E02 Client attempts to provide/overwrite weighted_score directly.
+--     EXPECT: direct write denied; command ignores client-derived weight.
+--
+-- E03 Score outside criterion range (e.g. 6 on 1..5).
+--     EXPECT: semantic/constraint denial.
+--
+-- E04 Evaluation attempts criterion from another methodology.
+--     EXPECT: composite FK/context denial.
+--
+-- E05 Evaluation attempts gate from another methodology.
+--     EXPECT: composite FK/context denial.
+--
+-- E06 WT-SQ-1.0 evaluation without Location despite LOCATION/COMBINED criteria.
+--     EXPECT: create/submit command validation denial.
+--
+-- E07 Evaluation #1 may exist independently for two locations of same Store.
+--     EXPECT: allowed.
+--
+-- E08 Duplicate evaluation_number within same Store+Location.
+--     EXPECT: unique violation.
+--
+-- E09 Location current_evaluation_id points to evaluation of another Location.
+--     EXPECT: composite FK violation.
+
+-- =============================================================================
+-- F. CLASSIFICATION BOUNDARIES
+-- =============================================================================
+-- F01 59.99 -> NOT_RECOMMENDED
+-- F02 60.00 -> CONDITIONAL
+-- F03 69.99 -> CONDITIONAL
+-- F04 70.00 -> APPROVED
+-- F05 79.99 -> APPROVED
+-- F06 80.00 -> STRATEGIC
+-- F07 89.99 -> STRATEGIC
+-- F08 90.00 -> ELITE
+-- F09 100.00 -> ELITE
+--     EXPECT: no gap/overlap at exact boundaries.
+
+-- =============================================================================
+-- G. EVIDENCE / DOCUMENT CONTEXT
+-- =============================================================================
+-- G01 Evidence references both item and gate.
+--     EXPECT: XOR constraint denial.
+--
+-- G02 Evidence references neither item nor gate.
+--     EXPECT: XOR constraint denial.
+--
+-- G03 Evidence declares multiple sources (file + URL, etc.).
+--     EXPECT: source XOR denial.
+--
+-- G04 Evidence item belongs to another evaluation.
+--     EXPECT: contextual composite FK denial.
+--
+-- G05 Gate evidence points to gate check from another evaluation.
+--     EXPECT: contextual composite FK denial.
+--
+-- G06 Store A user requests Store B institutional document.
+--     EXPECT: 0 rows / denied.
+--
+-- G07 Document verification is VERIFIED but expires_at is in past.
+--     EXPECT: verification remains historical VERIFIED; effective validity is
+--             derived as expired by business validation.
+--     PROVES: verification != validity.
+--
+-- G08 Superseded/rejected document is deleted through ordinary client path.
+--     EXPECT: denied; history preserved.
+
+-- =============================================================================
+-- H. INVITATIONS / MEMBERSHIPS
+-- =============================================================================
+-- H01 PENDING invitation attempts to access Store data before acceptance.
+--     EXPECT: no authority.
+--
+-- H02 Expired PENDING invitation token is presented.
+--     EXPECT: acceptance denied regardless of stale status value.
+--
+-- H03 Invitation email does not match authenticated identity email.
+--     EXPECT: acceptance denied.
+--
+-- H04 Raw invitation token appears in database.
+--     EXPECT: fail test; only cryptographic hash may be stored.
+--
+-- H05 SELECTED_LOCATIONS invitation is accepted.
+--     EXPECT: complete proposed location scope copied transactionally.
+--
+-- H06 Acceptance fails midway.
+--     EXPECT: no half-created membership / half-accepted invitation.
+--
+-- H07 Existing membership conflicts with new invitation role/scope.
+--     EXPECT: semantic conflict unless explicit idempotent case; no silent
+--             privilege escalation.
+--
+-- H08 Store A invitation attempts to include Store B location.
+--     EXPECT: composite FK violation.
+
+-- =============================================================================
+-- I. PLATFORM ROLE ESCALATION
+-- =============================================================================
+-- I01 Ordinary user attempts direct INSERT SUPERADMIN into platform_user_roles.
+--     EXPECT: denied.
+--
+-- I02 User attempts ordinary self-grant SUPERADMIN through command.
+--     EXPECT: denied.
+--
+-- I03 Suspended platform role attempts mapped permission.
+--     EXPECT: false / denied.
+--
+-- I04 Revoked platform role attempts mapped permission.
+--     EXPECT: false / denied.
+--
+-- I05 Permission marked inactive remains mapped to role.
+--     EXPECT: has_*_permission returns false.
+
+-- =============================================================================
+-- J. AUDIT IMMUTABILITY / FORENSICS
+-- =============================================================================
+-- J01 Browser/client attempts direct INSERT audit_events.
+--     EXPECT: denied; trusted function path only.
+--
+-- J02 Any ordinary role attempts UPDATE historical audit event.
+--     EXPECT: denied.
+--
+-- J03 Any ordinary role attempts DELETE historical audit event.
+--     EXPECT: denied.
+--
+-- J04 Critical business transaction produces audit event with same correlation
+--     id for related mutations.
+--     EXPECT: correlated institutional timeline.
+--
+-- J05 USER audit actor lacks actor_user_id.
+--     EXPECT: constraint violation.
+--
+-- J06 Audit payload contains invitation token/service-role secret/signed URL.
+--     EXPECT: fail sanitization test.
+--
+-- J07 Store member without audit.read attempts raw audit ledger read.
+--     EXPECT: 0 rows / denied.
+--
+-- J08 Authorized AUDITOR reads raw ledger.
+--     EXPECT: allowed subject to active audit.read mapping.
+
+-- =============================================================================
+-- K. STORAGE SECURITY
+-- =============================================================================
+-- K01 Authenticated Store A member requests signed URL for Store A permitted
+--     document/evidence object.
+--     EXPECT: allowed only after DB authorization.
+--
+-- K02 Same member swaps storage path Store UUID to Store B.
+--     EXPECT: denied.
+--
+-- K03 User fabricates valid-looking Location UUID in storage path but lacks
+--     membership-location scope.
+--     EXPECT: denied.
+--
+-- K04 Anonymous client requests private commercial evidence.
+--     EXPECT: denied.
+--
+-- K05 Browser bundle contains SUPABASE_SERVICE_ROLE_KEY.
+--     EXPECT: release-blocking failure.
+--
+-- K06 Signed URL is persisted in business tables/audit payload.
+--     EXPECT: failure; store bucket/path only.
+--
+-- K07 Upload succeeds in Storage but DB registration fails.
+--     EXPECT: compensation/cleanup workflow identifies orphan; no business
+--             record pretends upload was atomically committed.
+
+-- =============================================================================
+-- L. SERVICE ROLE / TRUSTED EXECUTION
+-- =============================================================================
+-- L01 Normal browser operation uses user JWT, not service_role.
+--     EXPECT: RLS applies.
+--
+-- L02 Trusted backend operation using service_role is explicitly classified as
+--     SERVICE/INTEGRATION and writes institutional audit where required.
+--     EXPECT: no impersonation of USER actor.
+--
+-- L03 API accepts user_id parameter claiming another actor.
+--     EXPECT: command derives USER identity from auth.uid(); parameter cannot
+--             redefine actor.
+
+-- =============================================================================
+-- M. METHODOLOGY REGRESSION — WT-SQ-1.0
+-- =============================================================================
+-- M01 Active dimension weights total exactly 100.
+-- M02 Criterion weights reconcile with each parent dimension.
+-- M03 Every active criterion uses score range 1..5.
+-- M04 All G01..G12 exist and are critical.
+-- M05 Classification bands cover 0..100 without gaps/overlaps.
+-- M06 ACTIVE methodology cannot be substantively edited through normal path.
+-- M07 New methodology rules require new version, preserving old evaluations.
+-- M08 WT-SQ-1.0 remains DRAFT until explicit validated activation.
+
+-- =============================================================================
+-- N. PENDING-BUSINESS-RULE FAIL-CLOSED TESTS
+-- =============================================================================
+-- N01 System recommendation requested before recommendation matrix configured.
+--     EXPECT: WT03B_RECOMMENDATION_MATRIX_NOT_CONFIGURED.
+--
+-- N02 Governance activation attempted with missing partner quorum values.
+--     EXPECT: validation failure; no guessed quorum.
+--
+-- N03 Role-permission seed attempted from an unapproved matrix.
+--     EXPECT: no production seed; configuration remains explicit TBD.
+--
+-- N04 Monthly settlement deadline queried from 03B qualification kernel.
+--     EXPECT: no invented value; outside current kernel/configuration.
+--
+-- Security principle under test:
+--   UNKNOWN BUSINESS RULE -> FAIL CLOSED, NEVER GUESS.
+
+rollback;
+
+-- =============================================================================
+-- RELEASE GATE
+-- =============================================================================
+-- 03B kernel may advance from schema design to production integration only when:
+--   [ ] migrations apply cleanly in an isolated Supabase environment;
+--   [ ] methodology validation passes;
+--   [ ] approved permission matrices are seeded;
+--   [ ] governance quorum is explicitly configured;
+--   [ ] recommendation matrix is explicitly configured;
+--   [ ] all cross-Store / cross-Location isolation tests pass;
+--   [ ] maker-checker tests pass;
+--   [ ] audit append-only tests pass;
+--   [ ] Storage private-path tests pass;
+--   [ ] no service_role secret is present in client bundles;
+--   [ ] regression suite passes before merge/deploy.
+--
+-- A security test is not complete because the UI hides an action. The expected
+-- result must be proven at the database/function/security boundary.
