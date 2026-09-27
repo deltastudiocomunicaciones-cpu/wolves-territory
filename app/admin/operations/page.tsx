@@ -347,7 +347,7 @@ export default function OperationsPage() {
       setActionId(null);
     }
   }
-  
+
 
   /* =======================================================
    * LOADING
@@ -384,7 +384,7 @@ export default function OperationsPage() {
     orders.filter(
       (order) =>
         order.status === "PACKED"
-    ).length; 
+    ).length;
 
   /* =======================================================
    * UI
