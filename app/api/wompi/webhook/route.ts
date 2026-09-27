@@ -1,6 +1,6 @@
 import {
-  processOrderInventory,
-} from "@/lib/inventory-store";
+  reserveOrderForFulfillment,
+} from "@/lib/fulfillment";
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 
@@ -263,19 +263,19 @@ export async function POST(request: Request) {
   );
 
   console.log(
-    "INVENTORY STEP START:",
+  "FULFILLMENT RESERVATION STEP START:",
+  transaction.reference
+);
+
+const reservationResult =
+  await reserveOrderForFulfillment(
     transaction.reference
   );
 
-  const inventoryResult =
-    await processOrderInventory(
-      transaction.reference
-    );
-
-  console.log(
-    "INVENTORY STEP RESULT:",
-    inventoryResult
-  );
+console.log(
+  "FULFILLMENT RESERVATION STEP RESULT:",
+  reservationResult
+);
 }
     }
 
