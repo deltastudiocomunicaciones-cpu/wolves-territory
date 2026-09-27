@@ -86,6 +86,17 @@ export default function OperationsPage() {
   const [errorMessage, setErrorMessage] =
     useState<string | null>(null);
 
+    const [dispatchFulfillmentId, setDispatchFulfillmentId] =
+    useState<string | null>(null);
+
+  const [dispatchCarrier, setDispatchCarrier] =
+    useState("");
+
+  const [dispatchTrackingNumber, setDispatchTrackingNumber] =
+    useState("");
+
+  const [dispatchTrackingUrl, setDispatchTrackingUrl] =
+    useState("");
   /* =======================================================
    * LOAD OPERATIONS TERRITORY
    * ======================================================= */
@@ -347,6 +358,122 @@ export default function OperationsPage() {
       setActionId(null);
     }
   }
+
+  /* =======================================================
+ * CONFIRM DISPATCH
+ * ======================================================= */
+
+async function handleDispatchFulfillment(
+  fulfillmentId: string
+) {
+  const carrier =
+    dispatchCarrier.trim();
+
+  const trackingNumber =
+    dispatchTrackingNumber.trim();
+
+  const trackingUrl =
+    dispatchTrackingUrl.trim();
+
+  if (!carrier) {
+    setErrorMessage(
+      "La transportadora es obligatoria."
+    );
+
+    return;
+  }
+
+  if (!trackingNumber) {
+    setErrorMessage(
+      "El número de guía es obligatorio."
+    );
+
+    return;
+  }
+
+  try {
+    setActionId(
+      fulfillmentId
+    );
+
+    setErrorMessage(null);
+
+    const supabase =
+      getSupabaseBrowser();
+
+    const {
+      data,
+      error,
+    } =
+      await supabase.rpc(
+        "dispatch_fulfillment",
+        {
+          p_fulfillment_id:
+            fulfillmentId,
+          p_carrier:
+            carrier,
+          p_tracking_number:
+            trackingNumber,
+          p_tracking_url:
+            trackingUrl || null,
+        }
+      );
+
+    if (error) {
+      console.error(
+        "DISPATCH FULFILLMENT ERROR:",
+        error
+      );
+
+      setErrorMessage(
+        error.message
+      );
+
+      return;
+    }
+
+    console.log(
+      "FULFILLMENT DISPATCHED:",
+      data
+    );
+
+    setOrders(
+      (current) =>
+        current.map(
+          (order) =>
+            order.fulfillment_id ===
+            fulfillmentId
+              ? {
+                  ...order,
+                  status:
+                    "DISPATCHED",
+                  carrier,
+                  tracking_number:
+                    trackingNumber,
+                  tracking_url:
+                    trackingUrl || null,
+                }
+              : order
+        )
+    );
+
+    setDispatchFulfillmentId(null);
+    setDispatchCarrier("");
+    setDispatchTrackingNumber("");
+    setDispatchTrackingUrl("");
+  } catch (error) {
+    console.error(
+      "DISPATCH FULFILLMENT UNEXPECTED ERROR:",
+      error
+    );
+
+    setErrorMessage(
+      "No fue posible confirmar el despacho."
+    );
+  } finally {
+    setActionId(null);
+  }
+}
 
 
   /* =======================================================
@@ -615,10 +742,138 @@ export default function OperationsPage() {
         ? "Confirmando..."
         : "Confirmar empaque →"}
     </button>
-  ) : order.status === "PACKED" ? (
-    <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-black/35">
-      Empaque confirmado
-    </p>
+    ) : order.status === "PACKED" ? (
+    dispatchFulfillmentId ===
+    order.fulfillment_id ? (
+      <div className="w-full space-y-3 lg:w-[320px]">
+        <div>
+          <label className="text-[8px] font-semibold uppercase tracking-[0.22em] text-black/35">
+            Transportadora
+          </label>
+
+          <input
+            type="text"
+            value={dispatchCarrier}
+            onChange={(event) =>
+              setDispatchCarrier(
+                event.target.value
+              )
+            }
+            placeholder="Ej. TCC"
+            disabled={
+              actionId ===
+              order.fulfillment_id
+            }
+            className="mt-2 w-full border border-black/15 bg-transparent px-4 py-3 text-xs outline-none transition focus:border-black/40 disabled:opacity-40"
+          />
+        </div>
+
+        <div>
+          <label className="text-[8px] font-semibold uppercase tracking-[0.22em] text-black/35">
+            Número de guía
+          </label>
+
+          <input
+            type="text"
+            value={dispatchTrackingNumber}
+            onChange={(event) =>
+              setDispatchTrackingNumber(
+                event.target.value
+              )
+            }
+            placeholder="Número de seguimiento"
+            disabled={
+              actionId ===
+              order.fulfillment_id
+            }
+            className="mt-2 w-full border border-black/15 bg-transparent px-4 py-3 text-xs outline-none transition focus:border-black/40 disabled:opacity-40"
+          />
+        </div>
+
+        <div>
+          <label className="text-[8px] font-semibold uppercase tracking-[0.22em] text-black/35">
+            URL de seguimiento · opcional
+          </label>
+
+          <input
+            type="url"
+            value={dispatchTrackingUrl}
+            onChange={(event) =>
+              setDispatchTrackingUrl(
+                event.target.value
+              )
+            }
+            placeholder="https://..."
+            disabled={
+              actionId ===
+              order.fulfillment_id
+            }
+            className="mt-2 w-full border border-black/15 bg-transparent px-4 py-3 text-xs outline-none transition focus:border-black/40 disabled:opacity-40"
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2 pt-2">
+          <button
+            type="button"
+            disabled={
+              actionId ===
+              order.fulfillment_id
+            }
+            onClick={() =>
+              handleDispatchFulfillment(
+                order.fulfillment_id
+              )
+            }
+            className="bg-black px-5 py-3 text-[8px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-black/80 disabled:cursor-wait disabled:opacity-40"
+          >
+            {actionId ===
+            order.fulfillment_id
+              ? "Despachando..."
+              : "Confirmar despacho →"}
+          </button>
+
+          <button
+            type="button"
+            disabled={
+              actionId ===
+              order.fulfillment_id
+            }
+            onClick={() => {
+              setDispatchFulfillmentId(null);
+              setDispatchCarrier("");
+              setDispatchTrackingNumber("");
+              setDispatchTrackingUrl("");
+              setErrorMessage(null);
+            }}
+            className="border border-black/15 px-5 py-3 text-[8px] font-semibold uppercase tracking-[0.2em] text-black/45 transition hover:border-black/30 hover:text-black"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    ) : (
+      <button
+        type="button"
+        onClick={() => {
+          setDispatchFulfillmentId(
+            order.fulfillment_id
+          );
+          setDispatchCarrier(
+            order.carrier ?? ""
+          );
+          setDispatchTrackingNumber(
+            order.tracking_number ?? ""
+          );
+          setDispatchTrackingUrl(
+            order.tracking_url ?? ""
+          );
+          setErrorMessage(null);
+        }}
+        className="bg-black px-6 py-4 text-[9px] font-semibold uppercase tracking-[0.22em] text-white transition hover:bg-black/80"
+      >
+        Registrar despacho →
+      </button>
+    )
   ) : (
     <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-black/35">
       {order.status}
