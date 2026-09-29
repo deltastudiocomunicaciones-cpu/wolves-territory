@@ -503,7 +503,7 @@ export default function AdminPage() {
 ============================================== */}
 
 {admin?.role === "OPERATIONS" && (
-  <div className="mt-14 grid gap-px overflow-hidden border border-black/10 bg-black/10 md:grid-cols-2 lg:grid-cols-4">
+  <div className="mt-14 grid gap-px overflow-hidden border border-black/10 bg-black/10 md:grid-cols-3 lg:grid-cols-4">
 
     <TerritoryCard
       label="Fulfillment"
