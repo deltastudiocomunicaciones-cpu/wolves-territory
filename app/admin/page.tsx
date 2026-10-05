@@ -530,11 +530,12 @@ export default function AdminPage() {
     />
 
     <TerritoryCard
-      label="Control"
-      title="Conteos"
-      description="Conteos físicos y conciliación operativa de inventario."
-      status="Disponible próximamente"
-    />
+  label="Control"
+  title="Conteos"
+  description="Conteos físicos y conciliación operativa de inventario."
+  status="Activo"
+  onClick={() => router.push("/admin/inventory/counts")}
+/>
 
   </div>
 )}

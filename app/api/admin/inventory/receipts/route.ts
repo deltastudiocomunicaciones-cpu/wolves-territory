@@ -28,6 +28,155 @@ function getBearerToken(
   return token || null;
 }
 
+export async function GET(
+  request: NextRequest
+) {
+  try {
+    const accessToken =
+      getBearerToken(request);
+
+    if (!accessToken) {
+      return NextResponse.json(
+        {
+          error: "AUTHENTICATION_REQUIRED",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const receiptId =
+      request.nextUrl.searchParams
+        .get("receiptId")
+        ?.trim();
+
+    if (!receiptId) {
+      return NextResponse.json(
+        {
+          error: "RECEIPT_ID_REQUIRED",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const supabase =
+      getSupabaseAuthenticated(
+        accessToken
+      );
+
+    const {
+      data: userData,
+      error: userError,
+    } =
+      await supabase.auth.getUser(
+        accessToken
+      );
+
+    if (
+      userError ||
+      !userData.user
+    ) {
+      return NextResponse.json(
+        {
+          error: "INVALID_SESSION",
+        },
+        {
+          status: 401,
+        }
+      );
+    }
+
+    const {
+      data,
+      error,
+    } = await supabase.rpc(
+      "get_inventory_receipt",
+      {
+        p_receipt_id: receiptId,
+      }
+    );
+
+    if (error) {
+      console.error(
+        "INVENTORY RECEIPT GET ERROR:",
+        {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        }
+      );
+
+      const forbidden =
+        error.code === "42501";
+
+      const notFound =
+        error.code === "P0002";
+
+      return NextResponse.json(
+        {
+          error: forbidden
+            ? "PERMISSION_DENIED"
+            : notFound
+              ? "RECEIPT_NOT_FOUND"
+              : "RECEIPT_GET_FAILED",
+          detail: error.message,
+        },
+        {
+          status: forbidden
+            ? 403
+            : notFound
+              ? 404
+              : 400,
+        }
+      );
+    }
+
+    const receipt =
+      Array.isArray(data)
+        ? data[0] ?? null
+        : data;
+
+    if (!receipt) {
+      return NextResponse.json(
+        {
+          error: "RECEIPT_NOT_FOUND",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        receipt,
+      },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.error(
+      "INVENTORY RECEIPT GET API ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "INTERNAL_SERVER_ERROR",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
 export async function POST(
   request: NextRequest
 ) {
