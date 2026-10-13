@@ -147,8 +147,9 @@ export default function OperationsPage() {
           adminError ||
           !adminData ||
           !adminData.active ||
-          adminData.role !==
-            "OPERATIONS"
+          !["OPERATIONS", "SUPER_ADMIN"].includes(
+  adminData.role
+)
         ) {
           router.replace(
             "/admin"
