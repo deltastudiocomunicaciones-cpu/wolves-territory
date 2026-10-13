@@ -166,6 +166,9 @@ export async function POST(request: Request) {
         const allowedHosts = new Set([
           "localhost",
           "wolves-territory.co",
+          "www.wolves-territory.co",
+          "wolves-territory-gd027b7ss-delta-0f124680.vercel.app",
+          "wolves-territory-git-feature-03b-store-preview-delta-0f124680.vercel.app",
         ]);
 
         verified =
