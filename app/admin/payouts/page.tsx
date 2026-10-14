@@ -50,6 +50,7 @@ export default function AdminPayoutsPage() {
   const loadAccounts = useCallback(async () => {
   setLoading(true);
   setError("");
+  setAccounts([]);
 
   try {
     const supabase =
@@ -349,6 +350,35 @@ export default function AdminPayoutsPage() {
     );
   }
 
+  if (error) {
+    const accessDenied =
+      /no tienes permisos|acceso denegado|forbidden|unauthorized/i.test(error);
+
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f2f0eb] px-6 text-black">
+        <section className="w-full max-w-lg border-y border-black/10 py-12">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.3em]">
+            Wolves Territory · Payment Control
+          </p>
+          <h1 className="mt-6 text-3xl font-semibold uppercase">
+            {accessDenied ? "Acceso restringido" : "Error de consulta"}
+          </h1>
+          <p className="mt-4 text-sm leading-7 text-black/55">
+            {accessDenied
+              ? "Tu perfil no está autorizado para consultar información financiera."
+              : "No fue posible consultar las cuentas bancarias. Intenta nuevamente."}
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push("/admin")}
+            className="mt-8 bg-black px-6 py-4 text-xs font-semibold uppercase tracking-widest text-white"
+          >
+            Volver al panel
+          </button>
+        </section>
+      </main>
+    );
+  }
   return (
     <main className="min-h-screen bg-[#f2f0eb] text-black">
 
