@@ -1,6 +1,8 @@
+BEGIN;
+
 -- ============================================================
 -- 03B-025 | FINANCE F1 — AUDIT HARDENING
--- STATUS: LOCAL DRAFT — NOT APPROVED FOR EXECUTION
+-- STATUS: APPLIED TO PRODUCTION — FUNCTIONAL VALIDATION PARTIAL
 -- ============================================================
 --
 -- Baseline: 75 audit events
@@ -13,10 +15,10 @@
 -- 3. Register FINANCE / PAYOUT_ACCOUNT_VERIFIED.
 -- 4. Make bank verification and auditing atomic.
 --
--- Pending:
--- Reconcile dependencies and design security controls.
+-- Validation:
+-- Production migration applied; authentication rejection and idempotency validated. First-time verification pending.
 --
--- DO NOT EXECUTE IN PRODUCTION.
+-- Applied with explicit authorization; preserve migration history.
 -- ============================================================
 
 -- ============================================================
@@ -198,3 +200,5 @@ FROM PUBLIC, anon, service_role;
 
 GRANT EXECUTE ON FUNCTION public.verify_partner_payout_account(uuid)
 TO authenticated;
+
+COMMIT;
