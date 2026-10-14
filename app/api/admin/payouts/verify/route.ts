@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
+import { getSupabaseUserClient } from "@/lib/supabase-user-server";
 
 type VerifyPayload = {
   accessToken?: string;
   payoutAccountId?: string;
+};
+
+type VerifyRpcResult = {
+  success: boolean;
+  alreadyVerified: boolean;
+  accountId: string;
+  auditEventId?: string;
 };
 
 export async function POST(request: Request) {
@@ -19,11 +27,8 @@ export async function POST(request: Request) {
 
     const supabase = getSupabaseAdmin();
 
-    // 1. Validar identidad Auth
-    const {
-      data: userData,
-      error: userError,
-    } = await supabase.auth.getUser(body.accessToken);
+    const { data: userData, error: userError } =
+      await supabase.auth.getUser(body.accessToken);
 
     if (userError || !userData.user) {
       return NextResponse.json(
@@ -32,11 +37,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Confirmar que realmente sea administrador
-    const {
-      data: admin,
-      error: adminError,
-    } = await supabase
+    const { data: admin, error: adminError } = await supabase
       .from("admin_users")
       .select("id, full_name, role, active")
       .eq("auth_user_id", userData.user.id)
@@ -49,20 +50,14 @@ export async function POST(request: Request) {
       );
     }
 
-    if (
-      !["ADMIN", "SUPER_ADMIN", "FINANCE"].includes(admin.role)
-    ) {
+    if (!["ADMIN", "SUPER_ADMIN", "FINANCE"].includes(admin.role)) {
       return NextResponse.json(
         { error: "No tienes permisos para verificar cuentas." },
         { status: 403 }
       );
     }
 
-    // 3. Comprobar cuenta
-    const {
-      data: account,
-      error: accountError,
-    } = await supabase
+    const { data: account, error: accountError } = await supabase
       .from("partner_payout_accounts")
       .select(`
         id,
@@ -90,51 +85,67 @@ export async function POST(request: Request) {
       );
     }
 
-    if (account.verified) {
+
+    // La verificación y su auditoría ocurren en una sola
+    // transacción PostgreSQL, ejecutada con el JWT del usuario.
+    const userClient = getSupabaseUserClient(body.accessToken);
+
+    const { data, error: verifyError } = await userClient.rpc(
+      "verify_partner_payout_account",
+      { p_account_id: account.id }
+    );
+
+    if (verifyError) {
+      console.error("PAYOUT VERIFY RPC ERROR:", verifyError);
+
+      return NextResponse.json(
+        { error: "No fue posible verificar la cuenta." },
+        { status: 500 }
+      );
+    }
+
+    const result = data as VerifyRpcResult | null;
+
+    if (
+      !result ||
+      result.success !== true ||
+      result.accountId !== account.id ||
+      typeof result.alreadyVerified !== "boolean" ||
+      (result.alreadyVerified === false &&
+        !result.auditEventId)
+    ) {
+      throw new Error("Respuesta de verificación inválida.");
+    }
+
+    // Lectura posterior para preservar el contrato del frontend.
+    const { data: verifiedAccount, error: readError } =
+      await supabase
+        .from("partner_payout_accounts")
+        .select(`
+          id,
+          partner_id,
+          bank_name,
+          account_type,
+          account_last4,
+          verified,
+          verified_at,
+          active
+        `)
+        .eq("id", account.id)
+        .single();
+
+    if (readError || !verifiedAccount || !verifiedAccount.verified) {
+      throw new Error(
+        "No fue posible consultar la cuenta verificada."
+      );
+    }
+
+    if (result.alreadyVerified) {
       return NextResponse.json({
         success: true,
         alreadyVerified: true,
-        account,
+        account: verifiedAccount,
       });
-    }
-
-    // 4. Verificar
-    const now = new Date().toISOString();
-
-    const {
-      data: verifiedAccount,
-      error: verifyError,
-    } = await supabase
-      .from("partner_payout_accounts")
-      .update({
-        verified: true,
-        verified_at: now,
-        updated_at: now,
-      })
-      .eq("id", account.id)
-      .eq("active", true)
-      .eq("verified", false)
-      .select(`
-        id,
-        partner_id,
-        bank_name,
-        account_type,
-        account_last4,
-        verified,
-        verified_at,
-        active
-      `)
-      .single();
-
-    if (verifyError || !verifiedAccount) {
-      console.error(
-        "PAYOUT VERIFY ERROR:",
-        verifyError
-      );
-
-      throw new Error(
-        "No fue posible verificar la cuenta."
-      );
     }
 
     return NextResponse.json({
@@ -147,18 +158,10 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
-    console.error(
-      "ADMIN PAYOUT VERIFY ERROR:",
-      error
-    );
+    console.error("ADMIN PAYOUT VERIFY ERROR:", error);
 
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "No fue posible verificar la cuenta.",
-      },
+      { error: "No fue posible verificar la cuenta." },
       { status: 500 }
     );
   }
