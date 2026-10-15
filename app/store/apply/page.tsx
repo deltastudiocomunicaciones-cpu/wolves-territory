@@ -107,19 +107,37 @@ export default function StoreApplyPage() {
   return (
     <main className="min-h-screen bg-[#f4f1eb] text-[#171717]">
       <div className="grid min-h-screen lg:grid-cols-2">
-        <aside style={{ backgroundColor: "#111111" }} className="relative overflow-hidden bg-[#111111] px-7 py-12 text-white sm:px-12 lg:sticky lg:top-0 lg:self-start lg:flex lg:h-screen lg:flex-col lg:justify-between lg:px-14 lg:py-14">
-          <div>
-            <Link
-              href="/"
-              className="text-xs font-semibold uppercase tracking-[0.28em] text-white/75"
-            >
-              WOLVES TERRITORY
-            </Link>
+      <aside
+  style={{ backgroundColor: "#111111" }}
+  className="relative isolate overflow-hidden bg-[#111111] px-7 py-12 text-white sm:px-12 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col lg:justify-between lg:self-start lg:px-14 lg:py-14"
+>
+  {/* FOTOGRAFÍA STORE */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center"
+    style={{
+      backgroundImage: "url('/images/store-allies-hero.webp')",
+    }}
+  />
 
-            <div className="mt-20 max-w-lg lg:mt-28">
-              <span className="text-xs uppercase tracking-[0.28em] text-[#c6a98a]">
-                Commercial Network / Store
-              </span>
+  {/* DEGRADADO PARA LEGIBILIDAD */}
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-black/65 via-black/50 to-black/85"
+  />
+
+  <div>
+    <Link
+      href="/"
+      className="text-xs font-semibold uppercase tracking-[0.28em] text-white/75"
+    >
+      WOLVES TERRITORY
+    </Link>
+
+    <div className="mt-12 max-w-lg lg:mt-28">
+      <span className="text-xs uppercase tracking-[0.28em] text-[#c6a98a]">
+        Commercial Network / Store
+      </span>
 
               <h1 className="mt-6 text-5xl font-semibold leading-[0.98] tracking-[-0.065em] sm:text-6xl xl:text-7xl">
                 Crezcamos

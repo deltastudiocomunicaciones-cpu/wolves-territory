@@ -87,13 +87,14 @@ export default function Navbar() {
     </Link>
   ))}
 
-  {/* TIENDAS · PRÓXIMAMENTE */}
-  <span
-    className="cursor-default text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/25 lg:text-[10px] lg:tracking-[0.22em]"
-    title="Próximamente"
+  {/* TIENDAS · INSCRIPCIÓN STORE */}
+  <Link
+    href="/store/apply"
+    className="group relative text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/60 transition-colors duration-300 hover:text-[#101820] lg:text-[10px] lg:tracking-[0.22em]"
   >
     TIENDAS
-  </span>
+    <span className="absolute -bottom-2 left-0 h-px w-0 bg-[#187E83] transition-all duration-300 group-hover:w-full" />
+  </Link>
 
 </div>
 
@@ -225,11 +226,13 @@ export default function Navbar() {
                   </Link>
                 ))}
 
-               <span
-    className="border-b border-[#101820]/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-[#101820]/25"
+               <Link
+    href="/store/apply"
+    onClick={() => setMenuOpen(false)}
+    className="border-b border-[#101820]/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-[#101820] transition hover:text-[#187E83]"
   >
     TIENDAS
-  </span> 
+  </Link> 
 
               </div>
 
