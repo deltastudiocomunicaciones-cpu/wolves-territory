@@ -17,7 +17,7 @@ const superAdminDestinations: Destination[] = [
   { number: "05", eyebrow: "RETAIL NETWORK", title: "Store", description: "Solicitudes, evaluación y vinculación de tiendas aliadas.", href: "/admin/store-applications" },
   { number: "06", eyebrow: "SELLER NETWORK", title: "Referral", description: "Solicitudes y gestión de vendedores.", href: "/admin/applications" },
   { number: "07", eyebrow: "COMMISSIONS", title: "Liquidaciones", description: "Liquidaciones comerciales y pagos.", href: "/admin/settlements" },
-  { number: "08", eyebrow: "FINANCIAL GOVERNANCE", title: "Tesorería", description: "Autorizaciones y remisión de pagos.", status: "EN DESARROLLO" },
+  { number: "08", eyebrow: "FINANCIAL GOVERNANCE", title: "Tesorería", description: "Consulta y seguimiento de obligaciones financieras.", href: "/admin/treasury" },
 ];
 
 const operationsDestinations: Destination[] = [
