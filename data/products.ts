@@ -39,14 +39,14 @@ export const products: Product[] = [
     category: "Hoodie",
     price: 449000,
 
-    image: "/products/origen-hoodie-black.png",
+    image: "/products/origen-hoodie-black.webp",
 
     images: [
-      "/products/origen-hoodie-black.png",
-      "/products/origen-hoodie-black-1.png",
-      "/products/origen-hoodie-black-2.png",
-      "/products/origen-hoodie-black-3.png",
-      "/products/origen-hoodie-black-4.png",
+      "/products/origen-hoodie-black.webp",
+      "/products/origen-hoodie-black-1.webp",
+      "/products/origen-hoodie-black-2.webp",
+      "/products/origen-hoodie-black-3.webp",
+      "/products/origen-hoodie-black-4.webp",
     ],
 
     variants: [
@@ -56,14 +56,14 @@ export const products: Product[] = [
         slug: "origen-hoodie-black",
         skuBase: "WT-HOOD-BLK",
 
-        image: "/products/origen-hoodie-black.png",
+        image: "/products/origen-hoodie-black.webp",
 
         images: [
-          "/products/origen-hoodie-black.png",
-          "/products/origen-hoodie-black-1.png",
-          "/products/origen-hoodie-black-2.png",
-          "/products/origen-hoodie-black-3.png",
-          "/products/origen-hoodie-black-4.png",
+          "/products/origen-hoodie-black.webp",
+          "/products/origen-hoodie-black-1.webp",
+          "/products/origen-hoodie-black-2.webp",
+          "/products/origen-hoodie-black-3.webp",
+          "/products/origen-hoodie-black-4.webp",
         ],
       },
     ],
@@ -85,13 +85,13 @@ export const products: Product[] = [
     category: "T-Shirt",
     price: 249000,
 
-    image: "/products/origen-tshirt-black.png",
+    image: "/products/origen-tshirt-black.webp",
 
     images: [
-      "/products/origen-tshirt-black.png",
-      "/products/origen-tshirt-black-2.png",
-      "/products/origen-tshirt-black-3.png",
-      "/products/origen-tshirt-black-4.png",
+      "/products/origen-tshirt-black.webp",
+      "/products/origen-tshirt-black-2.webp",
+      "/products/origen-tshirt-black-3.webp",
+      "/products/origen-tshirt-black-4.webp",
     ],
 
     variants: [
@@ -101,14 +101,14 @@ export const products: Product[] = [
         slug: "origen-tshirt-black",
         skuBase: "WT-TSH-BLK",
 
-        image: "/products/origen-tshirt-black.png",
+        image: "/products/origen-tshirt-black.webp",
 
         images: [
-          "/products/origen-tshirt-black.png",
-          "/products/origen-tshirt-black-2.png",
-          "/products/origen-tshirt-black-3.png",
-          "/products/origen-tshirt-black-4.png",
-          "/products/origen-tshirt-black-1.png",
+          "/products/origen-tshirt-black.webp",
+          "/products/origen-tshirt-black-2.webp",
+          "/products/origen-tshirt-black-3.webp",
+          "/products/origen-tshirt-black-4.webp",
+          "/products/origen-tshirt-black-1.webp",
         ],
       },
 
@@ -118,14 +118,14 @@ export const products: Product[] = [
         slug: "origen-tshirt-white",
         skuBase: "WT-TSH-WHT",
 
-        image: "/products/origen-tshirt-white.png",
+        image: "/products/origen-tshirt-white.webp",
 
         images: [
-          "/products/origen-tshirt-white.png",
-          "/products/origen-tshirt-white-2.png",
-          "/products/origen-tshirt-white-3.png",
-          "/products/origen-tshirt-white-4.png",
-          "/products/origen-tshirt-white-1.png",
+          "/products/origen-tshirt-white.webp",
+          "/products/origen-tshirt-white-2.webp",
+          "/products/origen-tshirt-white-3.webp",
+          "/products/origen-tshirt-white-4.webp",
+          "/products/origen-tshirt-white-1.webp",
         ],
       },
 
@@ -135,14 +135,14 @@ export const products: Product[] = [
         slug: "origen-tshirt-red",
         skuBase: "WT-TSH-RED",
 
-        image: "/products/origen-tshirt-red.png",
+        image: "/products/origen-tshirt-red.webp",
 
         images: [
-          "/products/origen-tshirt-red.png",
-          "/products/origen-tshirt-red-2.png",
-          "/products/origen-tshirt-red-3.png",
-          "/products/origen-tshirt-red-4.png",
-          "/products/origen-tshirt-red-1.png",
+          "/products/origen-tshirt-red.webp",
+          "/products/origen-tshirt-red-2.webp",
+          "/products/origen-tshirt-red-3.webp",
+          "/products/origen-tshirt-red-4.webp",
+          "/products/origen-tshirt-red-1.webp",
         ],
       },
     ],
@@ -164,14 +164,14 @@ export const products: Product[] = [
     category: "Polo",
     price: 279000,
 
-    image: "/products/origen-polo-gray.png",
+    image: "/products/origen-polo-gray.webp",
 
     images: [
-      "/products/origen-polo-gray.png",
-      "/products/origen-polo-gray-1.png",
-      "/products/origen-polo-gray-2.png",
-      "/products/origen-polo-gray-3.png",
-      "/products/origen-polo-gray-4.png",
+      "/products/origen-polo-gray.webp",
+      "/products/origen-polo-gray-1.webp",
+      "/products/origen-polo-gray-2.webp",
+      "/products/origen-polo-gray-3.webp",
+      "/products/origen-polo-gray-4.webp",
     ],
 
     variants: [
@@ -181,14 +181,14 @@ export const products: Product[] = [
         slug: "origen-polo-gray",
         skuBase: "WT-POLO-GRY",
 
-        image: "/products/origen-polo-gray.png",
+        image: "/products/origen-polo-gray.webp",
 
         images: [
-          "/products/origen-polo-gray.png",
-          "/products/origen-polo-gray-1.png",
-          "/products/origen-polo-gray-2.png",
-          "/products/origen-polo-gray-3.png",
-          "/products/origen-polo-gray-4.png",
+          "/products/origen-polo-gray.webp",
+          "/products/origen-polo-gray-1.webp",
+          "/products/origen-polo-gray-2.webp",
+          "/products/origen-polo-gray-3.webp",
+          "/products/origen-polo-gray-4.webp",
         ],
       },
     ],
@@ -210,13 +210,13 @@ export const products: Product[] = [
     category: "Short",
     price: 299000,
 
-    image: "/products/origen-short-beige.png",
+    image: "/products/origen-short-beige.webp",
 
     images: [
-      "/products/origen-short-beige.png",
-      "/products/origen-short-beige-1.png",
-      "/products/origen-short-beige-2.png",
-      "/products/origen-short-beige-3.png",
+      "/products/origen-short-beige.webp",
+      "/products/origen-short-beige-1.webp",
+      "/products/origen-short-beige-2.webp",
+      "/products/origen-short-beige-3.webp",
     ],
 
     variants: [
@@ -226,13 +226,13 @@ export const products: Product[] = [
         slug: "origen-short-beige",
         skuBase: "WT-SHORT-BGE",
 
-        image: "/products/origen-short-beige.png",
+        image: "/products/origen-short-beige.webp",
 
         images: [
-          "/products/origen-short-beige.png",
-          "/products/origen-short-beige-1.png",
-          "/products/origen-short-beige-2.png",
-          "/products/origen-short-beige-3.png",
+          "/products/origen-short-beige.webp",
+          "/products/origen-short-beige-1.webp",
+          "/products/origen-short-beige-2.webp",
+          "/products/origen-short-beige-3.webp",
         ],
       },
     ],
@@ -254,12 +254,12 @@ export const products: Product[] = [
     price: 80000,
     sku: "WT-CAP-ORIGEN",
 
-    image: "/products/caps/origen.png",
+    image: "/products/caps/origen.webp",
 
     images: [
-      "/products/caps/origen.png",
-      "/products/caps/origen-side.png",
-      "/products/caps/origen-back.png",
+      "/products/caps/origen.webp",
+      "/products/caps/origen-side.webp",
+      "/products/caps/origen-back.webp",
     ],
 
     collection: "Origen",
@@ -276,12 +276,12 @@ export const products: Product[] = [
     price: 219900,
     sku: "WT-CAP-DELTA-BLK",
 
-    image: "/products/caps/delta-black.png",
+    image: "/products/caps/delta-black.webp",
 
     images: [
-      "/products/caps/delta-black.png",
-      "/products/caps/delta-black-side.png",
-      "/products/caps/delta-black-back.png",
+      "/products/caps/delta-black.webp",
+      "/products/caps/delta-black-side.webp",
+      "/products/caps/delta-black-back.webp",
     ],
 
     collection: "Performance",
@@ -297,12 +297,12 @@ export const products: Product[] = [
     category: "Cap",
     price: 219900,
     sku: "WT-CAP-DELTA-WHT",
-    image: "/products/caps/delta-white.png",
+    image: "/products/caps/delta-white.webp",
 
     images: [
-      "/products/caps/delta-white.png",
-      "/products/caps/delta-white-side.png",
-      "/products/caps/delta-white-back.png",
+      "/products/caps/delta-white.webp",
+      "/products/caps/delta-white-side.webp",
+      "/products/caps/delta-white-back.webp",
     ],
 
     collection: "Performance",
@@ -319,12 +319,12 @@ export const products: Product[] = [
     price: 169900,
     sku: "WT-CAP-ALPHA-RED",
 
-    image: "/products/caps/alpha-red.png",
+    image: "/products/caps/alpha-red.webp",
 
     images: [
-      "/products/caps/alpha-red.png",
-      "/products/caps/alpha-red-side.png",
-      "/products/caps/alpha-red-back.png",
+      "/products/caps/alpha-red.webp",
+      "/products/caps/alpha-red-side.webp",
+      "/products/caps/alpha-red-back.webp",
     ],
 
     collection: "Performance",
@@ -341,12 +341,12 @@ export const products: Product[] = [
     price: 169900,
     sku: "WT-CAP-ALPHA-BLK",
 
-    image: "/products/caps/alpha-black.png",
+    image: "/products/caps/alpha-black.webp",
 
      images: [
-      "/products/caps/alpha-black.png",
-      "/products/caps/alpha-black-side.png",
-      "/products/caps/alpha-black-back.png",
+      "/products/caps/alpha-black.webp",
+      "/products/caps/alpha-black-side.webp",
+      "/products/caps/alpha-black-back.webp",
     ],
 
     collection: "Classic",
@@ -363,12 +363,12 @@ export const products: Product[] = [
     price: 139900,
     sku: "WT-CAP-TRAIL-BLK-WHT",
 
-    image: "/products/caps/trail-black-white.png",
+    image: "/products/caps/trail-black-white.webp",
 
     images: [
-      "/products/caps/trail-black-white.png",
-      "/products/caps/trail-black-white-side.png",
-      "/products/caps/trail-black-white-back.png",
+      "/products/caps/trail-black-white.webp",
+      "/products/caps/trail-black-white-side.webp",
+      "/products/caps/trail-black-white-back.webp",
     ],
 
     collection: "Trucker",
@@ -385,18 +385,62 @@ export const products: Product[] = [
     price: 139900,
     sku: "WT-CAP-TRAIL-HEATHER-WHT",
 
-    image: "/products/caps/trail-heather-white.png",
+    image: "/products/caps/trail-heather-white.webp",
 
     images: [
-      "/products/caps/trail-heather-white.png",
-      "/products/caps/trail-heather-white-side.png",
-      "/products/caps/trail-heather-white-back.png",
+      "/products/caps/trail-heather-white.webp",
+      "/products/caps/trail-heather-white-side.webp",
+      "/products/caps/trail-heather-white-back.webp",
     ],
 
     collection: "Trucker",
 
     description:
       "Heather and white trucker cap with Flexfit 110MT base.",
+  },
+
+  {
+    id: 14,
+    slug: "wt-night-wolf",
+    name: "WT Night Wolf",
+    category: "Cap",
+    price: 219800,
+    sku: "WT-CAP-NIGHT-WOLF-BLK",
+
+    image: "/products/caps/night-wolf.webp",
+
+    images: [
+      "/products/caps/night-wolf.webp",
+      "/products/caps/night-wolf-side.webp",
+      "/products/caps/night-wolf-back.webp",
+    ],
+
+    collection: "Performance",
+
+    description:
+      "Premium black Wolves Territory cap with signature wolf detailing.",
+  },
+
+  {
+    id: 15,
+    slug: "wt-alpha-white",
+    name: "WT Alpha White",
+    category: "Cap",
+    price: 169900,
+    sku: "WT-CAP-ALPHA-WHT",
+
+    image: "/products/caps/alpha-white.webp",
+
+    images: [
+      "/products/caps/alpha-white.webp",
+      "/products/caps/alpha-white-side.webp",
+      "/products/caps/alpha-white-back.webp",
+    ],
+
+    collection: "Classic",
+
+    description:
+      "Premium white Wolves Territory cap with black embroidered detailing.",
   },
 
   // =========================================================
@@ -410,7 +454,7 @@ export const products: Product[] = [
     price: 22000,
     sku: "WT-ACC-KEYCHAIN",
 
-    image: "/products/origen-keychain.png",
+    image: "/products/origen-keychain.webp",
 
     collection: "Origen",
   },
