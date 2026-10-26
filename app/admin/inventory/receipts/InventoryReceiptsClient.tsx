@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import TerritoryNavigation from "@/components/admin/TerritoryNavigation";
 type InventoryCatalogItem = {
   inventory_id: string;
   product_id: string;
@@ -856,15 +857,11 @@ const handleApplyReceipt = async () => {
   return (
     <main className="min-h-screen bg-[#f5f2eb] text-black">
       <div className="mx-auto w-full max-w-7xl px-5 py-8 md:px-8 md:py-12">
-        <button
-          type="button"
-          onClick={() =>
-            router.push("/admin/inventory")
-          }
-          className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/45 transition hover:text-black"
-        >
-          ← Volver a inventario
-        </button>
+        <TerritoryNavigation
+  section="Recepciones"
+  parentLabel="Inventario"
+  parentHref="/admin/inventory"
+/>
 
         <header className="mt-8 border-b border-black/10 pb-8">
           <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">

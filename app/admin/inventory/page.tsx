@@ -214,9 +214,28 @@ const filteredInventory = useMemo(() => {
 ]);
 
   return (
-    <main className="min-h-screen bg-[#f2f0eb] text-black">
-      <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
-        <div className="border-b border-black/10 pb-8">
+  <main className="min-h-screen bg-[#f2f0eb] text-black">
+    <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+
+      {/* K6-04A — Navegación de retorno */}
+      <div className="mb-9 flex flex-wrap items-center justify-between gap-4">
+        <button
+          type="button"
+          onClick={() => router.push("/admin")}
+          className="group inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-black/55 transition hover:text-black"
+        >
+          <span className="text-lg transition-transform group-hover:-translate-x-1">
+            ←
+          </span>
+          Volver a Territory Control
+        </button>
+
+        <span className="text-[9px] uppercase tracking-[0.22em] text-black/30">
+          WT / Inventory
+        </span>
+      </div>
+
+      <div className="border-b border-black/10 pb-8">
           <p className="text-[9px] uppercase tracking-[0.25em] text-black/35">
             Wolves Territory · Administración
           </p>

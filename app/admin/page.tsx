@@ -1,12 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import SuperAdminDashboard from "@/components/admin/SuperAdminDashboard";
+import OperationsDashboard from "@/components/admin/OperationsDashboard";
 
 type AdminTerritory = "SUPER_ADMIN" | "OPERATIONS" | "FINANCE" | "ADMIN";
 type AdminProfile = { full_name: string; role: AdminTerritory };
-type Metrics = { applications: number; payouts: number; settlements: number };
+type InventoryMetrics = {
+  stock: number;
+  reserved: number;
+  available: number;
+  lowStock: number;
+  outOfStock: number;
+  references: number;
+};
+type Metrics = {
+  applications: number | null;
+  payouts: number | null;
+  settlements: number | null;
+};
 type Destination = { eyebrow: string; title: string; description: string; href?: string; number: string; status?: string };
 
 const superAdminDestinations: Destination[] = [
@@ -22,8 +37,8 @@ const superAdminDestinations: Destination[] = [
 
 const operationsDestinations: Destination[] = [
   { number: "01", eyebrow: "FULFILLMENT", title: "Operación", description: "Preparación, empaque, despacho y seguimiento de pedidos.", href: "/admin/operations" },
-  { number: "02", eyebrow: "STOCK VISIBILITY", title: "Inventario", description: "Consulta operativa de existencias.", status: "PENDIENTE DE HABILITAR" },
-  { number: "03", eyebrow: "INBOUND", title: "Recepciones", description: "Registro y seguimiento de entradas de mercancía.", status: "PENDIENTE DE HABILITAR" },
+  { number: "02", eyebrow: "STOCK VISIBILITY", title: "Inventario", description: "Consulta operativa de existencias.", href: "/admin/inventory" },
+  { number: "03", eyebrow: "INBOUND", title: "Recepciones", description: "Registro y seguimiento de entradas de mercancía.", href: "/admin/inventory/receipts" },
   { number: "04", eyebrow: "PHYSICAL CONTROL", title: "Conteos", description: "Conteos físicos y conciliación operativa.", href: "/admin/inventory/counts" },
 ];
 
@@ -76,7 +91,8 @@ function MetricCard({ label, title, value, onClick }: { label: string; title: st
 export default function AdminPage() {
   const router = useRouter();
   const [admin, setAdmin] = useState<AdminProfile | null>(null);
-  const [metrics, setMetrics] = useState<Metrics>({ applications: 0, payouts: 0, settlements: 0 });
+  const [metrics, setMetrics] = useState<Metrics>({ applications: null, payouts: null, settlements: null });
+  const [inventoryMetrics, setInventoryMetrics] = useState<InventoryMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -104,17 +120,45 @@ export default function AdminPage() {
         if (sessionError || !accessToken) { router.replace("/admin/login"); return; }
         if (adminData.role !== "SUPER_ADMIN") return;
 
-        const paths = ["/api/admin/applications", "/api/admin/payouts", "/api/admin/settlements"];
+        const paths = ["/api/admin/applications", "/api/admin/payouts", "/api/admin/settlements", "/api/admin/inventory/catalog"];
         const responses = await Promise.all(paths.map(path => fetch(path, { method: "GET", headers: { Authorization: `Bearer ${accessToken}` }, cache: "no-store" })));
         const payloads = await Promise.all(responses.map(async response => {
           try { return await response.json(); } catch { return {}; }
         }));
         responses.forEach((response, index) => { if (!response.ok) console.error("ADMIN METRIC ERROR:", paths[index], payloads[index]); });
         const applications = responses[0].ok && Array.isArray(payloads[0].applications)
-          ? payloads[0].applications.filter((application: { status?: string }) => application.status === "APPLIED").length : 0;
-        const payouts = responses[1].ok ? Number(payloads[1].count ?? 0) : 0;
-        const settlements = responses[2].ok ? Number(payloads[2].count ?? 0) : 0;
-        if (!cancelled) setMetrics({ applications, payouts, settlements });
+          ? payloads[0].applications.filter((application: { status?: string }) => application.status === "APPLIED").length : null;
+        const payouts = responses[1].ok && Number.isFinite(Number(payloads[1].count)) && payloads[1].count != null ? Number(payloads[1].count) : null;
+        const settlements = responses[2].ok && Number.isFinite(Number(payloads[2].count)) && payloads[2].count != null ? Number(payloads[2].count) : null;
+        if (!cancelled) {
+          setMetrics({ applications, payouts, settlements });
+
+          const inventory = payloads[3]?.inventory;
+          if (responses[3].ok && Array.isArray(inventory) &&
+              inventory.every((item: Record<string, unknown>) =>
+                ["stock", "reserved_stock", "available_stock", "low_stock_threshold"]
+                  .every(key => typeof item[key] === "number" && Number.isFinite(item[key]))
+              )) {
+            const totals = inventory.reduce(
+              (acc: InventoryMetrics, item: {
+                stock: number;
+                reserved_stock: number;
+                available_stock: number;
+                low_stock_threshold: number;
+              }) => {
+                acc.stock += item.stock;
+                acc.reserved += item.reserved_stock;
+                acc.available += item.available_stock;
+                acc.references += 1;
+                if (item.available_stock <= 0) acc.outOfStock += 1;
+                else if (item.available_stock <= item.low_stock_threshold) acc.lowStock += 1;
+                return acc;
+              },
+              { stock: 0, reserved: 0, available: 0, lowStock: 0, outOfStock: 0, references: 0 }
+            );
+            setInventoryMetrics(totals);
+          }
+        }
       } catch (error) {
         console.error("ADMIN DASHBOARD ERROR:", error);
       } finally {
@@ -146,42 +190,363 @@ export default function AdminPage() {
   ] : [];
 
   const navigate = (href: string) => { setMobileMenuOpen(false); router.push(href); };
-  const navigation = (
-    <>
-      <p className="px-4 pt-7 text-[10px] font-semibold uppercase tracking-[0.24em] text-black/35">Navegación</p>
-      <button onClick={() => navigate("/admin")} className="mt-4 flex w-full items-center justify-between rounded-xl bg-[#171717] px-4 py-3.5 text-left text-[12px] font-semibold text-white">
-        <span>◫ &nbsp; Vista general</span><span className="text-white/45">01</span>
+
+  const navigation = isOperations ? (
+    <nav aria-label="Navegación de operaciones">
+      <p className="px-4 pt-7 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a47757]">
+        Territorio operativo
+      </p>
+
+      <button
+        onClick={() => navigate("/admin")}
+        aria-current="page"
+        className="mt-4 flex w-full items-center justify-between rounded-xl border border-[#c96a1b]/35 bg-[#c96a1b]/15 px-4 py-3.5 text-left text-[12px] font-semibold text-white transition hover:bg-[#c96a1b]/25"
+      >
+        <span className="flex items-center gap-3">
+          <span aria-hidden="true" className="text-[#e08a49]">◫</span>
+          Vista general
+        </span>
+        <span className="text-[#e08a49]">01</span>
       </button>
-      <div className="mt-3 space-y-1">
-        {destinations.map(item => item.href ? (
-          <button key={item.number} onClick={() => navigate(item.href!)} className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[12px] font-medium text-black/65 transition hover:bg-black/5 hover:text-black">
-            <span>{item.title}</span><span className="text-black/30">↗</span>
-          </button>
-        ) : (
-          <div key={item.number} className="flex items-center justify-between px-4 py-3 text-[12px] text-black/30"><span>{item.title}</span><span className="text-[9px]">PRÓX.</span></div>
-        ))}
+
+      <div className="mt-4 space-y-1">
+        {destinations.map((item) =>
+          item.href ? (
+            <button
+              key={item.number}
+              onClick={() => navigate(item.href!)}
+              className="group flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left text-[12px] font-medium text-white/65 transition hover:bg-white/10 hover:text-white"
+            >
+              <span>{item.title}</span>
+              <span
+                aria-hidden="true"
+                className="text-[#a47757] transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              >
+                ↗
+              </span>
+            </button>
+          ) : (
+            <div
+              key={item.number}
+              className="flex items-center justify-between px-4 py-3.5 text-[12px] text-white/30"
+            >
+              <span>{item.title}</span>
+              <span className="text-[9px]">PRÓX.</span>
+            </div>
+          )
+        )}
       </div>
-      {isSuperAdmin && <><p className="px-4 pt-8 text-[10px] font-semibold uppercase tracking-[0.24em] text-black/35">Validaciones</p>
-        <button onClick={() => navigate("/admin/payouts")} className="mt-3 flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[12px] text-black/65 hover:bg-black/5"><span>Cuentas de pago</span><span>↗</span></button>
-      </>}
+
+      <div className="mx-4 mt-8 border-t border-white/10 pt-6">
+        <p className="text-[9px] uppercase tracking-[0.2em] text-white/35">
+          Wolves Territory
+        </p>
+        <p className="mt-2 text-[11px] leading-5 text-white/55">
+          Control y trazabilidad de cada movimiento.
+        </p>
+      </div>
+    </nav>
+
+  ) : isSuperAdmin ? (
+    <nav aria-label="Navegación ejecutiva">
+      <p className="px-4 pt-7 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#d58a51]">
+        Gobierno comercial
+      </p>
+
+      <button
+        type="button"
+        onClick={() => navigate("/admin")}
+        aria-current="page"
+        className="mt-4 flex w-full items-center justify-between rounded-xl border border-[#c96a1b]/35 bg-[#c96a1b]/15 px-4 py-3.5 text-left text-[12px] font-semibold text-white transition hover:bg-[#c96a1b]/25"
+      >
+        <span>◫ &nbsp; Vista ejecutiva</span>
+        <span className="text-[#e08a49]">01</span>
+      </button>
+
+      <button
+        type="button"
+        onClick={() => navigate("/admin/expansion")}
+        className="mt-3 flex w-full items-center justify-between rounded-xl border border-[#c96a1b]/25 bg-[#c96a1b]/10 px-4 py-3.5 text-left text-[12px] font-semibold text-white transition hover:bg-[#c96a1b]/20"
+      >
+        <span>Expansion · Territorio comercial</span>
+        <span className="text-[#e08a49]">↗</span>
+      </button>
+      <div className="mt-4 space-y-1">
+        {destinations.map((item) =>
+          item.href ? (
+            <button
+              key={item.number}
+              type="button"
+              onClick={() => navigate(item.href!)}
+              className="group flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left text-[12px] font-medium text-white/65 transition hover:bg-white/10 hover:text-white"
+            >
+              <span>{item.title}</span>
+              <span className="text-[#a47757] transition group-hover:translate-x-0.5">
+                ↗
+              </span>
+            </button>
+          ) : (
+            <div
+              key={item.number}
+              className="flex items-center justify-between px-4 py-3.5 text-[12px] text-white/30"
+            >
+              <span>{item.title}</span>
+              <span className="text-[9px]">PRÓX.</span>
+            </div>
+          )
+        )}
+      </div>
+
+      <p className="px-4 pt-8 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#d58a51]">
+        Validaciones
+      </p>
+
+      <button
+        type="button"
+        onClick={() => navigate("/admin/payouts")}
+        className="mt-3 flex w-full items-center justify-between rounded-xl px-4 py-3.5 text-left text-[12px] text-white/65 transition hover:bg-white/10 hover:text-white"
+      >
+        <span>Cuentas de pago</span>
+        <span className="text-[#a47757]">↗</span>
+      </button>
+
+      <div className="mx-4 mt-8 border-t border-white/10 pt-6">
+        <p className="text-[9px] uppercase tracking-[0.2em] text-white/35">
+          Wolves Territory
+        </p>
+        <p className="mt-2 text-[11px] leading-5 text-white/55">
+          Visión, gobierno y expansión del territorio.
+        </p>
+      </div>
+    </nav>
+  ) : (
+    <>
+
+      <p className="px-4 pt-7 text-[10px] font-semibold uppercase tracking-[0.24em] text-black/35">
+        Navegación
+      </p>
+
+      <button
+        onClick={() => navigate("/admin")}
+        className="mt-4 flex w-full items-center justify-between rounded-xl bg-[#171717] px-4 py-3.5 text-left text-[12px] font-semibold text-white"
+      >
+        <span>◫ &nbsp; Vista general</span>
+        <span className="text-white/45">01</span>
+      </button>
+
+      <div className="mt-3 space-y-1">
+        {destinations.map((item) =>
+          item.href ? (
+            <button
+              key={item.number}
+              onClick={() => navigate(item.href!)}
+              className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[12px] font-medium text-black/65 transition hover:bg-black/5 hover:text-black"
+            >
+              <span>{item.title}</span>
+              <span className="text-black/30">↗</span>
+            </button>
+          ) : (
+            <div
+              key={item.number}
+              className="flex items-center justify-between px-4 py-3 text-[12px] text-black/30"
+            >
+              <span>{item.title}</span>
+              <span className="text-[9px]">PRÓX.</span>
+            </div>
+          )
+        )}
+      </div>
+
+      {isSuperAdmin && (
+        <>
+          <p className="px-4 pt-8 text-[10px] font-semibold uppercase tracking-[0.24em] text-black/35">
+            Validaciones
+          </p>
+          <button
+            onClick={() => navigate("/admin/payouts")}
+            className="mt-3 flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[12px] text-black/65 hover:bg-black/5"
+          >
+            <span>Cuentas de pago</span>
+            <span>↗</span>
+          </button>
+        </>
+      )}
     </>
   );
+
 
   return (
     <main className="min-h-screen bg-[#f5f3ef] text-[#171717]">
       <div className="mx-auto flex min-h-screen max-w-[1800px]">
-        <aside className="sticky top-0 hidden h-screen w-[258px] shrink-0 flex-col border-r border-black/10 bg-[#eeebe5] px-4 py-7 lg:flex">
-          <div className="px-4 pb-7"><p className="text-[14px] font-black uppercase tracking-[0.22em]">Wolves<span className="font-light"> Territory</span></p><p className="mt-2 text-[9px] uppercase tracking-[0.22em] text-black/40">Commercial Operating System</p></div>
+        <aside
+  className={`sticky top-0 hidden h-screen w-[258px] shrink-0 flex-col px-4 py-7 lg:flex ${
+    isOperations || isSuperAdmin
+  ? "border-r border-white/10 bg-[#171717] text-white"
+  : "border-r border-black/10 bg-[#eeebe5] text-[#171717]"
+  }`}
+>
+          <div className="px-4 pb-7">
+  <p className="text-[14px] font-black uppercase tracking-[0.22em]">
+    Wolves<span className="font-light"> Territory</span>
+  </p>
+  <p
+    className={`mt-2 text-[9px] uppercase tracking-[0.22em] ${
+      isOperations || isSuperAdmin ? "text-white/45" : "text-black/40"
+    }`}
+  >
+    Commercial Operating System
+  </p>
+</div>
           <div className="min-h-0 flex-1 overflow-y-auto">{navigation}</div>
-          <div className="mt-4 border-t border-black/10 px-4 pt-5"><p className="text-[10px] font-semibold uppercase tracking-[0.18em]">{admin.full_name}</p><p className="mt-1 text-[10px] text-black/45">{admin.role.replaceAll("_", " ")}</p><button onClick={handleLogout} className="mt-5 text-[10px] font-semibold uppercase tracking-[0.15em] text-black/50 hover:text-black">Cerrar sesión ↗</button></div>
+
+<div
+  className={`mt-4 border-t px-4 pt-5 ${
+    isOperations || isSuperAdmin ? "border-white/10" : "border-black/10"
+  }`}
+>
+  {isOperations ? (
+    <>
+      <div className="flex items-center gap-3">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#c96a1b] bg-[#302820]">
+          <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-[#e08a49]">
+            {admin.full_name.trim().charAt(0).toUpperCase()}
+          </span>
+
+          <Image
+            src="/images/admin/operations/roxana-profile.webp"
+            alt={`Fotografía de ${admin.full_name}`}
+            fill
+            sizes="56px"
+            className="object-cover"
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+            }}
+          />
+        </div>
+
+        <div className="min-w-0">
+          <p className="truncate text-[11px] font-bold uppercase tracking-[0.12em] text-white">
+            {admin.full_name}
+          </p>
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#e08a49]">
+            Operations
+          </p>
+          <p className="mt-1 text-[9px] text-white/40">
+            Territory Control
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleLogout}
+        className="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60 transition hover:text-[#e08a49]"
+      >
+        Cerrar sesión
+        <span aria-hidden="true">↗</span>
+      </button>
+    </>
+
+  ) : (
+    <>
+      {isSuperAdmin ? (
+        <>
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#c96a1b]/60 bg-[#c96a1b]/10">
+              <span className="text-lg font-semibold text-[#e08a49]">
+                {admin.full_name.trim().charAt(0).toUpperCase()}
+              </span>
+            </div>
+
+            <div className="min-w-0">
+              <p className="truncate text-[11px] font-bold uppercase tracking-[0.1em] text-white">
+                {admin.full_name}
+              </p>
+              <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#e08a49]">
+                Super Admin
+              </p>
+              <p className="mt-1 text-[9px] text-white/40">
+                Executive Control
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-6 flex w-full items-center justify-between border-t border-white/10 pt-4 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60 transition hover:text-[#e08a49]"
+          >
+            Cerrar sesión
+            <span aria-hidden="true">↗</span>
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em]">
+            {admin.full_name}
+          </p>
+          <p className="mt-1 text-[10px] text-black/45">
+            {admin.role.replaceAll("_", " ")}
+          </p>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-5 text-[10px] font-semibold uppercase tracking-[0.15em] text-black/50 hover:text-black"
+          >
+            Cerrar sesión ↗
+          </button>
+        </>
+            )}
+    </>
+  )}
+
+</div>
+
         </aside>
         <div className="min-w-0 flex-1">
           <header className="sticky top-0 z-20 flex min-h-[76px] items-center justify-between gap-3 border-b border-black/10 bg-[#f5f3ef]/95 px-5 backdrop-blur-md sm:px-8 xl:px-12">
             <div className="flex items-center gap-4"><button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="rounded-lg border border-black/15 px-3 py-2 text-lg lg:hidden" aria-label="Abrir o cerrar menú" aria-expanded={mobileMenuOpen}>☰</button><div><p className="text-[11px] font-bold uppercase tracking-[0.15em]">Territory Control</p><p className="mt-1 text-[10px] text-black/40">Centro {isSuperAdmin ? "de gobierno" : isOperations ? "de operaciones" : "administrativo"}</p></div></div>
             <div className="flex items-center gap-3"><span className="hidden rounded-full border border-black/15 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] sm:block">{admin.role.replaceAll("_", " ")}</span><span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#171717] text-[11px] font-bold text-white" aria-label="Perfil">{admin.full_name.trim().charAt(0).toUpperCase()}</span></div>
           </header>
-          {mobileMenuOpen && <div className="absolute inset-x-0 top-[76px] z-30 max-h-[75vh] overflow-y-auto border-b border-black/15 bg-[#eeebe5] px-5 pb-6 shadow-xl lg:hidden">{navigation}<button onClick={handleLogout} className="mt-6 px-4 text-[11px] font-semibold uppercase">Cerrar sesión ↗</button></div>}
+
+{mobileMenuOpen && (
+  <div
+    className={`absolute inset-x-0 top-[76px] z-30 max-h-[75vh] overflow-y-auto border-b px-5 pb-6 shadow-xl lg:hidden ${
+      isSuperAdmin || isOperations
+        ? "border-white/10 bg-[#171717] text-white"
+        : "border-black/15 bg-[#eeebe5] text-[#171717]"
+    }`}
+  >
+    {navigation}
+
+    <button
+      type="button"
+      onClick={handleLogout}
+      className={`mt-6 w-full border-t px-4 pt-5 text-left text-[11px] font-semibold uppercase tracking-[0.14em] transition ${
+        isSuperAdmin || isOperations
+          ? "border-white/10 text-white/60 hover:text-[#e08a49]"
+          : "border-black/10 text-black/60 hover:text-black"
+      }`}
+    >
+      Cerrar sesión ↗
+    </button>
+  </div>
+)}
+
           <div className="mx-auto max-w-[1440px] px-5 pb-20 pt-9 sm:px-8 xl:px-12 xl:pt-12">
+            {isSuperAdmin && (
+  <SuperAdminDashboard
+    fullName={admin.full_name}
+    metrics={metrics}
+    inventoryMetrics={inventoryMetrics}
+  />
+)}
+
+{isOperations && (
+  <OperationsDashboard fullName={admin.full_name} />
+)}
+
+{!isSuperAdmin && !isOperations && <>
             <div className="mb-7 flex flex-wrap items-center justify-between gap-3"><p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-black/40">Plataforma comercial / Vista general</p><span className="text-[10px] text-black/40">WT — CONTROL / 2026</span></div>
             <section className="relative overflow-hidden rounded-[22px] bg-[#171717] px-6 py-10 text-white sm:px-10 sm:py-12 xl:px-12">
               <div className="pointer-events-none absolute -right-16 -top-24 h-80 w-80 rounded-full border border-white/10"/><div className="pointer-events-none absolute -right-2 -top-12 h-60 w-60 rounded-full border border-white/10"/>
@@ -190,8 +555,9 @@ export default function AdminPage() {
             {(isSuperAdmin || isOperations) ? <>
               {isSuperAdmin && <section className="mt-11" aria-labelledby="pulse-title"><div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-black/40">01 / Actividad comercial</p><h2 id="pulse-title" className="mt-2 text-[24px] font-semibold tracking-[-0.045em]">Indicadores de gestión</h2></div><span className="text-[10px] text-black/40">Datos de módulos existentes</span></div><div className="grid gap-3 md:grid-cols-3">{quickLinks.map(link => <button key={link.href} onClick={() => navigate(link.href)} className="group flex min-h-[156px] flex-col justify-between rounded-2xl border border-black/10 bg-white p-6 text-left transition hover:-translate-y-0.5 hover:border-black/30 hover:shadow-lg"><div className="flex items-start justify-between"><p className="text-[11px] font-semibold text-black/50">{link.title}</p><span className="text-black/40 group-hover:text-black">↗</span></div><div className="flex items-end justify-between"><span className="text-[43px] font-semibold leading-none tracking-[-0.06em] tabular-nums">{link.value}</span><span className="text-[10px] text-black/40">{link.detail}</span></div></button>)}</div></section>}
               <section className="mt-12" aria-labelledby="modules-title"><div className="mb-5 flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-black/40">{isSuperAdmin ? "02 / Arquitectura comercial" : "01 / Territorio operativo"}</p><h2 id="modules-title" className="mt-2 text-[24px] font-semibold tracking-[-0.045em]">{isSuperAdmin ? "Áreas de control" : "Espacios de trabajo"}</h2></div><span className="text-[10px] text-black/40">{destinations.length} módulos</span></div><div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">{destinations.map(item => <div key={item.number} className="min-w-0"><TerritoryTile item={item} onNavigate={navigate}/></div>)}</div></section>
-              <section className="mt-10 grid gap-4 rounded-2xl border border-black/10 bg-[#eae6df] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8"><div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-black/40">Próxima etapa</p><h3 className="mt-2 text-lg font-semibold">{isSuperAdmin ? "Store · Red de tiendas aliadas" : "Inventario y recepciones"}</h3><p className="mt-2 max-w-2xl text-[12px] leading-6 text-black/55">{isSuperAdmin ? "Vinculación de establecimientos, evaluación y contratación electrónica. En desarrollo; todavía no se ejecutan acciones." : "La consulta de existencias y el flujo de recepciones se conectarán después de verificar las autorizaciones efectivas."}</p></div><span className="w-fit rounded-full border border-black/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-black/55">En desarrollo</span></section>
+              {isSuperAdmin && (<section className="mt-10 grid gap-4 rounded-2xl border border-black/10 bg-[#eae6df] p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8"><div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-black/40">Próxima etapa</p><h3 className="mt-2 text-lg font-semibold">{isSuperAdmin ? "Store · Red de tiendas aliadas" : "Inventario y recepciones"}</h3><p className="mt-2 max-w-2xl text-[12px] leading-6 text-black/55">{isSuperAdmin ? "Vinculación de establecimientos, evaluación y contratación electrónica. En desarrollo; todavía no se ejecutan acciones." : "La consulta de existencias y el flujo de recepciones se conectarán después de verificar las autorizaciones efectivas."}</p></div><span className="w-fit rounded-full border border-black/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-black/55">En desarrollo</span></section>)}
             </> : <section className="mt-10 rounded-2xl border border-black/10 bg-white p-8"><h2 className="text-xl font-semibold">Territorio {admin.role === "FINANCE" ? "financiero" : "administrativo"}</h2><p className="mt-3 text-sm text-black/50">Las funciones específicas de este rol están pendientes de habilitación.</p></section>}
+            </>}
             <footer className="mt-14 flex flex-wrap justify-between gap-3 border-t border-black/10 pt-6 text-[10px] text-black/40"><span>Wolves Territory / Commercial Operating System</span><span>Los permisos efectivos se validan en el backend.</span></footer>
           </div>
         </div>

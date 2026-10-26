@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
+import TerritoryNavigation from "@/components/admin/TerritoryNavigation";
 
 type AdjustmentQueueItem = {
   count_id: string;
@@ -323,13 +324,11 @@ const reviewCount = async (
   return (
     <main className="min-h-screen bg-[#f2f0eb] px-6 py-10 text-black md:px-12">
       <div className="mx-auto max-w-7xl">
-        <button
-          type="button"
-          onClick={() => router.push("/admin")}
-          className="text-xs uppercase tracking-[0.2em] text-black/40 transition hover:text-black"
-        >
-          ← Territory Control
-        </button>
+        <TerritoryNavigation
+  section="Revisión de ajustes"
+  parentLabel="Inventario"
+  parentHref="/admin/inventory"
+/>
 
         <div className="mt-12 border-b border-black/10 pb-8">
           <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
