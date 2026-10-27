@@ -4,6 +4,7 @@ import Link from "next/link";
 
 type ExpansionDashboardProps = {
   fullName: string;
+  isSuperAdmin: boolean;
 };
 
 const workspaces = [
@@ -44,6 +45,7 @@ const workspaces = [
 
 export default function ExpansionDashboard({
   fullName,
+  isSuperAdmin,
 }: ExpansionDashboardProps) {
   const displayName = fullName.trim() || "Representante";
 
@@ -60,9 +62,16 @@ export default function ExpansionDashboard({
             </p>
           </div>
 
-          <span className="rounded-full border border-black/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.13em]">
-            Fundación V0.1
-          </span>
+          <div className="flex flex-wrap items-center gap-3">
+            {isSuperAdmin && (
+              <Link href="/admin" className="rounded-full border border-black/20 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.13em] hover:bg-[#171717] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2">
+                ← Regresar a SUPER_ADMIN
+              </Link>
+            )}
+            <span className="rounded-full border border-black/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.13em]">
+              Fundación V0.1
+            </span>
+          </div>
         </header>
 
         <section className="relative mt-9 overflow-hidden rounded-[24px] bg-[#171717] px-6 py-12 text-white sm:px-10 sm:py-16 xl:px-14">
