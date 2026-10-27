@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 type ExpansionDashboardProps = {
   fullName: string;
 };
@@ -11,7 +13,8 @@ const workspaces = [
     title: "Mis prospectos",
     description:
       "Un espacio para construir y gestionar la cartera comercial asignada.",
-    status: "Pendiente de conexión",
+    status: "Entrar a Portfolio",
+    href: "/admin/expansion/portfolio",
   },
   {
     number: "02",
@@ -154,9 +157,13 @@ export default function ExpansionDashboard({
                   </p>
                 </div>
 
-                <p className="mt-7 border-t border-black/10 pt-4 text-[10px] font-medium uppercase tracking-[0.1em] text-black/40">
-                  {workspace.status}
-                </p>
+                {"href" in workspace ? (
+                  <Link href={workspace.href} className="mt-7 border-t border-black/10 pt-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#a66a3d] hover:underline focus-visible:outline-2 focus-visible:outline-offset-4">
+                    {workspace.status} ↗
+                  </Link>
+                ) : (
+                  <p className="mt-7 border-t border-black/10 pt-4 text-[10px] font-medium uppercase tracking-[0.1em] text-black/40">{workspace.status}</p>
+                )}
               </article>
             ))}
           </div>
@@ -165,7 +172,7 @@ export default function ExpansionDashboard({
         <footer className="mt-12 flex flex-wrap justify-between gap-3 border-t border-black/10 pt-6 text-[10px] text-black/45">
           <span>Wolves Territory / Expansion V0.1</span>
           <span>
-            Sin datos simulados · Sin conexión operativa
+            Sin datos simulados · Portfolio conectado mediante funciones seguras
           </span>
         </footer>
       </div>
