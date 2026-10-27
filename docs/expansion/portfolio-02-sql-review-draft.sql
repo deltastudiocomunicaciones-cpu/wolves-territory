@@ -22,7 +22,8 @@ $preflight$;
 INSERT INTO public.platform_permissions(code,name,description,active)
 VALUES
  ('EXPANSION_PROSPECT_EDIT','Editar prospecto','Actualizar contacto y ubicación del prospecto asignado',true),
- ('EXPANSION_PROSPECT_STATUS_CHANGE','Cambiar estado comercial','Actualizar estado comercial con razón y control de concurrencia',true)
+ ('EXPANSION_PROSPECT_STATUS_CHANGE','Cambiar estado comercial','Actualizar estado comercial con razón y control de concurrencia',true),
+ ('EXPANSION_PROSPECT_EDIT_ALL','Editar cualquier prospecto','Alcance global de edición reservado a SUPER_ADMIN',true)
 ON CONFLICT (code) DO NOTHING;
 
 INSERT INTO public.platform_role_permissions(role_code,permission_id,active)
@@ -30,6 +31,11 @@ SELECT r.role_code,p.id,true
 FROM (VALUES ('SUPER_ADMIN'),('EXPANSION')) r(role_code)
 JOIN public.platform_permissions p
  ON p.code IN ('EXPANSION_PROSPECT_EDIT','EXPANSION_PROSPECT_STATUS_CHANGE')
+ON CONFLICT (role_code,permission_id) DO NOTHING;
+
+INSERT INTO public.platform_role_permissions(role_code,permission_id,active)
+SELECT 'SUPER_ADMIN',p.id,true FROM public.platform_permissions p
+WHERE p.code='EXPANSION_PROSPECT_EDIT_ALL'
 ON CONFLICT (role_code,permission_id) DO NOTHING;
 
 INSERT INTO public.audit_event_types(domain_code,code,name,description,active,display_order)
@@ -102,7 +108,7 @@ BEGIN
  WHERE ep.id=p_prospect_id FOR UPDATE;
  IF NOT FOUND OR NOT (
  v_old.assigned_to=v_admin
- OR public.has_platform_permission('EXPANSION_PROSPECT_VIEW_ALL') IS TRUE)
+ OR public.has_platform_permission('EXPANSION_PROSPECT_EDIT_ALL') IS TRUE)
  THEN RAISE EXCEPTION 'Prospect not accessible' USING ERRCODE='42501'; END IF;
  IF (v_old.contact_name,v_old.contact_phone,v_old.contact_email,v_old.department,v_old.city)
  IS NOT DISTINCT FROM (v_name,v_phone,v_email,v_department,v_city)
@@ -129,7 +135,7 @@ BEGIN
 END;$fn$;
 
 -- Optimistic concurrency: caller supplies the state observed in the UI.
--- Reopening CLOSED and other transition policy require separate functional approval.
+-- Transition graph is a conservative proposal requiring commercial approval.
 CREATE OR REPLACE FUNCTION public.change_expansion_prospect_status(
  p_prospect_id uuid,p_expected_status text,p_new_status text,p_reason text)
 RETURNS TABLE(prospect_id uuid,correlation_id uuid)
@@ -142,7 +148,7 @@ BEGIN
  IF v_auth IS NULL OR public.has_platform_permission('EXPANSION_PROSPECT_STATUS_CHANGE') IS NOT TRUE
  THEN RAISE EXCEPTION 'Status change not permitted' USING ERRCODE='42501'; END IF;
  v_target:=pg_catalog.upper(pg_catalog.btrim(p_new_status));
- IF p_prospect_id IS NULL OR p_expected_status IS NULL
+ IF p_prospect_id IS NULL OR p_expected_status IS NULL OR v_target IS NULL
  OR v_target NOT IN ('IDENTIFIED','CONTACTED','IN_CONVERSATION','PAUSED','CLOSED')
  OR NULLIF(pg_catalog.btrim(p_reason),'') IS NULL
  OR pg_catalog.length(p_reason)>1000
@@ -154,14 +160,18 @@ BEGIN
  WHERE ep.id=p_prospect_id FOR UPDATE;
  IF NOT FOUND OR NOT (
  v_old.assigned_to=v_admin
- OR public.has_platform_permission('EXPANSION_PROSPECT_VIEW_ALL') IS TRUE)
+ OR public.has_platform_permission('EXPANSION_PROSPECT_EDIT_ALL') IS TRUE)
  THEN RAISE EXCEPTION 'Prospect not accessible' USING ERRCODE='42501'; END IF;
  IF v_old.commercial_status IS DISTINCT FROM p_expected_status
  THEN RAISE EXCEPTION 'Stale prospect status; refresh required' USING ERRCODE='40001'; END IF;
  IF v_target=v_old.commercial_status
  THEN RAISE EXCEPTION 'No status change' USING ERRCODE='22023'; END IF;
- IF v_old.commercial_status='CLOSED'
- THEN RAISE EXCEPTION 'Closed prospect reopening requires separate approval' USING ERRCODE='42501'; END IF;
+ -- Conservative transition graph pending commercial approval.
+ IF NOT ((v_old.commercial_status='IDENTIFIED' AND v_target IN ('CONTACTED','PAUSED'))
+ OR (v_old.commercial_status='CONTACTED' AND v_target IN ('IN_CONVERSATION','PAUSED'))
+ OR (v_old.commercial_status='IN_CONVERSATION' AND v_target IN ('PAUSED','CLOSED'))
+ OR (v_old.commercial_status='PAUSED' AND v_target IN ('CONTACTED','IN_CONVERSATION','CLOSED')))
+ THEN RAISE EXCEPTION 'Transition not authorized' USING ERRCODE='42501'; END IF;
  UPDATE public.expansion_prospects ep SET commercial_status=v_target,
  updated_at=pg_catalog.now() WHERE ep.id=p_prospect_id RETURNING * INTO v_new;
  v_corr:=pg_catalog.gen_random_uuid();
@@ -186,5 +196,5 @@ COMMIT;
 -- 1. Review SECURITY DEFINER owner and RLS behavior, catalog event permissions.
 -- 2. Validate grant matrix and deny-by-default tests with authenticated contexts.
 -- 3. Verify audit rollback, concurrency, no-op behavior, and attribution preservation.
--- 4. Decide allowed transition graph and reopening CLOSED policy.
+-- 4. Approve or amend the conservative transition graph; CLOSED is terminal.
 -- 5. Obtain explicit authorization to run against real Supabase.
