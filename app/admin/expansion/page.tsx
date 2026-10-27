@@ -83,5 +83,5 @@ export default function ExpansionPage() {
     return null;
   }
 
-  return <ExpansionDashboard fullName={admin.full_name} />;
+  return <ExpansionDashboard fullName={admin.full_name} isSuperAdmin={admin.role === "SUPER_ADMIN"} />;
 }
