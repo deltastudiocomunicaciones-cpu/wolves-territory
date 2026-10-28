@@ -1,4 +1,5 @@
--- PORTFOLIO-02 / REVIEW DRAFT ONLY — DO NOT EXECUTE WITHOUT APPROVAL
+-- PORTFOLIO-02 / APPROVED INSTALLATION SCOPE: read, edit, non-closing status transitions.
+-- CLOSED blocked until PORTFOLIO-03 outcomes are approved.
 -- Existing production-like Supabase project: hzhvgjvabhkaxivlrhfl
 -- This file is deliberately NOT placed under supabase/migrations.
 -- Assumptions: public.has_platform_permission, public.record_platform_audit_event,
@@ -167,6 +168,8 @@ BEGIN
  IF v_target=v_old.commercial_status
  THEN RAISE EXCEPTION 'No status change' USING ERRCODE='22023'; END IF;
  -- Conservative transition graph pending commercial approval.
+ IF v_target='CLOSED' THEN
+ RAISE EXCEPTION 'Closure outcome model pending; cannot close yet' USING ERRCODE='42501'; END IF;
  IF NOT ((v_old.commercial_status='IDENTIFIED' AND v_target IN ('CONTACTED','PAUSED'))
  OR (v_old.commercial_status='CONTACTED' AND v_target IN ('IN_CONVERSATION','PAUSED'))
  OR (v_old.commercial_status='IN_CONVERSATION' AND v_target IN ('PAUSED','CLOSED'))
@@ -196,5 +199,5 @@ COMMIT;
 -- 1. Review SECURITY DEFINER owner and RLS behavior, catalog event permissions.
 -- 2. Validate grant matrix and deny-by-default tests with authenticated contexts.
 -- 3. Verify audit rollback, concurrency, no-op behavior, and attribution preservation.
--- 4. Approve or amend the conservative transition graph; CLOSED is terminal.
+-- 4. CLOSED is blocked until closure outcome schema and audit are approved.
 -- 5. Obtain explicit authorization to run against real Supabase.
