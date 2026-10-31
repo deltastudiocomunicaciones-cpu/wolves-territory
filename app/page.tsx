@@ -1,3 +1,4 @@
+
 import Footer from "@/components/layout/Footer";
 import ReferralCapture from "@/components/partners/ReferralCapture";
 import { Suspense } from "react";
@@ -6,6 +7,7 @@ import ProductGrid from "@/components/sections/ProductGrid";
 import FeaturedCollection from "@/components/sections/FeaturedCollection";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
+import ThePack from "@/components/sections/ThePack";
 
 export default function Home() {
   return (
@@ -15,6 +17,8 @@ export default function Home() {
 
         <Hero />
 
+        <ThePack />
+
         <FeaturedCollection />
 
         <Suspense
@@ -23,7 +27,6 @@ export default function Home() {
           }
         >
           <ProductGrid />
-
           <ReferralCapture />
         </Suspense>
       </main>
