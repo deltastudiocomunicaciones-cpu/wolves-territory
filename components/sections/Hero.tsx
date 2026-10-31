@@ -2,11 +2,17 @@ export default function Hero() {
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-black">
       {/* BACKGROUND */}
-      <img
-        src="/images/hero-wolves.webp"
-        alt="Wolves Territory Campaign"
-        className="absolute inset-0 h-full w-full object-cover object-[center_-20%]"
-      />
+      <picture className="absolute inset-0 block h-full w-full">
+        <source
+          media="(max-width: 767px)"
+          srcSet="/images/hero-wolves-mobile.webp"
+        />
+        <img
+          src="/images/hero-wolves.webp"
+          alt="Wolves Territory Campaign"
+          className="h-full w-full object-cover object-center md:object-[center_-20%]"
+        />
+      </picture>
 
       {/* OVERLAYS */}
       <div className="absolute inset-0 bg-black/05" />
@@ -27,7 +33,7 @@ export default function Hero() {
               </p>
             </div>
 
-            <h1 className="max-w-[1050px] text-[clamp(4.4rem,8.2vw,9rem)] font-black uppercase leading-[0.78] tracking-[-0.06em] text-white">
+            <h1 className="max-w-[1050px] text-[clamp(2.4rem,9.5vw,4rem)] sm:text-[clamp(3.5rem,8.2vw,9rem)] lg:text-[clamp(4.4rem,8.2vw,9rem)] font-black uppercase leading-[0.78] tracking-[-0.06em] text-white">
               Usa
               <br />
               el
