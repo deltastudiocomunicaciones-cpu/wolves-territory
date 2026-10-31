@@ -3,14 +3,14 @@ export default function Hero() {
     <section className="relative min-h-[100svh] overflow-hidden bg-black">
       {/* BACKGROUND */}
       <img
-        src="/images/hero-wolves.png"
+        src="/images/hero-wolves.webp"
         alt="Wolves Territory Campaign"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="absolute inset-0 h-full w-full object-cover object-[center_-20%]"
       />
 
       {/* OVERLAYS */}
-      <div className="absolute inset-0 bg-black/25" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/45 to-transparent" />
+      <div className="absolute inset-0 bg-black/05" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/25" />
 
       {/* CONTENT */}
