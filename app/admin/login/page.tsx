@@ -99,7 +99,7 @@ export default function AdminLoginPage() {
         );
       }
 
-      router.replace("/admin");
+      router.replace(admin.role === "EXPANSION" ? "/admin/expansion" : "/admin");
       router.refresh();
 
     } catch (error) {

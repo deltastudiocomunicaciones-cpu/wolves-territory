@@ -7,7 +7,7 @@ import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 type AuthorizedAdmin = {
   full_name: string;
-  role: "SUPER_ADMIN";
+  role: "SUPER_ADMIN" | "EXPANSION";
 };
 
 export default function ExpansionPage() {
@@ -40,7 +40,7 @@ export default function ExpansionPage() {
           profileError ||
           !profile ||
           profile.active !== true ||
-          profile.role !== "SUPER_ADMIN"
+          !["SUPER_ADMIN", "EXPANSION"].includes(profile.role)
         ) {
           router.replace("/admin");
           return;
@@ -49,7 +49,7 @@ export default function ExpansionPage() {
         if (!cancelled) {
           setAdmin({
             full_name: profile.full_name,
-            role: "SUPER_ADMIN",
+            role: profile.role as AuthorizedAdmin["role"],
           });
         }
       } catch (error) {
@@ -83,5 +83,5 @@ export default function ExpansionPage() {
     return null;
   }
 
-  return <ExpansionDashboard fullName={admin.full_name} />;
+  return <ExpansionDashboard fullName={admin.full_name} isSuperAdmin={admin.role === "SUPER_ADMIN"} />;
 }

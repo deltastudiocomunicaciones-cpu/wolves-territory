@@ -108,6 +108,10 @@ export default function AdminPage() {
           .select("full_name, role, active")
           .eq("auth_user_id", userData.user.id)
           .maybeSingle();
+        if (!adminError && adminData?.active && adminData.role === "EXPANSION") {
+          router.replace("/admin/expansion");
+          return;
+        }
         if (adminError || !adminData || !adminData.active || !isAdminTerritory(adminData.role)) {
           await supabase.auth.signOut();
           router.replace("/admin/login");

@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
+
 type ExpansionDashboardProps = {
   fullName: string;
+  isSuperAdmin: boolean;
 };
 
 const workspaces = [
@@ -11,7 +14,8 @@ const workspaces = [
     title: "Mis prospectos",
     description:
       "Un espacio para construir y gestionar la cartera comercial asignada.",
-    status: "Pendiente de conexión",
+    status: "Entrar a Portfolio",
+    href: "/admin/expansion/portfolio",
   },
   {
     number: "02",
@@ -41,6 +45,7 @@ const workspaces = [
 
 export default function ExpansionDashboard({
   fullName,
+  isSuperAdmin,
 }: ExpansionDashboardProps) {
   const displayName = fullName.trim() || "Representante";
 
@@ -57,9 +62,16 @@ export default function ExpansionDashboard({
             </p>
           </div>
 
-          <span className="rounded-full border border-black/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.13em]">
-            Fundación V0.1
-          </span>
+          <div className="flex flex-wrap items-center gap-3">
+            {isSuperAdmin && (
+              <Link href="/admin" className="rounded-full border border-black/20 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.13em] hover:bg-[#171717] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2">
+                ← Regresar a SUPER_ADMIN
+              </Link>
+            )}
+            <span className="rounded-full border border-black/15 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.13em]">
+              Fundación V0.1
+            </span>
+          </div>
         </header>
 
         <section className="relative mt-9 overflow-hidden rounded-[24px] bg-[#171717] px-6 py-12 text-white sm:px-10 sm:py-16 xl:px-14">
@@ -154,9 +166,13 @@ export default function ExpansionDashboard({
                   </p>
                 </div>
 
-                <p className="mt-7 border-t border-black/10 pt-4 text-[10px] font-medium uppercase tracking-[0.1em] text-black/40">
-                  {workspace.status}
-                </p>
+                {"href" in workspace ? (
+                  <Link href={workspace.href} className="mt-7 border-t border-black/10 pt-4 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#a66a3d] hover:underline focus-visible:outline-2 focus-visible:outline-offset-4">
+                    {workspace.status} ↗
+                  </Link>
+                ) : (
+                  <p className="mt-7 border-t border-black/10 pt-4 text-[10px] font-medium uppercase tracking-[0.1em] text-black/40">{workspace.status}</p>
+                )}
               </article>
             ))}
           </div>
@@ -165,7 +181,7 @@ export default function ExpansionDashboard({
         <footer className="mt-12 flex flex-wrap justify-between gap-3 border-t border-black/10 pt-6 text-[10px] text-black/45">
           <span>Wolves Territory / Expansion V0.1</span>
           <span>
-            Sin datos simulados · Sin conexión operativa
+            Sin datos simulados · Portfolio conectado mediante funciones seguras
           </span>
         </footer>
       </div>
