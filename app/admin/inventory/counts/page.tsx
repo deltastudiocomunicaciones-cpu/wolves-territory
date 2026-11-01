@@ -104,10 +104,12 @@ if (openCountError) {
   );
 
   if (savedItemsError) {
-    console.error(
-      "COUNT ITEMS RECOVERY ERROR:",
-      savedItemsError
-    );
+    console.error("COUNT ITEMS RECOVERY ERROR:", {
+      message: savedItemsError.message,
+      code: savedItemsError.code,
+      details: savedItemsError.details,
+      hint: savedItemsError.hint,
+    });
   } else if (savedItems) {
     const recoveredPhysicalCounts: Record<string, string> = {};
     const recoveredObservations: Record<string, string> = {};
@@ -380,8 +382,18 @@ async function submitCount() {
 }
 
   return (
-    <main className="min-h-screen bg-[#f2f0eb] px-6 py-10 text-black md:px-12">
-      <div className="mx-auto max-w-7xl">
+    <main className="relative isolate min-h-screen bg-[#f2f0eb] px-6 py-10 text-black md:px-12">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.45] max-md:opacity-[0.22]"
+          style={{ backgroundImage: "url('/wt-control-everest.webp')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f2f0eb]/75 via-[#f2f0eb]/35 to-[#f2f0eb]/15" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-7xl">
 
         <TerritoryNavigation
   section="Conteos físicos"
@@ -419,7 +431,7 @@ async function submitCount() {
        {!loading && !errorMessage && (
   <>
     {/* CONTEO ACTIVO */}
-    <div className="mt-10 flex flex-col gap-4 border border-black/10 bg-white p-5 md:flex-row md:items-center md:justify-between">
+    <div className="mt-10 flex flex-col gap-4 rounded-sm border border-[#d8d0c4] bg-[#fbfaf7]/95 p-7 shadow-[0_12px_40px_rgba(35,29,21,0.08)] backdrop-blur-md md:flex-row md:items-center md:justify-between">
       <div>
         <p className="text-[9px] uppercase tracking-[0.2em] text-black/35">
           Conteo actual
@@ -461,7 +473,7 @@ async function submitCount() {
 
     {/* BUSCADOR Y FILTROS */}
 
-    <div className="mt-10 border border-black/10 bg-white/40 p-5">
+    <div className="mt-10 rounded-sm border border-[#d8d0c4] bg-[#fbfaf7]/90 p-7 shadow-[0_12px_40px_rgba(35,29,21,0.06)] backdrop-blur-md">
       <input
         type="search"
         value={search}
@@ -528,18 +540,18 @@ async function submitCount() {
     </div>
 
     {/* TABLA */}
-    <div className="mt-6 overflow-x-auto">
-      <table className="w-full border-collapse text-left">
+    <div className="mt-6 overflow-x-auto bg-transparent py-3">
+      <table className="w-full border-separate border-spacing-y-3 text-left">
               <thead>
-                <tr className="border-b border-black/15 text-[9px] uppercase tracking-[0.18em] text-black/40">
-                  <th className="py-4 pr-6">Producto</th>
-                  <th className="py-4 pr-6">SKU</th>
-                  <th className="py-4 pr-6">Color</th>
-                  <th className="py-4 pr-6">Talla</th>
-                  <th className="py-4 pr-6 text-right">Sistema</th>
-<th className="py-4 pr-6 text-right">Físico</th>
-<th className="py-4 pr-6 text-right">Diferencia</th>
-<th className="py-4 text-right">Observación</th>
+                <tr className="bg-[#eee9e1]/90 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#5c554d] [&>th]:align-middle">
+                  <th className="px-3 py-5 text-center">Producto</th>
+                  <th className="px-3 py-5 text-center">SKU</th>
+                  <th className="px-3 py-5 text-center">Color</th>
+                  <th className="px-3 py-5 text-center">Talla</th>
+                  <th className="px-3 py-5 text-center">Sistema</th>
+<th className="px-3 py-5 text-center">Físico</th>
+<th className="px-3 py-5 text-center">Diferencia</th>
+<th className="px-3 py-5 text-center">Observación</th>
                 </tr>
               </thead>
 
@@ -547,25 +559,25 @@ async function submitCount() {
                 {filteredInventory.map((item) => (
                   <tr
                     key={item.inventory_id}
-                    className="border-b border-black/5 text-sm"
+                    className="bg-[#fbfaf7]/90 text-sm shadow-[0_6px_22px_rgba(35,29,21,0.07)] backdrop-blur-md transition-colors hover:bg-white/95 [&>td:first-child]:rounded-l-lg [&>td:last-child]:rounded-r-lg"
                   >
-                    <td className="py-5 pr-6 font-medium">
+                    <td className="py-5 pr-6 pl-5 text-[13px] font-semibold tracking-[-0.01em] text-[#24211e]">
                       {item.product_name || item.product_id}
                     </td>
 
-                    <td className="py-5 pr-6 text-black/55">
+                    <td className="py-5 pr-6 text-[12px] font-medium tracking-[0.005em] text-[#625c55]">
                       {item.sku || "—"}
                     </td>
 
-                    <td className="py-5 pr-6 text-black/55">
+                    <td className="py-5 pr-6 text-[12px] font-medium tracking-[0.005em] text-[#625c55]">
                       {item.color || "—"}
                     </td>
 
-                    <td className="py-5 pr-6 text-black/55">
+                    <td className="py-5 pr-6 text-[12px] font-medium tracking-[0.005em] text-[#625c55]">
                       {item.size || "—"}
                     </td>
 
-                    <td className="py-5 pr-6 text-right font-medium">
+                    <td className="py-5 pr-6 text-right text-[13px] font-semibold tabular-nums text-[#24211e]">
   {item.stock}
 </td>
 
@@ -582,11 +594,11 @@ async function submitCount() {
     }
     onBlur={() => saveCountItem(item)}
     placeholder="—"
-    className="w-20 border border-black/10 bg-white px-3 py-2 text-right"
+    className="w-20 rounded-sm border border-[#d8d0c4] bg-white px-3 py-2 text-right text-[13px] font-semibold tabular-nums text-[#24211e] outline-none transition focus:border-[#8f7963]"
   />
 </td>
 
-<td className="py-5 pr-6 text-right font-semibold">
+<td className="py-5 pr-6 text-right text-[13px] font-bold tabular-nums text-[#24211e]">
   {physicalCounts[item.inventory_id] != null &&
   physicalCounts[item.inventory_id] !== ""
     ? Number(physicalCounts[item.inventory_id]) - item.stock
@@ -604,7 +616,7 @@ async function submitCount() {
       }))
     }
     placeholder="Observación..."
-    className="min-w-48 border border-black/10 bg-white px-3 py-2 text-xs"
+    className="min-w-48 rounded-sm border border-[#d8d0c4] bg-white px-3 py-2 text-[12px] text-[#38332e] placeholder:text-[#8b857d] outline-none transition focus:border-[#8f7963]"
   />
 </td>
                   </tr>

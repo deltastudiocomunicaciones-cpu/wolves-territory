@@ -519,15 +519,25 @@ async function handleDispatchFulfillment(
    * ======================================================= */
 
   return (
-    <main className="min-h-screen bg-[#f2f0eb] text-black">
-      <header className="border-b border-black/10 px-6 py-5 md:px-10">
+    <main className="relative isolate min-h-screen bg-[#f2f0eb] text-[#171717]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 bg-no-repeat opacity-[0.34] grayscale [background-position:65%_center] [background-size:auto_125%] max-md:opacity-[0.12] max-md:[background-position:62%_center] max-md:[background-size:auto_85%]"
+          style={{ backgroundImage: "url('/wt-control-wolf.webp')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f2f0eb]/75 via-[#f2f0eb]/35 to-transparent" />
+      </div>
+      <header className="relative z-10 border-b border-[#d8d0c5] bg-[#f8f6f2]/90 px-6 py-6 md:px-10">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.34em]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#171717]">
               Wolves Territory
             </p>
 
-            <p className="mt-1 text-[8px] uppercase tracking-[0.25em] text-black/35">
+            <p className="mt-2 text-[10px] uppercase tracking-[0.2em] text-[#82776c]">
               Territory Operations
             </p>
           </div>
@@ -537,15 +547,15 @@ async function handleDispatchFulfillment(
             onClick={() =>
               router.push("/admin")
             }
-            className="text-[9px] uppercase tracking-[0.22em] text-black/40 transition hover:text-black"
+            className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#776b60] transition hover:text-black"
           >
             ← Centro de mando
           </button>
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-6 py-14 md:px-10 lg:py-20">
-        <p className="text-[9px] uppercase tracking-[0.3em] text-black/35">
+      <div className="relative z-10 mx-auto max-w-6xl px-6 py-12 md:px-10 lg:py-16">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#8b755d]">
           Fulfillment Control
         </p>
 
@@ -555,7 +565,7 @@ async function handleDispatchFulfillment(
           de pedidos.
         </h1>
 
-        <p className="mt-5 text-[9px] font-semibold uppercase tracking-[0.25em] text-black/30">
+        <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.16em] text-[#776b60]">
           {admin?.full_name} ·{" "}
           {admin?.role}
         </p>
@@ -564,7 +574,7 @@ async function handleDispatchFulfillment(
             METRICS
         =============================================== */}
 
-        <div className="mt-14 grid gap-px overflow-hidden border border-black/10 bg-black/10 md:grid-cols-3">
+        <div className="mt-12 grid gap-3 md:grid-cols-3">
   <MetricCard
     label="Ready"
     title="Por preparar"
@@ -604,19 +614,19 @@ async function handleDispatchFulfillment(
             ORDERS
         =============================================== */}
 
-        <div className="mt-16">
-          <div className="flex items-end justify-between gap-6 border-b border-black/10 pb-5">
+        <div className="mt-14">
+          <div className="flex flex-wrap items-end justify-between gap-6 border-b border-[#d8d0c5] pb-6">
             <div>
-              <p className="text-[8px] uppercase tracking-[0.26em] text-black/30">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8b755d]">
                 Operational Queue
               </p>
 
-              <h2 className="mt-3 text-xl font-semibold uppercase tracking-[-0.02em]">
+              <h2 className="mt-3 text-2xl font-semibold tracking-[-0.035em] text-[#171717]">
                 Pedidos que requieren atención
               </h2>
             </div>
 
-            <p className="text-[9px] uppercase tracking-[0.2em] text-black/30">
+            <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-[#776b60]">
               {orders.length} pedidos
             </p>
           </div>
@@ -637,31 +647,31 @@ async function handleDispatchFulfillment(
                     key={
                       order.fulfillment_id
                     }
-                    className="border-b border-black/10 py-8"
+                    className="my-4 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] px-6 py-7 shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-colors hover:border-[#b6a794] md:px-8"
                   >
                     <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
                       <div>
                         <div className="flex flex-wrap items-center gap-3">
-                          <p className="text-[8px] font-semibold uppercase tracking-[0.24em] text-black/35">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8b755d]">
                             {order.status}
                           </p>
 
                           <span className="h-1 w-1 rounded-full bg-black/20" />
 
-                          <p className="text-[8px] uppercase tracking-[0.22em] text-black/30">
+                          <p className="text-[10px] uppercase tracking-[0.14em] text-[#81776d]">
                             {
                               order.reference
                             }
                           </p>
                         </div>
 
-                        <h3 className="mt-5 text-2xl font-semibold tracking-[-0.035em]">
+                        <h3 className="mt-5 text-2xl font-semibold tracking-[-0.035em] text-[#171717]">
                           {
                             order.recipient_name
                           }
                         </h3>
 
-                        <p className="mt-2 text-xs text-black/45">
+                        <p className="mt-2 text-sm text-[#776b60]">
                           {
                             order.shipping_city
                           }{" "}
@@ -678,7 +688,7 @@ async function handleDispatchFulfillment(
                                 key={
                                   item.fulfillment_item_id
                                 }
-                                className="flex flex-wrap gap-x-3 text-xs text-black/55"
+                                className="flex flex-wrap gap-x-3 gap-y-1 text-[13px] text-[#625a52]"
                               >
                                 <span>
                                   {
@@ -870,7 +880,7 @@ async function handleDispatchFulfillment(
           );
           setErrorMessage(null);
         }}
-        className="bg-black px-6 py-4 text-[9px] font-semibold uppercase tracking-[0.22em] text-white transition hover:bg-black/80"
+        className="bg-[#171717] px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-[#41382f]"
       >
         Registrar despacho →
       </button>
@@ -907,16 +917,16 @@ function MetricCard({
   value: number;
 }) {
   return (
-    <div className="bg-[#f2f0eb] p-7 md:p-9">
-      <p className="text-[8px] uppercase tracking-[0.25em] text-black/35">
+    <div className="group relative bg-[#f8f6f2] p-8 transition-colors duration-300 hover:bg-white md:p-10">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-black/45">
         {label}
       </p>
 
-      <p className="mt-8 text-5xl font-semibold tracking-[-0.06em]">
+      <p className="mt-8 text-6xl font-semibold tabular-nums leading-none tracking-[-0.065em] text-[#171717] md:text-7xl">
         {value}
       </p>
 
-      <h2 className="mt-5 text-sm font-semibold uppercase tracking-[0.08em]">
+      <h2 className="mt-7 text-[11px] font-semibold uppercase tracking-[0.12em] text-black/75">
         {title}
       </h2>
     </div>

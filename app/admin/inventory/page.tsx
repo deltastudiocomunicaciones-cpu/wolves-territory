@@ -214,8 +214,18 @@ const filteredInventory = useMemo(() => {
 ]);
 
   return (
-  <main className="min-h-screen bg-[#f2f0eb] text-black">
-    <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+  <main className="relative isolate min-h-screen bg-[#f2f0eb] text-[#171717]">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+    >
+      <div
+        className="absolute inset-0 bg-no-repeat opacity-[0.82] [background-position:68%_center] [background-size:auto_120%] max-md:opacity-[0.14] max-md:[background-position:60%_center] max-md:[background-size:auto_85%]"
+        style={{ backgroundImage: "url('/wt-control-k2.webp')" }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#f2f0eb]/85 via-[#f2f0eb]/45 to-[#f2f0eb]/15" />
+    </div>
+    <div className="relative z-10 mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
 
       {/* K6-04A — Navegación de retorno */}
       <div className="mb-9 flex flex-wrap items-center justify-between gap-4">
@@ -269,7 +279,7 @@ const filteredInventory = useMemo(() => {
     onClick={() =>
       router.push("/admin/inventory/receipts")
     }
-    className="group border border-black/10 bg-white p-5 text-left transition hover:border-black/30"
+    className="group min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 text-left shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#aa967f] hover:bg-white hover:shadow-[0_16px_40px_rgba(35,29,21,0.09)]"
   >
     <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
       Entrada
@@ -297,7 +307,7 @@ const filteredInventory = useMemo(() => {
     onClick={() =>
       router.push("/admin/inventory/counts")
     }
-    className="group border border-black/10 bg-white p-5 text-left transition hover:border-black/30"
+    className="group min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 text-left shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#aa967f] hover:bg-white hover:shadow-[0_16px_40px_rgba(35,29,21,0.09)]"
   >
     <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
       Control
@@ -325,7 +335,7 @@ const filteredInventory = useMemo(() => {
     onClick={() =>
       router.push("/admin/inventory/review")
     }
-    className="group border border-black/10 bg-white p-5 text-left transition hover:border-black/30"
+    className="group min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 text-left shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#aa967f] hover:bg-white hover:shadow-[0_16px_40px_rgba(35,29,21,0.09)]"
   >
     <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
       Autorización
@@ -351,39 +361,39 @@ const filteredInventory = useMemo(() => {
 
         {!loading && !errorMessage && (
           <>
-            <section className="mt-10 grid gap-px overflow-hidden border border-black/10 bg-black/10 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="bg-white p-6">
+            <section className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="group rounded-sm border border-[#ded7cd] bg-[#f8f6f2] p-8 transition-colors duration-300 hover:bg-white">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
                   Stock total
                 </p>
-                <p className="mt-4 text-3xl font-semibold">
+                <p className="mt-8 text-5xl font-semibold tabular-nums leading-none tracking-[-0.065em] text-[#171717] md:text-6xl">
                   {metrics.stock}
                 </p>
               </div>
 
-              <div className="bg-white p-6">
+              <div className="group rounded-sm border border-[#ded7cd] bg-[#f8f6f2] p-8 transition-colors duration-300 hover:bg-white">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
                   Reservado
                 </p>
-                <p className="mt-4 text-3xl font-semibold">
+                <p className="mt-8 text-5xl font-semibold tabular-nums leading-none tracking-[-0.065em] text-[#171717] md:text-6xl">
                   {metrics.reserved}
                 </p>
               </div>
 
-              <div className="bg-white p-6">
+              <div className="group rounded-sm border border-[#ded7cd] bg-[#f8f6f2] p-8 transition-colors duration-300 hover:bg-white">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
                   Disponible
                 </p>
-                <p className="mt-4 text-3xl font-semibold">
+                <p className="mt-8 text-5xl font-semibold tabular-nums leading-none tracking-[-0.065em] text-[#171717] md:text-6xl">
                   {metrics.available}
                 </p>
               </div>
 
-              <div className="bg-white p-6">
+              <div className="group rounded-sm border border-[#ded7cd] bg-[#f8f6f2] p-8 transition-colors duration-300 hover:bg-white">
                 <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
                   Alertas
                 </p>
-                <p className="mt-4 text-3xl font-semibold">
+                <p className="mt-8 text-5xl font-semibold tabular-nums leading-none tracking-[-0.065em] text-[#171717] md:text-6xl">
                   {metrics.alerts}
                 </p>
               </div>
@@ -495,7 +505,7 @@ const filteredInventory = useMemo(() => {
                   return (
                     <article
                       key={item.inventory_id}
-                      className="border border-black/10 bg-white p-5"
+                      className="rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-6 shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-colors duration-300 hover:border-[#b6a794] hover:bg-white"
                     >
                       <div className="grid gap-5 md:grid-cols-[minmax(0,2fr)_repeat(4,minmax(80px,0.7fr))] md:items-center">
                         <div>

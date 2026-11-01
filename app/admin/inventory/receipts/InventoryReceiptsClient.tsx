@@ -855,8 +855,18 @@ const handleApplyReceipt = async () => {
 };
 
   return (
-    <main className="min-h-screen bg-[#f5f2eb] text-black">
-      <div className="mx-auto w-full max-w-7xl px-5 py-8 md:px-8 md:py-12">
+    <main className="relative isolate min-h-screen bg-[#f5f2eb] text-[#171717]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      >
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.82] max-md:opacity-[0.20]"
+          style={{ backgroundImage: "url('/wt-control-artic-forest.webp')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#f5f2eb]/75 via-[#f5f2eb]/30 to-[#f5f2eb]/10" />
+      </div>
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 py-8 md:px-8 md:py-12">
         <TerritoryNavigation
   section="Recepciones"
   parentLabel="Inventario"
@@ -887,7 +897,7 @@ const handleApplyReceipt = async () => {
     setErrorMessage(null);
     setCreatedReceiptId(null);
   }}
-  className="border border-black/10 bg-white p-6 text-left transition hover:border-black/30 hover:bg-black/[0.02]"
+  className="group min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 text-left shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#aa967f] hover:bg-white hover:shadow-[0_16px_40px_rgba(35,29,21,0.09)]"
 >
   <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
     01 · Registro
@@ -903,7 +913,7 @@ const handleApplyReceipt = async () => {
   </p>
 </button>
 
-          <article className="border border-black/10 bg-white p-6">
+          <article className="min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 shadow-[0_8px_30px_rgba(35,29,21,0.035)]">
             <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
               02 · Conciliación
             </p>
@@ -918,7 +928,7 @@ const handleApplyReceipt = async () => {
             </p>
           </article>
 
-          <article className="border border-black/10 bg-white p-6">
+          <article className="min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 shadow-[0_8px_30px_rgba(35,29,21,0.035)]">
             <p className="text-[8px] uppercase tracking-[0.22em] text-black/35">
               03 · Control
             </p>
