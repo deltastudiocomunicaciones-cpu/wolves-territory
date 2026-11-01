@@ -24,7 +24,7 @@ export default function Hero() {
         <div className="grid w-full items-end gap-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.55fr)] lg:gap-12 xl:gap-16">
 
           {/* LEFT */}
-          <div className="min-w-0 -translate-y-70 sm:translate-y-0">
+          <div className="min-w-0 -translate-y-55 sm:translate-y-0">
             <div className="mb-6 flex items-center gap-4 md:mb-7">
               <span className="h-px w-10 shrink-0 bg-[#c9a96e]" />
 
