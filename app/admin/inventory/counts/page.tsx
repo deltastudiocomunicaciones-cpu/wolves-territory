@@ -389,7 +389,7 @@ async function submitCount() {
       >
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.45] max-md:opacity-[0.22]"
-          style={{ backgroundImage: "url('/wt-control-everest.webp')" }}
+          style={{ backgroundImage: "url('/wt-control-aguacate.webp')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#f2f0eb]/75 via-[#f2f0eb]/35 to-[#f2f0eb]/15" />
       </div>
