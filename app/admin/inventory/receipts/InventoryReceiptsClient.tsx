@@ -50,7 +50,12 @@ type InventoryReceiptItem = {
   observation: string | null;
 };
 
+type ReceiptSummary = Pick<InventoryReceipt, "id" | "reference" | "status" | "source" | "updated_at">;
+
 export default function InventoryReceiptsClient() {
+  const [receiptInbox, setReceiptInbox] = useState<ReceiptSummary[]>([]);
+  const [inboxError, setInboxError] = useState<string | null>(null);
+  const [inboxLoading, setInboxLoading] = useState(true);
   const router = useRouter();
 const searchParams = useSearchParams();
     const [showCreateForm, setShowCreateForm] =
@@ -889,6 +894,31 @@ const handleApplyReceipt = async () => {
           </p>
         </header>
 
+        <section className="mt-8 border border-black/10 bg-white/95 p-5 md:p-7" aria-label="Bandeja de recepciones">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-black/40">Seguimiento operativo</p>
+              <h2 className="mt-2 text-xl font-semibold">Bandeja de recepciones</h2>
+              <p className="mt-1 text-xs text-black/50">Pendientes de revisión: {receiptInbox.filter(r => r.status === "SUBMITTED").length} · Aprobadas sin aplicar: {receiptInbox.filter(r => r.status === "APPROVED").length}</p>
+            </div>
+            <button type="button" onClick={() => void loadInbox()} className="border border-black/20 px-4 py-2 text-xs font-semibold hover:bg-black hover:text-white">Actualizar bandeja</button>
+          </div>
+          {inboxLoading && <p className="mt-4 text-xs">Consultando expedientes...</p>}
+          {inboxError && <p className="mt-4 text-xs text-red-700" role="alert">{inboxError}</p>}
+          {!inboxLoading && !inboxError && receiptInbox.length === 0 && <p className="mt-4 text-xs text-black/50">No hay recepciones registradas.</p>}
+          <div className="mt-4 grid gap-2">
+            {receiptInbox.map(r => (
+              <button key={r.id} type="button" onClick={() => {
+                setShowCreateForm(false);
+                router.push(`/admin/inventory/receipts?receiptId=${encodeURIComponent(r.id)}`);
+              }} className="flex flex-wrap items-center justify-between gap-2 border border-black/10 bg-[#f8f6f1] p-4 text-left hover:border-black/40">
+                <span><strong className="block text-sm">{r.reference}</strong><span className="text-xs text-black/50">{r.source || "Origen sin registrar"}</span></span>
+                <span className="text-xs font-semibold">{r.status} · Abrir expediente ↗</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
         <section className="mt-8 grid gap-4 md:grid-cols-3">
           <button
   type="button"
@@ -896,6 +926,7 @@ const handleApplyReceipt = async () => {
     setShowCreateForm(true);
     setErrorMessage(null);
     setCreatedReceiptId(null);
+    router.push("/admin/inventory/receipts");
   }}
   className="group min-h-40 rounded-sm border border-[#ded7cd] bg-[#fbfaf7] p-7 text-left shadow-[0_8px_30px_rgba(35,29,21,0.035)] transition-all duration-300 hover:-translate-y-1 hover:border-[#aa967f] hover:bg-white hover:shadow-[0_16px_40px_rgba(35,29,21,0.09)]"
 >
