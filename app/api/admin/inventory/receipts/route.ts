@@ -51,17 +51,6 @@ export async function GET(
         .get("receiptId")
         ?.trim();
 
-    if (!receiptId) {
-      return NextResponse.json(
-        {
-          error: "RECEIPT_ID_REQUIRED",
-        },
-        {
-          status: 400,
-        }
-      );
-    }
-
     const supabase =
       getSupabaseAuthenticated(
         accessToken
@@ -87,6 +76,20 @@ export async function GET(
           status: 401,
         }
       );
+    }
+
+    if (!receiptId) {
+      const { data: receipts, error: listError } = await supabase.rpc(
+        "list_inventory_receipts",
+        { p_limit: 100 }
+      );
+      if (listError) {
+        return NextResponse.json(
+          { error: listError.code === "42501" ? "PERMISSION_DENIED" : "RECEIPTS_LIST_FAILED" },
+          { status: listError.code === "42501" ? 403 : 400 }
+        );
+      }
+      return NextResponse.json({ receipts: receipts ?? [] }, { status: 200 });
     }
 
     const {
