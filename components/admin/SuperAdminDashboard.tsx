@@ -1,5 +1,8 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
+
 import Link from "next/link";
 import ColombiaTerritoryMap from "./ColombiaTerritoryMap";
 
@@ -48,8 +51,48 @@ export default function SuperAdminDashboard({
   metrics,
   inventoryMetrics,
 }: SuperAdminDashboardProps) {
+  const [pendingReceipts, setPendingReceipts] = useState<Array<{id:string;reference:string;status:string}>>([]);
+  const [receiptAlertError, setReceiptAlertError] = useState(false);
+  const [receiptAlertLoading, setReceiptAlertLoading] = useState(true);
+  const refreshReceipts = useCallback(async () => {
+    try {
+      setReceiptAlertLoading(true);
+      setReceiptAlertError(false);
+      const { data } = await getSupabaseBrowser().auth.getSession();
+      if (!data.session?.access_token) throw new Error("No session");
+      const response = await fetch("/api/admin/inventory/receipts", {
+        headers: { Authorization: `Bearer ${data.session.access_token}` },
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error("Cannot load receipts");
+      const payload = await response.json();
+      if (!Array.isArray(payload.receipts)) throw new Error("Invalid receipt list");
+      setPendingReceipts(payload.receipts.filter((r: {status:string}) => r.status === "SUBMITTED"));
+    } catch {
+      setReceiptAlertError(true);
+    } finally {
+      setReceiptAlertLoading(false);
+    }
+  }, []);
+  useEffect(() => { void refreshReceipts(); }, [refreshReceipts]);
+
   return (
     <div className="space-y-8 text-[#252821]">
+      <section className="rounded-2xl border border-[#c96a1b]/30 bg-white p-6" aria-label="Alertas de recepción">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#a47757]">Control de inventario · Alertas internas</p>
+            <h2 className="mt-2 text-xl font-semibold">Recepciones pendientes de aprobación</h2>
+            <p className="mt-2 text-sm">{receiptAlertLoading ? "Consultando..." : receiptAlertError ? "No fue posible consultar las alertas." : `${pendingReceipts.length} recepción(es) por revisar`}</p>
+          </div>
+          <button type="button" onClick={() => void refreshReceipts()} className="rounded-lg border border-black/15 px-4 py-2 text-xs font-semibold">Actualizar alertas</button>
+        </div>
+        {!receiptAlertError && <div className="mt-4 space-y-2">
+          {pendingReceipts.map(r => <Link key={r.id} href={`/admin/inventory/receipts?receiptId=${encodeURIComponent(r.id)}`} className="flex items-center justify-between rounded-lg border border-black/10 bg-[#f7f5f0] p-4 text-sm hover:border-[#c96a1b]">
+            <span className="font-semibold">{r.reference}</span><span className="text-xs">Pendiente · Revisar ↗</span>
+          </Link>)}
+        </div>}
+      </section>
 
 <section className="relative isolate min-h-[420px] overflow-hidden rounded-[28px] bg-[#171717] text-white sm:min-h-[470px]">
   {/* Fotografía ejecutiva */}
