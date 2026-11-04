@@ -66,7 +66,24 @@ export const products: Product[] = [
           "/products/origen-hoodie-black-4.webp",
         ],
       },
-    ],
+    
+     {
+       color: "Ivory",
+       colorHex: "#EEE6D8",
+       slug: "origen-hoodie-ivory",
+       skuBase: "WT-HOOD-IVR",
+       image: "/products/origen-hoodie-ivory.webp",
+
+        images: [
+          "/products/origen-hoodie-ivory.webp",
+          "/products/origen-hoodie-ivory-1.webp",
+          "/products/origen-hoodie-ivory-2.webp",
+          "/products/origen-hoodie-ivory-3.webp",
+          "/products/origen-hoodie-ivory-4.webp",
+       ],
+     },
+   ],
+
 
     featured: true,
     collection: "Origen",
@@ -191,7 +208,22 @@ export const products: Product[] = [
           "/products/origen-polo-gray-4.webp",
         ],
       },
-    ],
+   
+{
+  color: "Black",
+  colorHex: "#111111",
+  slug: "origen-polo-black",
+  skuBase: "WT-POLO-BLK",
+  image: "/products/origen-polo-black.webp",
+  images: [
+    "/products/origen-polo-black.webp",
+    "/products/origen-polo-black-1.webp",
+    "/products/origen-polo-black-2.webp",
+    "/products/origen-polo-black-3.webp",
+    "/products/origen-polo-black-4.webp",
+  ],
+},
+],
 
     featured: true,
     collection: "Origen",
@@ -235,6 +267,22 @@ export const products: Product[] = [
           "/products/origen-short-beige-3.webp",
         ],
       },
+    
+{
+  color: "Black",
+  colorHex: "#111111",
+  slug: "origen-short-black",
+  skuBase: "WT-SHORT-BLK",
+  image: "/products/origen-short-black.webp",
+  images: [
+    "/products/origen-short-black.webp",
+    "/products/origen-short-black-1.webp",
+    "/products/origen-short-black-2.webp",
+    "/products/origen-short-black-3.webp",
+    "/products/origen-short-black-4.webp",
+  ],
+},
+      
     ],
 
     collection: "Origen",

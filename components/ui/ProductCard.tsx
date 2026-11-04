@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { Product } from "@/data/products";
+import type { Product } from "@/data/products";
 
 function formatPrice(value: number) {
   return new Intl.NumberFormat("es-CO", {
@@ -17,84 +18,146 @@ export default function ProductCard({
 }: {
   product: Product;
 }) {
-  const [hovered, setHovered] = useState(false);
+  const [activeVariant, setActiveVariant] = useState(0);
+
+  const variants = product.variants ?? [];
+  const selectedVariant = variants[activeVariant];
+
+  const productHref = selectedVariant?.slug
+    ? `/product/${selectedVariant.slug}`
+    : product.slug
+      ? `/product/${product.slug}`
+      : "#";
+
+  const mainImage = selectedVariant?.image || product.image;
+
+  const gallery =
+    selectedVariant?.images?.length
+      ? selectedVariant.images
+      : product.images?.length
+        ? product.images
+        : [mainImage];
+
+  const secondaryImage =
+    gallery.find((image) => image !== mainImage) ?? mainImage;
 
   return (
-    <Link
-      href={product.slug ? `/product/${product.slug}` : "#"}
-      className="block"
-    >
-      <article
-        className="group cursor-pointer"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        <div className="relative aspect-[4/5] overflow-hidden bg-[#ece9e2]">
+    <article className="group min-w-0">
+      {/* PRODUCT PHOTOGRAPHY */}
+      <div className="relative aspect-[4/5] overflow-hidden bg-[#e9e6df]">
+        <Link
+          href={productHref}
+          aria-label={`Explorar ${product.name}`}
+          className="absolute inset-0 block overflow-hidden"
+        >
           <img
-            src={product.image}
+            src={mainImage}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.025]"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0 group-focus-within:opacity-0"
           />
 
-          {/* BADGES */}
-          <div className="absolute left-3 top-3 flex flex-col gap-2">
-            {product.featured && (
-              <span className="w-fit bg-black px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-white">
-                New
-              </span>
-            )}
+          {secondaryImage !== mainImage && (
+            <img
+              src={secondaryImage}
+              alt={`${product.name} — vista alternativa`}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100"
+            />
+          )}
+        </Link>
 
-            {product.collection && (
-              <span className="w-fit bg-white/90 px-3 py-2 text-[9px] font-medium uppercase tracking-[0.2em] text-black backdrop-blur">
-                {product.collection}
-              </span>
-            )}
-          </div>
+        {/* SINGLE EDITORIAL LABEL */}
+        {product.featured && (
+          <span className="pointer-events-none absolute left-3 top-3 bg-[#f6f3ec]/95 px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#171717] md:left-4 md:top-4">
+            NEW ARRIVAL
+          </span>
+        )}
 
-          {/* QUICK ADD */}
+        {/* DESKTOP DISCOVERY ACTION */}
+        <Link
+          href={productHref}
+          tabIndex={-1}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-3 bottom-3 hidden translate-y-3 items-center justify-between bg-[#171717] px-4 py-3.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-white opacity-0 transition-all duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100 md:flex"
+        >
+          <span>EXPLORAR PRODUCTO</span>
+          <span aria-hidden="true">↗</span>
+        </Link>
+      </div>
+
+      {/* EDITORIAL PRODUCT INFORMATION */}
+      <div className="px-1 pb-5 pt-4 md:px-2 md:pt-5">
+        <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[#77736c]">
+          WOLVES TERRITORY
+          <span className="mx-1.5 text-[#b1ada5]">/</span>
+          {product.collection ?? product.category}
+        </p>
+
+        <Link href={productHref} className="mt-2 block">
+          <h3 className="text-[14px] font-semibold uppercase leading-[1.35] tracking-[-0.015em] text-[#171717] transition-colors group-hover:text-[#565149] md:text-[16px]">
+            {product.name}
+          </h3>
+        </Link>
+
+        <p className="mt-1.5 text-[14px] font-medium tracking-[-0.015em] text-[#171717] md:text-[15px]">
+          {formatPrice(product.price)}
+        </p>
+
+        <p className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[#77736c]">
+          {product.category}
+        </p>
+
+        {/* PRODUCT COLOR VARIANTS */}
+        {variants.length > 1 && (
           <div
-            className={`absolute inset-x-3 bottom-3 transition-all duration-300 ${
-              hovered
-                ? "translate-y-0 opacity-100"
-                : "translate-y-3 opacity-0"
-            }`}
+            className="mt-4 flex flex-wrap items-center gap-2"
+            aria-label={`Colores disponibles de ${product.name}`}
           >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              className="flex w-full items-center justify-between bg-black px-5 py-4 text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#c9a96e] hover:text-black"
-            >
-              Quick Add
-              <span>+</span>
-            </button>
+            {variants.map((variant, index) => {
+              const isActive = index === activeVariant;
+
+              return (
+                <button
+                  key={`${variant.slug}-${index}`}
+                  type="button"
+                  onClick={() => setActiveVariant(index)}
+                  aria-label={`Ver color ${variant.color}`}
+                  aria-pressed={isActive}
+                  title={variant.color}
+                  className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
+                    isActive
+                      ? "border-[#171717]"
+                      : "border-transparent hover:border-[#aaa59d]"
+                  }`}
+                >
+                  <span
+                    className="h-5 w-5 rounded-full border border-black/15"
+                    style={{
+                      backgroundColor: variant.colorHex,
+                    }}
+                  />
+                </button>
+              );
+            })}
+
+            <span className="ml-1 text-[10px] uppercase tracking-[0.1em] text-[#77736c]">
+              {selectedVariant?.color}
+            </span>
           </div>
-        </div>
+        )}
 
-        <div className="px-1 pb-3 pt-4">
-          <div className="flex items-start justify-between gap-5">
-            <div className="min-w-0">
-              <p className="text-[9px] font-medium uppercase tracking-[0.22em] text-black/40">
-                {product.collection ?? product.category}
-              </p>
-
-              <h3 className="mt-2 truncate text-[12px] font-semibold uppercase tracking-[0.08em] text-black md:text-[13px]">
-                {product.name}
-              </h3>
-
-              <p className="mt-2 text-[10px] uppercase tracking-[0.18em] text-black/35">
-                {product.category}
-              </p>
-            </div>
-
-            <p className="shrink-0 text-[12px] font-medium text-black">
-              {formatPrice(product.price)}
-            </p>
-          </div>
-        </div>
-      </article>
-    </Link>
+        {/* MOBILE-FRIENDLY DISCOVERY LINK */}
+        <Link
+          href={productHref}
+          className="mt-5 flex items-center justify-between border-t border-[#d8d4cc] pt-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#171717] transition-colors hover:text-[#77736c]"
+        >
+          <span>EXPLORAR PRODUCTO</span>
+          <span aria-hidden="true" className="text-base">
+            ↗
+          </span>
+        </Link>
+      </div>
+    </article>
   );
 }

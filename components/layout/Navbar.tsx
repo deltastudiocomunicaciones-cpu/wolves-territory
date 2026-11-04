@@ -19,19 +19,19 @@ export default function Navbar() {
     },
     {
       label: "SHOP",
-      href: "/#shop",
+      href: "/#coleccion",
     },
     {
       label: "COLECCIONES",
-      href: "/#collections",
+      href: "/#current-drop",
     },
     {
       label: "CAPS",
-      href: "/?category=Cap#shop",
+      href: "/?category=Cap#coleccion",
     },
     {
       label: "APPAREL",
-      href: "/?category=Hoodie#shop",
+      href: "/?category=Apparel#coleccion",
     },
     
   ];
