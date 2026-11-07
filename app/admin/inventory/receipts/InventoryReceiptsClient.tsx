@@ -149,6 +149,10 @@ const [
   setApplyReceiptError,
 ] = useState<string | null>(null);  
 
+const [cancellationReason, setCancellationReason] = useState("");
+const [cancelling, setCancelling] = useState(false);
+const [cancellationError, setCancellationError] = useState<string | null>(null);
+
 const loadCapabilities = useCallback(async () => {
   try {
     setCapabilitiesLoading(true);
@@ -774,6 +778,35 @@ const handleReviewReceipt = async (
   }
 };
 
+const handleCancelEmptyDraft = async () => {
+  if (!activeReceipt || activeReceipt.status !== "DRAFT" || receiptItems.length !== 0) return;
+  if (!canApplyInventoryReceipt) { setCancellationError("PERMISSION_DENIED"); return; }
+  const reason = cancellationReason.trim();
+  if (reason.length < 15) { setCancellationError("Explica el motivo en al menos 15 caracteres."); return; }
+  if (!window.confirm("¿Anular definitivamente este borrador vacío? El documento y su historial permanecerán, sin afectar existencias.")) return;
+  setCancelling(true);
+  setCancellationError(null);
+  try {
+    const supabase = getSupabaseBrowser();
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token;
+    if (sessionError || !token) throw new Error("Sesión administrativa no disponible.");
+    const response = await fetch("/api/admin/inventory/receipts/cancel", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ receiptId: activeReceipt.id, reason }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "No se pudo anular el borrador.");
+    setCancellationReason("");
+    await loadReceipt(activeReceipt.id);
+  } catch (e) {
+    setCancellationError(e instanceof Error ? e.message : "No se pudo anular el borrador.");
+  } finally {
+    setCancelling(false);
+  }
+};
+
 const handleApplyReceipt = async () => {
   try {
     setApplyingReceipt(true);
@@ -1292,6 +1325,40 @@ const handleApplyReceipt = async () => {
                 )}
               </div>
 
+              {activeReceipt.status === "DRAFT" && receiptItems.length === 0 &&
+                canApplyInventoryReceipt && !capabilitiesLoading && (
+                <section aria-label="Cierre documental" className="mt-6 border-t border-black/10 pt-6">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-black/40">Cierre documental controlado</p>
+                  <h3 className="mt-2 text-lg font-semibold">Anular borrador sin mercancía</h3>
+                  <p className="mt-2 text-xs leading-5 text-black/60">
+                    Solo para documentos sin referencias. Conserva el expediente y registra una auditoría;
+                    no modifica existencias ni equivale a una recepción aprobada.
+                  </p>
+                  <label className="mt-4 block text-xs font-semibold" htmlFor="receipt-cancel-reason">
+                    Motivo de anulación
+                  </label>
+                  <textarea id="receipt-cancel-reason" value={cancellationReason}
+                    onChange={(e) => setCancellationReason(e.target.value)}
+                    maxLength={1000} rows={3} disabled={cancelling}
+                    placeholder="Explica qué ocurrió y menciona la conciliación relacionada."
+                    className="mt-2 w-full border border-black/20 bg-[#f5f2eb] p-3 text-sm" />
+                  {cancellationError && <p role="alert" className="mt-3 text-xs text-red-700">{cancellationError}</p>}
+                  <button type="button" onClick={() => void handleCancelEmptyDraft()}
+                    disabled={cancelling || cancellationReason.trim().length < 15}
+                    className="mt-4 border border-red-700 px-5 py-3 text-xs font-semibold text-red-800 hover:bg-red-50 disabled:opacity-40">
+                    {cancelling ? "Anulando..." : "Anular borrador y conservar trazabilidad"}
+                  </button>
+                </section>
+              )}
+
+              {activeReceipt.status === "CANCELLED" && (
+                <div className="mt-6 border border-black/15 bg-[#f5f2eb] p-5 text-xs">
+                  <p className="font-semibold uppercase tracking-widest">Anulado administrativamente</p>
+                  <p className="mt-2">Este expediente permanece archivado y no ha generado ingreso al inventario.</p>
+                  {activeReceipt.review_reason && <p className="mt-2">Motivo: {activeReceipt.review_reason}</p>}
+                </div>
+              )}
+
               {/* 5G-11D — Cierre de captura */}
               {activeReceipt.status === "IN_PROGRESS" && (
                 <div className="mt-6 border-t border-black/10 pt-6">
@@ -1643,6 +1710,7 @@ const handleApplyReceipt = async () => {
               ["SUBMITTED", "En revisión"],
               ["APPROVED", "Autorizada"],
               ["APPLIED", "Aplicada"],
+               ["CANCELLED", "Anulada"],
             ].map(([status, label]) => (
               <div
                 key={status}
