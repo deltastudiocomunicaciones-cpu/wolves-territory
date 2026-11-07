@@ -7,6 +7,7 @@ import {
 } from "next/navigation";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 import TerritoryNavigation from "@/components/admin/TerritoryNavigation";
+import ReceiptHistory from "./ReceiptHistory";
 type InventoryCatalogItem = {
   inventory_id: string;
   product_id: string;
@@ -943,6 +944,8 @@ const handleApplyReceipt = async () => {
             </p>
           </article>
         </section>
+
+        <ReceiptHistory />
 
                 {receiptLoading && (
           <section className="mt-6 border border-black/10 bg-white p-6 md:p-8">
