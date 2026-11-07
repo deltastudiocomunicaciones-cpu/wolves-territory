@@ -23,6 +23,7 @@ const statusNames: Record<string, string> = {
   APPROVED: "Autorizada · sin aplicar",
   APPLIED: "Aplicada",
   REJECTED: "Rechazada",
+  CANCELLED: "Anulada administrativamente",
 };
 
 function dateLabel(value: string) {
@@ -123,6 +124,7 @@ export default function ReceiptHistory() {
           <option value="DRAFT">Borrador</option>
           <option value="APPLIED">Aplicada</option>
           <option value="REJECTED">Rechazada</option>
+          <option value="CANCELLED">Anulada</option>
         </select>
         <select aria-label="Alcance del historial" value={scope} onChange={(e) => setScope(e.target.value as "COMMERCIAL" | "ALL")}
           className="border border-black/15 bg-[#f5f2eb] px-4 py-3 text-sm">
