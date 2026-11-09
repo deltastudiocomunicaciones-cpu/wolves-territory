@@ -49,12 +49,12 @@ export default function ImmersiveShowroom() {
   return (
     <main className="relative min-h-[100dvh] overflow-hidden bg-[#171715] text-[#f3f0e9]">
       <style jsx global>{`
-        .wt-room { background: radial-gradient(ellipse at 50% 32%,#555046 0%,#34332f 40%,#191a19 82%); }
-        .wt-wall { background: linear-gradient(90deg,#3e3c36 0%,#706a5e 16%,#999184 50%,#716c61 83%,#393832 100%); box-shadow: inset 0 -35px 60px rgba(0,0,0,.38); }
-        .wt-ceiling { background: linear-gradient(180deg,#211f1b,#48443c 55%,#665f53); clip-path:polygon(0 0,100% 0,90% 100%,10% 100%); }
-        .wt-floor { background: repeating-linear-gradient(90deg,transparent 0,transparent 12%,rgba(255,255,255,.036) 12.1%,transparent 12.2%),linear-gradient(0deg,#37342f,#80776b 98%); clip-path:polygon(0 100%,100% 100%,87% 0,13% 0); transform-origin:center top; }
+        .wt-room { background: radial-gradient(ellipse at 50% 40%,rgba(195,126,65,.16) 0%,transparent 48%),linear-gradient(90deg,#0b0b0a,#292017 23%,#121110 53%,#292017 77%,#080807); }
+        .wt-wall { background-color:#362b23;background-image:linear-gradient(0deg,transparent 95%,#211c17 96%,#211c17 100%),linear-gradient(90deg,transparent 96%,#251d18 97%,#251d18 100%),linear-gradient(90deg,#4b3628,#241e19 48%,#4b3527);background-size:100% 30px,70px 100%,100% 100%;box-shadow:inset 0 -70px 90px rgba(0,0,0,.8),inset 0 30px 60px rgba(0,0,0,.5); }
+        .wt-ceiling { background: linear-gradient(180deg,#080808,#1b1917 55%,#282018); clip-path:polygon(0 0,100% 0,90% 100%,10% 100%); }
+        .wt-floor { background: repeating-linear-gradient(90deg,transparent 0,transparent 12%,rgba(255,255,255,.03) 12.1%,transparent 12.2%),linear-gradient(0deg,#393734,#716d68 98%); clip-path:polygon(0 100%,100% 100%,87% 0,13% 0); transform-origin:center top; }
         .wt-perspective { perspective:950px; }
-        .wt-rack { background:linear-gradient(130deg,#343330,#121313 56%,#45413c); border:1px solid #827b6e; box-shadow:0 25px 32px #0b0c0bbc; }
+        .wt-rack { background:linear-gradient(130deg,rgba(47,39,32,.98),rgba(9,9,9,.98) 56%,rgba(44,33,25,.98)); border:1px solid #9b7759; box-shadow:0 25px 32px #0b0c0bbc; }
         .wt-rack:focus-visible,.wt-zone-button:focus-visible { outline:2px solid #e5c8a0;outline-offset:4px; }
         .wt-glow { box-shadow:0 0 65px rgba(243,215,165,.15),0 0 10px rgba(243,215,165,.2); }
         @media (prefers-reduced-motion:reduce) { .wt-motion { transition:none!important;animation:none!important; } }
@@ -62,7 +62,7 @@ export default function ImmersiveShowroom() {
 
       <header className="relative z-30 flex items-center justify-between gap-3 border-b border-white/15 bg-[#111110]/95 px-4 py-4 sm:px-7">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center border border-[#d8c5a3]/50 text-xl font-light text-[#e5ccad]">W</span>
+          <span className="flex h-9 w-9 items-center justify-center border border-[#d8c5a3]/50 text-xl font-light text-[#e5ccad]">WT</span>
           <div><p className="text-[11px] font-semibold tracking-[.21em] sm:text-[13px]">WOLVES TERRITORY</p><p className="text-[9px] uppercase tracking-[.26em] text-white/45">Immersive showroom · Concept V1</p></div>
         </div>
         <div className="flex gap-2">
@@ -72,7 +72,7 @@ export default function ImmersiveShowroom() {
       </header>
 
       <div className="relative z-20 flex items-center justify-between gap-4 border-b border-white/10 bg-[#24231f] px-4 py-3 sm:px-7">
-        <div><span className="text-[9px] uppercase tracking-[.22em] text-[#dbb98e]">The house of Wolves</span><h1 className="text-xl font-light tracking-tight sm:text-2xl">Explora la boutique.</h1></div>
+        <div><span className="text-[9px] uppercase tracking-[.22em] text-[#dbb98e]">Wolves Territory · ORIGEN</span><h1 className="text-xl font-light tracking-tight sm:text-2xl">Entra a tu territorio.</h1></div>
         <span className="hidden text-right text-[10px] uppercase tracking-[.17em] text-white/55 md:block">Un espacio digital de exhibición<br/>Productos reales · Sin compras simuladas</span>
       </div>
 
@@ -97,8 +97,8 @@ export default function ImmersiveShowroom() {
           <div className="absolute inset-x-[30%] top-[19%] h-[39%] border border-[#d6c2a2]/40 bg-[#161614]/70 shadow-[0_0_50px_#211d17]" />
           <div className="absolute inset-x-[37%] top-[23%] border-t border-[#eddfc8]/60" />
           <div className="absolute inset-x-[37%] bottom-[42%] border-t border-[#eddfc8]/60" />
-          <div className="absolute left-1/2 top-[27%] -translate-x-1/2 text-center text-5xl font-extralight tracking-[.20em] text-[#e8dfd0]/65 sm:text-7xl">W</div>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_18%,transparent_20%,rgba(0,0,0,.45)_90%)]" />
+          <div className="absolute left-1/2 top-[27%] -translate-x-1/2 text-center text-5xl font-extralight tracking-[.20em] text-[#e8dfd0]/65 sm:text-7xl">WT</div>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_18%,transparent_15%,rgba(0,0,0,.65)_90%)]" /><div className="absolute left-[24%] top-[6%] h-[4px] w-[8%] rounded-full bg-[#ffe7b7] shadow-[0_0_33px_14px_#ffd59645]" /><div className="absolute right-[24%] top-[6%] h-[4px] w-[8%] rounded-full bg-[#ffe7b7] shadow-[0_0_33px_14px_#ffd59645]" />
         </div>
 
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-4 pb-14 pt-12 sm:px-8">
