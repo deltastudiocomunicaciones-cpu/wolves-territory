@@ -78,6 +78,7 @@ export default function Footer() {
             {/* SHOP */}
 
             <FooterColumn title="Shop">
+              <FooterLink href="/reservas">Separa ya · Sin anticipo</FooterLink>
 
               <FooterLink href="/#coleccion">
                 New Drop
