@@ -107,7 +107,7 @@ export async function POST(request: Request) {
     if (error) throw error;
 
     return NextResponse.json(
-      { reference, message: "Solicitud de reserva recibida. No se realizó ningún cobro ni se apartaron unidades." },
+      { reference, message: "Solicitud registrada. Este formulario no procesó pagos ni apartó inventario; el equipo comercial confirmará las condiciones de separación." },
       { status: 201, headers: { "Cache-Control": "no-store" } }
     );
   } catch (error) {
