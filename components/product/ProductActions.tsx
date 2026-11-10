@@ -56,19 +56,6 @@ export default function ProductActions({
 );
   }
 
-  function handleBuyNow() {
-    if (requiresSize && !selectedSize) {
-      alert("Selecciona una talla antes de continuar.");
-      return;
-    }
-
-    console.log("BUY NOW", {
-      product,
-      quantity,
-      size: selectedSize,
-    });
-  }
-
   return (
     <div className="mt-10">
       {/* SIZE */}
@@ -139,14 +126,10 @@ export default function ProductActions({
         </div>
       </div>
 
-      {/* STOCK */}
-      <div className="mt-7 flex items-center gap-3">
-        <span className="h-2 w-2 rounded-full bg-emerald-600" />
-
-        <p className="text-[9px] uppercase tracking-[0.22em] text-black/45">
-          Disponible · Listo para envío
-        </p>
-      </div>
+      {/* AVAILABILITY: do not claim live stock until SKU-level availability is verified */}
+      <p className="mt-7 text-[10px] leading-5 tracking-[0.08em] text-black/55">
+        La disponibilidad por talla y color se confirmará al habilitar las ventas en línea.
+      </p>
 
       {/* CTAS */}
       <div className="mt-7 space-y-3">
@@ -162,19 +145,18 @@ export default function ProductActions({
           </span>
         </button>
 
-        <button
-          type="button"
-          onClick={handleBuyNow}
-          className="flex w-full items-center justify-center border border-black/20 px-6 py-5 text-[10px] font-semibold uppercase tracking-[0.28em] text-black transition hover:border-black"
+        <div
+          role="status"
+          className="flex w-full items-center justify-center border border-black/20 px-6 py-5 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-black/65"
         >
-          Comprar Ahora
-        </button>
+          Compra en línea próximamente
+        </div>
       </div>
 
       {/* MICROCOPY */}
       <div className="mt-6 space-y-2">
         <p className="text-[9px] leading-5 tracking-[0.08em] text-black/40">
-          Secure payments powered by Wompi.
+          Pasarela de pagos en proceso de habilitación.
         </p>
 
         <p className="text-[9px] leading-5 tracking-[0.08em] text-black/40">
