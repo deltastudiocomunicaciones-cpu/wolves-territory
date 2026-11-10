@@ -4,7 +4,7 @@ import type {
   ProductVariant,
 } from "@/data/products";
 
-import { formatPrice } from "@/lib/product";
+import { formatPrice, getProductDisplayName } from "@/lib/product";
 import ProductActions from "./ProductActions";
 
 export default function ProductInfo({
@@ -42,7 +42,7 @@ export default function ProductInfo({
 
           {/* PRODUCT NAME */}
           <h1 className="mt-5 max-w-[540px] text-[clamp(2rem,3.5vw,3.6rem)] font-semibold uppercase leading-[1.02] tracking-[-0.045em]">
-            {product.name}
+            {getProductDisplayName(product, selectedVariant)}
           </h1>
 
           {/* PRICE */}

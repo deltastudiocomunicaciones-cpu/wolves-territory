@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { products } from "@/data/products";
-import { getProductBySlug } from "@/lib/product";
+import { getProductBySlug, getProductDisplayName } from "@/lib/product";
 import Navbar from "@/components/layout/Navbar";
 import ProductExperience from "@/components/product/ProductExperience";
 
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   if (!product) return { title: "Producto no encontrado", robots: { index: false } };
 
   const variant = product.variants?.find((item) => item.slug === slug);
-  const name = variant ? `${product.name} · ${variant.color}` : product.name;
+  const name = getProductDisplayName(product, variant);
   const description = `${name}. ${product.category} de Wolves Territory, marca de streetwear masculino de Medellín, Colombia. Explora fotos y variantes de la colección.`;
   const canonical = `${baseUrl}/product/${encodeURIComponent(slug)}`;
   const image = variant?.image ?? product.image;
@@ -49,7 +49,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) notFound();
 
   const variant = product.variants?.find((item) => item.slug === slug);
-  const productName = variant ? `${product.name} · ${variant.color}` : product.name;
+  const productName = getProductDisplayName(product, variant);
   // Product attributes are taken from the catalog. Do not publish Offer,
   // availability or shipping promises until live checkout/stock is verified.
   const structuredProduct = {
