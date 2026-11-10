@@ -10,6 +10,7 @@ const options: Option[] = products.flatMap<Option>((product) => product.variants
   ? product.variants.map((variant) => ({ slug: variant.slug, name: product.name, color: variant.color, image: variant.image, price: product.price, category: product.category }))
   : [{ slug: product.slug, name: product.name, color: null, image: product.image, price: product.price, category: product.category }]
 );
+const whatsappUrl = (message: string) => `https://wa.me/573043795035?text=${encodeURIComponent(message)}`;
 const formatCOP = (amount: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(amount);
 
 export default function ReservationForm() {
@@ -64,7 +65,7 @@ export default function ReservationForm() {
       <p className="mt-6 text-sm leading-7 text-black/70">Registramos tu interés en la colección ORIGEN. Conserva este número para consultas.</p>
       <p className="mt-6 break-all bg-[#f1ede6] px-4 py-5 font-mono text-sm font-semibold">{reference}</p>
       <p className="mt-5 text-xs leading-6 text-black/60">Tu solicitud fue registrada. Este formulario no procesó ningún pago ni apartó inventario. Nuestro equipo podrá informarte las condiciones de separación y, si acuerdas un anticipo por un canal institucional, deberá confirmarte el valor, los términos y entregarte el comprobante al recibirlo.</p>
-      <a href={`mailto:wolvesterritoryco@gmail.com?subject=${encodeURIComponent("Solicitud Wolves Territory " + reference)}`} className="mt-8 inline-block bg-black px-6 py-4 text-xs font-semibold uppercase tracking-[.18em] text-white">Escribir a Wolves Territory</a><div><Link href="/#coleccion" className="mt-5 inline-block text-xs uppercase tracking-[.18em] underline">Seguir explorando</Link></div>
+      <a href={whatsappUrl(`Hola, Wolves Territory. Registré la solicitud ${reference} de la colección ORIGEN. Quiero conocer las opciones de separación para diciembre.`)} target="_blank" rel="noopener noreferrer" className="mt-8 inline-block bg-[#254f34] px-6 py-4 text-xs font-semibold uppercase tracking-[.18em] text-white hover:bg-[#1d422a]">Continuar por WhatsApp ↗</a><div><Link href="/#coleccion" className="mt-5 inline-block text-xs uppercase tracking-[.18em] underline">Seguir explorando</Link></div>
     </div>
   );
 
@@ -77,7 +78,7 @@ export default function ReservationForm() {
         <div className="mt-9 border-l-2 border-[#c5a47c] pl-5 text-sm leading-7 text-white/75">
           Consulta con nuestro equipo las opciones de separación, los medios institucionales habilitados para anticipos y las condiciones de entrega. El formulario registra tu solicitud; cualquier anticipo se acuerda y se confirma por separado.
         </div>
-        <Link href="/#coleccion" className="mt-8 inline-block border-b border-white/45 pb-2 text-[10px] font-semibold uppercase tracking-[.2em] text-white/80 hover:text-white">← Explorar colección</Link>
+        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4"><Link href="/#coleccion" className="inline-block border-b border-white/45 pb-2 text-[10px] font-semibold uppercase tracking-[.2em] text-white/80 hover:text-white">← Explorar colección</Link><a href={whatsappUrl(`Hola, Wolves Territory. Quiero consultar las opciones de separación para diciembre${selected ? ` de ${selected.name}${selected.color ? " " + selected.color : ""}` : " de la colección ORIGEN"}.`)} target="_blank" rel="noopener noreferrer" className="inline-block border-b border-[#b5ddb9] pb-2 text-[10px] font-semibold uppercase tracking-[.2em] text-[#b5ddb9] hover:text-white">Hablar con un asesor por WhatsApp ↗</a></div>
       </div>
       <form onSubmit={submit} className="border border-[#ddd2c2] bg-[#f5f1e9] p-5 text-[#151515] shadow-2xl sm:p-8">
         <p className="text-[10px] font-semibold uppercase tracking-[.22em] text-[#876a46]">Diciembre ORIGEN · Solicitud de separación</p>
