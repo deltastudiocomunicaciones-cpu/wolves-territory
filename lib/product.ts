@@ -1,89 +1,37 @@
 import { products, type Product, type ProductVariant } from "@/data/products";
 
-export type ProductPageData = {
-  product: Product;
-  selectedVariant: ProductVariant | null;
-};
-
-/**
- * Resolves both the canonical product slug and every color-variant slug.
- * Move the requested variant to the first position so ProductExperience
- * displays the correct image and color at first render.
- */
-export function getProductPageData(slug: string): ProductPageData | null {
+export function getProductBySlug(slug: string): Product | undefined {
   const product = products.find((item) =>
     item.slug === slug || item.variants?.some((variant) => variant.slug === slug)
   );
+  if (!product) return undefined;
 
-  if (!product) return null;
+  const selected = product.variants?.find((variant) => variant.slug === slug);
+  if (!selected) return product;
 
-  const selectedVariant =
-    product.variants?.find((variant) => variant.slug === slug) ??
-    product.variants?.[0] ??
-    null;
-
-  const variants = selectedVariant && product.variants
-    ? [selectedVariant, ...product.variants.filter((variant) => variant.slug !== selectedVariant.slug)]
-    : product.variants;
-
-  return { product: variants ? { ...product, variants } : product, selectedVariant };
+  return {
+    ...product,
+    variants: [selected, ...(product.variants ?? []).filter((variant) => variant.slug !== slug)],
+  };
 }
 
-/**
- * A single product represents multiple colorways in the catalog. The display
- * name must match the selected variant on both the page and search metadata.
- */
+/** Preserve the exact catalog item while naming its selected color accurately. */
 export function getProductDisplayName(product: Product, variant?: ProductVariant | null): string {
   if (!variant) return product.name;
-
-  const baseName = product.name.trim();
+  const name = product.name.trim();
   const color = variant.color.trim();
-  if (baseName.toLocaleLowerCase("es-CO").endsWith(color.toLocaleLowerCase("es-CO"))) return baseName;
+  if (name.toLocaleLowerCase("es-CO").endsWith(color.toLocaleLowerCase("es-CO"))) return name;
 
-  const defaultColor = product.variants?.find((item) => item.slug === product.slug)?.color ??
+  const originalColor =
+    product.variants?.find((item) => item.slug === product.slug)?.color ??
     product.variants?.[0]?.color;
 
-  if (defaultColor) {
-    const expression = new RegExp(`\\s+${defaultColor.replace(/[.*+?^${}()|[\\]\\]/g, "\\export function getProductBySlug(slug: string): Product | undefined {")}import { products, type Product, type ProductVariant } from "@/data/products";
-
-export type ProductPageData = {
-  product: Product;
-  selectedVariant: ProductVariant | null;
-};
-
-/**
- * Resolves both the canonical product slug and every color-variant slug.
- * Move the requested variant to the first position so ProductExperience
- * displays the correct image and color at first render.
- */
-export function getProductPageData(slug: string): ProductPageData | null {
-  const product = products.find((item) =>
-    item.slug === slug || item.variants?.some((variant) => variant.slug === slug)
-  );
-
-  if (!product) return null;
-
-  const selectedVariant =
-    product.variants?.find((variant) => variant.slug === slug) ??
-    product.variants?.[0] ??
-    null;
-
-  const variants = selectedVariant && product.variants
-    ? [selectedVariant, ...product.variants.filter((variant) => variant.slug !== selectedVariant.slug)]
-    : product.variants;
-
-  return { product: variants ? { ...product, variants } : product, selectedVariant };
-}
-
-, "i");
-    if (expression.test(baseName)) return baseName.replace(expression, ` ${color}`);
+  if (originalColor && name.toLocaleLowerCase("es-CO").endsWith(
+    (" " + originalColor).toLocaleLowerCase("es-CO")
+  )) {
+    return name.slice(0, -originalColor.length).trimEnd() + " " + color;
   }
-
-  return `${baseName} ${color}`;
-}
-
-export function getProductBySlug(slug: string): Product | undefined {
-  return getProductPageData(slug)?.product;
+  return name + " " + color;
 }
 
 export function formatPrice(value: number) {
