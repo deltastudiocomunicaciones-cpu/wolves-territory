@@ -2,81 +2,92 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { products } from "@/data/products";
-import { getProductBySlug } from "@/lib/product";
+import { getProductPageData } from "@/lib/product";
 import Navbar from "@/components/layout/Navbar";
 import ProductExperience from "@/components/product/ProductExperience";
 
-type ProductPageProps = { params: Promise<{ slug: string }> };
-const baseUrl = "https://www.wolves-territory.co";
+const SITE = "https://www.wolves-territory.co";
 
-export function generateStaticParams() {
-  return Array.from(new Set(products.flatMap((product) =>
-    [product.slug, ...(product.variants?.map((variant) => variant.slug) ?? [])]
-  ))).map((slug) => ({ slug }));
+type ProductPageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+function productTitle(name: string, color?: string) {
+  if (!color) return name;
+  return name.toLowerCase().endsWith(color.toLowerCase())
+    ? name
+    : `${name} — ${color}`;
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
-  if (!product) return { title: "Producto no encontrado", robots: { index: false } };
+  const data = getProductPageData(slug);
+  if (!data) return { title: "Producto no encontrado", robots: { index: false } };
 
-  const variant = product.variants?.find((item) => item.slug === slug);
-  const name = variant ? `${product.name} · ${variant.color}` : product.name;
-  const description = `${name}. ${product.category} de Wolves Territory, marca de streetwear masculino de Medellín, Colombia. Explora fotos y variantes de la colección.`;
-  const canonical = `${baseUrl}/product/${encodeURIComponent(slug)}`;
-  const image = variant?.image ?? product.image;
+  const { product, selectedVariant } = data;
+  const title = productTitle(product.name, selectedVariant?.color);
+  const description = `${title}. ${product.category} de Wolves Territory, marca de moda masculina en Medellín, Colombia. Conoce sus fotografías, colores y opciones de talla.`;
+  const image = selectedVariant?.image ?? product.image;
+  const canonical = `/product/${slug}`;
 
   return {
-    title: name,
+    title,
     description,
     alternates: { canonical },
     openGraph: {
-      type: "website",
-      locale: "es_CO",
-      siteName: "Wolves Territory",
-      title: name,
+      title: `${title} | Wolves Territory`,
       description,
+      type: "website",
       url: canonical,
-      images: [{ url: image, alt: name }],
+      images: [{ url: image, alt: title }],
     },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
-  if (!product) notFound();
+  const data = getProductPageData(slug);
+  if (!data) notFound();
 
-  const variant = product.variants?.find((item) => item.slug === slug);
-  const productName = variant ? `${product.name} · ${variant.color}` : product.name;
-  // Product attributes are taken from the catalog. Do not publish Offer,
-  // availability or shipping promises until live checkout/stock is verified.
-  const structuredProduct = {
+  const { product, selectedVariant } = data;
+  const title = productTitle(product.name, selectedVariant?.color);
+
+  // The payment gateway is not yet enabled for real transactions. Do not
+  // publish unverified stock status, availability, ratings or purchase Offers.
+  const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: productName,
-    description: product.description ?? `Producto de Wolves Territory · ${product.category}`,
-    image: [new URL(variant?.image ?? product.image, baseUrl).toString()],
-    url: `${baseUrl}/product/${encodeURIComponent(slug)}`,
+    name: title,
+    description: product.description ?? `${title} de Wolves Territory.`,
+    image: (selectedVariant?.images?.length ? selectedVariant.images : product.images?.length ? product.images : [selectedVariant?.image ?? product.image])
+      .map((src) => new URL(src, SITE).toString()),
     brand: { "@type": "Brand", name: "Wolves Territory" },
     category: product.category,
-    ...(variant?.skuBase || product.sku
-      ? { sku: variant?.skuBase ?? product.sku }
+    ...(selectedVariant?.skuBase || product.sku
+      ? { sku: selectedVariant?.skuBase ?? product.sku }
       : {}),
+    url: `${SITE}/product/${encodeURIComponent(slug)}`,
   };
-  const structuredJson = JSON.stringify(structuredProduct).replace(/</g, "\\u003c");
 
   return (
     <main className="min-h-screen bg-[#f2f0eb] text-black">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredJson }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c") }}
+      />
       <Navbar />
+
       <div className="fixed left-6 top-28 z-40 md:left-10 lg:left-14">
-        <Link href="/" className="group inline-flex items-center gap-3 text-[9px] font-medium uppercase tracking-[0.24em] text-black/45 transition hover:text-black">
+        <Link
+          href="/"
+          className="group inline-flex items-center gap-3 text-[9px] font-medium uppercase tracking-[0.24em] text-black/45 transition hover:text-black"
+        >
           <span className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
           Back to Shop
         </Link>
       </div>
+
       <ProductExperience product={product} />
     </main>
   );
