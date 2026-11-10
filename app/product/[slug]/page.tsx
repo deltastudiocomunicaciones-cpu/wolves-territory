@@ -48,8 +48,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
+  const variant = product.variants?.find((item) => item.slug === slug);
+  const productName = variant ? `${product.name} · ${variant.color}` : product.name;
+  // Product attributes are taken from the catalog. Do not publish Offer,
+  // availability or shipping promises until live checkout/stock is verified.
+  const structuredProduct = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: productName,
+    description: product.description ?? `Producto de Wolves Territory · ${product.category}`,
+    image: [new URL(variant?.image ?? product.image, baseUrl).toString()],
+    url: `${baseUrl}/product/${encodeURIComponent(slug)}`,
+    brand: { "@type": "Brand", name: "Wolves Territory" },
+    category: product.category,
+    ...(variant?.skuBase || product.sku
+      ? { sku: variant?.skuBase ?? product.sku }
+      : {}),
+  };
+  const structuredJson = JSON.stringify(structuredProduct).replace(/</g, "\\u003c");
+
   return (
     <main className="min-h-screen bg-[#f2f0eb] text-black">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredJson }} />
       <Navbar />
       <div className="fixed left-6 top-28 z-40 md:left-10 lg:left-14">
         <Link href="/" className="group inline-flex items-center gap-3 text-[9px] font-medium uppercase tracking-[0.24em] text-black/45 transition hover:text-black">
