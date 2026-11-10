@@ -48,7 +48,7 @@ export default function Navbar() {
 
       <div className="fixed top-0 z-[60] w-full border-b border-[#101820]/10 bg-[#D9E3E8] text-[#101820]">
         <div className="flex h-8 items-center justify-center px-4 text-center text-[9px] font-medium uppercase tracking-[0.22em] text-[#101820]/60 md:tracking-[0.28em]">
-          COLECCIÓN ORIGEN · SEPARA YA SIN ANTICIPO · MEDELLÍN, COLOMBIA
+          DICIEMBRE SE VISTE DE TERRITORIO · SEPARA YA · COLECCIÓN ORIGEN
         </div>
       </div>
 
