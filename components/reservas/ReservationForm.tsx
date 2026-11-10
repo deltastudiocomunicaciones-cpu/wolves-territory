@@ -63,8 +63,8 @@ export default function ReservationForm() {
       <h2 className="mt-5 text-3xl font-bold uppercase tracking-tight sm:text-4xl">Recibimos tu solicitud.</h2>
       <p className="mt-6 text-sm leading-7 text-black/70">Registramos tu interés en la colección ORIGEN. Conserva este número para consultas.</p>
       <p className="mt-6 break-all bg-[#f1ede6] px-4 py-5 font-mono text-sm font-semibold">{reference}</p>
-      <p className="mt-5 text-xs leading-6 text-black/60">No se realizó ningún cobro. Esta solicitud no bloquea inventario, no garantiza disponibilidad ni constituye una compra. Te contactaremos cuando podamos confirmar las condiciones comerciales.</p>
-      <Link href="/#coleccion" className="mt-8 inline-block bg-black px-6 py-4 text-xs font-semibold uppercase tracking-[.18em] text-white">Seguir explorando</Link>
+      <p className="mt-5 text-xs leading-6 text-black/60">Tu solicitud fue registrada. Este formulario no procesó ningún pago ni apartó inventario. Nuestro equipo podrá informarte las condiciones de separación y, si acuerdas un anticipo por un canal institucional, deberá confirmarte el valor, los términos y entregarte el comprobante al recibirlo.</p>
+      <a href={`mailto:wolvesterritoryco@gmail.com?subject=${encodeURIComponent("Solicitud Wolves Territory " + reference)}`} className="mt-8 inline-block bg-black px-6 py-4 text-xs font-semibold uppercase tracking-[.18em] text-white">Escribir a Wolves Territory</a><div><Link href="/#coleccion" className="mt-5 inline-block text-xs uppercase tracking-[.18em] underline">Seguir explorando</Link></div>
     </div>
   );
 
@@ -72,15 +72,15 @@ export default function ReservationForm() {
     <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[.9fr_1.1fr]">
       <div className="lg:sticky lg:top-8 lg:self-start">
         <p className="text-[11px] uppercase tracking-[.28em] text-[#c5a47c]">Wolves Territory · ORIGEN</p>
-        <h1 className="mt-5 text-5xl font-black uppercase leading-[.93] tracking-[-.05em] sm:text-6xl">Separa<br/>ya.</h1>
-        <p className="mt-7 max-w-md text-base leading-8 text-white/70">Sé de los primeros en recibir información para adquirir tus prendas Wolves Territory. Déjanos tu selección y te contactaremos cuando abramos las ventas en línea.</p>
+        <h1 className="mt-5 text-5xl font-black uppercase leading-[.93] tracking-[-.05em] sm:text-6xl">Diciembre<br/>te espera.</h1><p className="mt-5 text-xl font-semibold uppercase tracking-[.12em] text-[#e2bf91]">SEPARA YA · ORIGEN</p>
+        <p className="mt-7 max-w-md text-base leading-8 text-white/70">¿Ya pensaste qué vas a vestir en diciembre? Los mejores encuentros merecen un look a tu altura. Escoge tu prenda ORIGEN y déjanos tus datos: nuestro equipo te contactará para ayudarte a separarla.</p>
         <div className="mt-9 border-l-2 border-[#c5a47c] pl-5 text-sm leading-7 text-white/75">
-          Sin anticipo ni pago. No se descuenta inventario. La disponibilidad, el precio final y la fecha de entrega se confirmarán antes de cualquier compra.
+          Consulta con nuestro equipo las opciones de separación, los medios institucionales habilitados para anticipos y las condiciones de entrega. El formulario registra tu solicitud; cualquier anticipo se acuerda y se confirma por separado.
         </div>
         <Link href="/#coleccion" className="mt-8 inline-block border-b border-white/45 pb-2 text-[10px] font-semibold uppercase tracking-[.2em] text-white/80 hover:text-white">← Explorar colección</Link>
       </div>
       <form onSubmit={submit} className="border border-[#ddd2c2] bg-[#f5f1e9] p-5 text-[#151515] shadow-2xl sm:p-8">
-        <p className="text-[10px] font-semibold uppercase tracking-[.22em] text-[#876a46]">Solicitud de reserva · Sin pago</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[.22em] text-[#876a46]">Diciembre ORIGEN · Solicitud de separación</p>
         <h2 className="mt-3 text-2xl font-bold uppercase tracking-tight">Elige tu referencia</h2>
         <div className="mt-7">
           <label htmlFor="reserve-product" className={label}>Producto y color</label>
@@ -116,13 +116,13 @@ export default function ReservationForm() {
         <div className="absolute -left-[10000px] h-0 w-0 overflow-hidden" aria-hidden="true"><label htmlFor="reserve-company">Empresa</label><input id="reserve-company" type="text" tabIndex={-1} autoComplete="off" value={company} onChange={e=>setCompany(e.target.value)}/></div>
         <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-6 text-black/70">
           <input type="checkbox" className="mt-1 h-4 w-4 accent-black" checked={consent} required onChange={e=>setConsent(e.target.checked)}/>
-          <span>Autorizo el tratamiento de mis datos para gestionar y responder esta solicitud, según el <Link href="/reservas/privacidad" target="_blank" className="font-semibold underline">aviso de privacidad</Link>. Entiendo que no se efectúa ningún pago ni apartado de mercancía.</span>
+          <span>Autorizo el tratamiento de mis datos para atender esta solicitud, conforme al <Link href="/reservas/privacidad" target="_blank" className="font-semibold underline">aviso de privacidad</Link>. Entiendo que el envío del formulario no realiza un cobro ni confirma un apartado; las condiciones se acuerdan directamente con el equipo.</span>
         </label>
         {error && <div role="alert" className="mt-5 border border-red-300 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
         <button disabled={busy} type="submit" className="mt-7 w-full bg-[#141414] px-6 py-5 text-[12px] font-bold uppercase tracking-[.22em] text-white transition hover:bg-[#816143] disabled:cursor-wait disabled:opacity-60">
-          {busy ? "Registrando solicitud..." : "Separar ya · Sin pago"}
+          {busy ? "Registrando solicitud..." : "SEPARA YA · QUIERO MI LOOK"}
         </button>
-        <p className="mt-4 text-center text-[10px] leading-5 text-black/50">Recibirás el número de solicitud en pantalla. No constituye factura, pedido confirmado ni reserva garantizada.</p>
+        <p className="mt-4 text-center text-[10px] leading-5 text-black/50">Recibirás una referencia de solicitud. Para formalizar un anticipo, consulta directamente con nuestro equipo las condiciones y exige el comprobante al efectuar el pago.</p>
       </form>
     </div>
   );

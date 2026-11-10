@@ -5,7 +5,7 @@ import ReservationForm from "@/components/reservas/ReservationForm";
 
 export const metadata: Metadata = {
   title: "Separa ya | Solicitudes de reserva ORIGEN",
-  description: "Solicita prioridad de contacto para las prendas Wolves Territory en Colombia. Sin pagos anticipados ni apartado de inventario.",
+  description: "Descubre tu look de diciembre con Wolves Territory. Elige tu referencia ORIGEN y solicita al equipo comercial información para separarla.",
   alternates: { canonical: "https://www.wolves-territory.co/reservas" },
 };
 

@@ -45,9 +45,9 @@ export default function Hero() {
           {/* RIGHT */}
           <div className="w-full max-w-[390px] lg:justify-self-end lg:pb-2 xl:pb-4">
             <p className="max-w-sm text-[13px] leading-6 text-white/60 md:text-sm md:leading-7 xl:text-[15px]">
-              Diseñado para hombres que se mueven con intención.
-              Una vestimenta construida en torno a la presencia, la disciplina
-              y la identidad.
+              ¿Ya pensaste qué vas a vestir en diciembre?
+              Haz que cada encuentro cuente. Descubre ORIGEN y consulta cómo
+              separar tu look con Wolves Territory.
             </p>
 
             <div className="mt-7 flex flex-col gap-4 md:mt-8 md:gap-5">
@@ -55,7 +55,7 @@ export default function Hero() {
                 href="/reservas"
                 className="group inline-flex items-center justify-between bg-[#c9a96e] px-5 py-4 text-[11px] font-bold uppercase tracking-[.24em] text-black transition hover:bg-[#e6cca1]"
               >
-                SEPARA YA · SIN ANTICIPO
+                SEPARA YA · VISTE DICIEMBRE
                 <span aria-hidden="true">↗</span>
               </a>
               <a

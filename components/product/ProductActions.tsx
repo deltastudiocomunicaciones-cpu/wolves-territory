@@ -150,7 +150,7 @@ export default function ProductActions({
           href={`/reservas?producto=${encodeURIComponent(selectedVariant?.slug ?? product.slug)}`}
           className="flex w-full items-center justify-between bg-[#b08c60] px-6 py-5 text-[11px] font-bold uppercase tracking-[0.22em] text-black transition hover:bg-[#d4ba93]"
         >
-          SEPARA YA · SIN PAGO
+          SEPARA YA · CONSULTA TU LOOK
           <span aria-hidden="true">↗</span>
         </Link>
 
