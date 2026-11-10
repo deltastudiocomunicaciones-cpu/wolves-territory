@@ -91,6 +91,10 @@ export default function Footer() {
                 Wolves Territory
               </FooterLink>
 
+              <FooterLink href="/universo-wolves">
+                Nuestra historia · Lobos FC
+              </FooterLink>
+
             </FooterColumn>
 
             {/* TERRITORY */}
