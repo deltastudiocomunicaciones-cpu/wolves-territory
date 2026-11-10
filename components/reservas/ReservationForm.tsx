@@ -116,7 +116,7 @@ export default function ReservationForm() {
         <div className="absolute -left-[10000px] h-0 w-0 overflow-hidden" aria-hidden="true"><label htmlFor="reserve-company">Empresa</label><input id="reserve-company" type="text" tabIndex={-1} autoComplete="off" value={company} onChange={e=>setCompany(e.target.value)}/></div>
         <label className="mt-6 flex cursor-pointer items-start gap-3 text-xs leading-6 text-black/70">
           <input type="checkbox" className="mt-1 h-4 w-4 accent-black" checked={consent} required onChange={e=>setConsent(e.target.checked)}/>
-          <span>Autorizo a Wolves Territory a utilizar estos datos para contactarme sobre mi solicitud de reserva y la apertura comercial. Entiendo que no se efectúa ningún pago ni apartado de mercancía.</span>
+          <span>Autorizo el tratamiento de mis datos para gestionar y responder esta solicitud, según el <Link href="/reservas/privacidad" target="_blank" className="font-semibold underline">aviso de privacidad</Link>. Entiendo que no se efectúa ningún pago ni apartado de mercancía.</span>
         </label>
         {error && <div role="alert" className="mt-5 border border-red-300 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
         <button disabled={busy} type="submit" className="mt-7 w-full bg-[#141414] px-6 py-5 text-[12px] font-bold uppercase tracking-[.22em] text-white transition hover:bg-[#816143] disabled:cursor-wait disabled:opacity-60">
