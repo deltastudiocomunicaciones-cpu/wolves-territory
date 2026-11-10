@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Product,
   ProductVariant,
@@ -145,11 +146,19 @@ export default function ProductActions({
           </span>
         </button>
 
+        <Link
+          href={`/reservas?producto=${encodeURIComponent(selectedVariant?.slug ?? product.slug)}`}
+          className="flex w-full items-center justify-between bg-[#b08c60] px-6 py-5 text-[11px] font-bold uppercase tracking-[0.22em] text-black transition hover:bg-[#d4ba93]"
+        >
+          SEPARA YA · SIN PAGO
+          <span aria-hidden="true">↗</span>
+        </Link>
+
         <div
           role="status"
           className="flex w-full items-center justify-center border border-black/20 px-6 py-5 text-center text-[10px] font-semibold uppercase tracking-[0.18em] text-black/65"
         >
-          Compra en línea próximamente
+          Compra en línea próximamente · Separa ya disponible
         </div>
       </div>
 
