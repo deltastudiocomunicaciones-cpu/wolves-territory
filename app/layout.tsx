@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Wolves Territory. Identidad, disciplina y territorio.",
+    "Wolves Territory, marca de ropa masculina y streetwear de Medellín, Colombia. Explora la colección ORIGEN: hoodies, polos, camisetas, bermudas y gorras.",
 
   openGraph: {
     type: "website",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
     title: "Wolves Territory",
     description:
-      "Identidad, disciplina y territorio.",
+      "Ropa masculina y streetwear desde Medellín, Colombia. Conoce la colección ORIGEN de Wolves Territory.",
 
     images: [
       {

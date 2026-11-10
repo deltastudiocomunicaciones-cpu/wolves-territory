@@ -13,9 +13,9 @@ export default function Footer() {
         <div className="mx-auto grid max-w-[1600px] grid-cols-2 lg:grid-cols-4">
 
           <TrustItem
-            eyebrow="Secure Checkout"
-            title="Pago seguro"
-            description="Pagos procesados con Wompi."
+            eyebrow="Checkout"
+            title="Pagos en habilitación"
+            description="Estamos preparando el recaudo en línea."
           />
 
           <TrustItem
