@@ -1,23 +1,36 @@
-import { products } from "@/data/products";
+import { products, type Product, type ProductVariant } from "@/data/products";
 
-export function getProductBySlug(slug: string) {
-  const direct = products.find((product) => product.slug === slug);
-  if (direct) return direct;
+export type ProductPageData = {
+  product: Product;
+  selectedVariant: ProductVariant | null;
+};
 
-  // Los colores poseen URL propia. Mantener el tipo de producto y
-  // seleccionar la variante correspondiente sin duplicar el catálogo.
-  const parent = products.find((product) =>
-    product.variants?.some((variant) => variant.slug === slug)
+/**
+ * Resolves both the canonical product slug and every color-variant slug.
+ * Move the requested variant to the first position so ProductExperience
+ * displays the correct image and color at first render.
+ */
+export function getProductPageData(slug: string): ProductPageData | null {
+  const product = products.find((item) =>
+    item.slug === slug || item.variants?.some((variant) => variant.slug === slug)
   );
-  if (!parent) return undefined;
 
-  const selected = parent.variants?.find((variant) => variant.slug === slug);
-  if (!selected) return parent;
+  if (!product) return null;
 
-  return {
-    ...parent,
-    variants: [selected, ...(parent.variants ?? []).filter((variant) => variant.slug !== slug)],
-  };
+  const selectedVariant =
+    product.variants?.find((variant) => variant.slug === slug) ??
+    product.variants?.[0] ??
+    null;
+
+  const variants = selectedVariant && product.variants
+    ? [selectedVariant, ...product.variants.filter((variant) => variant.slug !== selectedVariant.slug)]
+    : product.variants;
+
+  return { product: variants ? { ...product, variants } : product, selectedVariant };
+}
+
+export function getProductBySlug(slug: string): Product | undefined {
+  return getProductPageData(slug)?.product;
 }
 
 export function formatPrice(value: number) {
