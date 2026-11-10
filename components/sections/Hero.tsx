@@ -52,6 +52,13 @@ export default function Hero() {
 
             <div className="mt-7 flex flex-col gap-4 md:mt-8 md:gap-5">
               <a
+                href="/reservas"
+                className="group inline-flex items-center justify-between bg-[#c9a96e] px-5 py-4 text-[11px] font-bold uppercase tracking-[.24em] text-black transition hover:bg-[#e6cca1]"
+              >
+                SEPARA YA · SIN ANTICIPO
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a
                 href="#coleccion"
                 className="group inline-flex items-center justify-between border-b border-white/35 pb-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-white transition hover:border-[#c9a96e] hover:text-[#c9a96e] md:text-xs md:tracking-[0.28em]"
               >
