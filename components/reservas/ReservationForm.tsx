@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { products } from "@/data/products";
 
 type Option = { slug: string; name: string; color: string | null; image: string; price: number; category: string };
-const options: Option[] = products.flatMap((product) => product.variants?.length
+const options: Option[] = products.flatMap<Option>((product) => product.variants?.length
   ? product.variants.map((variant) => ({ slug: variant.slug, name: product.name, color: variant.color, image: variant.image, price: product.price, category: product.category }))
   : [{ slug: product.slug, name: product.name, color: null, image: product.image, price: product.price, category: product.category }]
 );
