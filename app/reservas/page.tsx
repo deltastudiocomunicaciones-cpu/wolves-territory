@@ -3,10 +3,29 @@ import { Suspense } from "react";
 import Link from "next/link";
 import ReservationForm from "@/components/reservas/ReservationForm";
 
+const reserveUrl = "https://www.wolves-territory.co/reservas";
+const shareTitle = "Diciembre te espera. SEPARA YA | Wolves Territory";
+const shareDescription = "¿Ya pensaste qué vas a vestir en diciembre? Arma tu look ORIGEN con hoodies, camisetas, polos, bermudas y gorras. Selecciona tus favoritos y habla con nuestro equipo.";
+
 export const metadata: Metadata = {
-  title: "Separa ya | Solicitudes de reserva ORIGEN",
-  description: "Descubre tu look de diciembre con Wolves Territory. Elige tu referencia ORIGEN y solicita al equipo comercial información para separarla.",
-  alternates: { canonical: "https://www.wolves-territory.co/reservas" },
+  title: { absolute: shareTitle },
+  description: shareDescription,
+  alternates: { canonical: reserveUrl },
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    url: reserveUrl,
+    siteName: "Wolves Territory",
+    title: shareTitle,
+    description: shareDescription,
+    // app/reservas/opengraph-image.tsx supplies the campaign image automatically.
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: shareTitle,
+    description: shareDescription,
+    images: ["https://www.wolves-territory.co/reservas/opengraph-image"],
+  },
 };
 
 export default function ReservasPage() {
