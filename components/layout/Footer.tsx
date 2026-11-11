@@ -120,6 +120,8 @@ export default function Footer() {
 
             <FooterColumn title="Support">
 
+              <a href="https://wa.me/573043795035?text=Hola%2C%20Wolves%20Territory.%20Quiero%20consultar%20sobre%20la%20colecci%C3%B3n%20ORIGEN." target="_blank" rel="noopener noreferrer" className="text-sm text-[#101820]/55 transition-colors duration-300 hover:text-[#187E83]">WhatsApp comercial · +57 304 379 5035</a>
+
               <a
                 href="mailto:wolvesterritoryco@gmail.com"
                 className="text-sm text-[#101820]/55 transition-colors duration-300 hover:text-[#187E83]"
