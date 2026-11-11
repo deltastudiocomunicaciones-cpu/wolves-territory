@@ -56,15 +56,15 @@ import ThePack from "@/components/sections/ThePack";
 export default function Home() {
   return (
     <>
-      <main className="min-h-screen bg-black text-white">
+      <main className="min-h-screen bg-[#f8fafb] text-[#101820]">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: storefrontIdentityJson }} />
         <Navbar />
 
         <Hero />
 
-        <ThePack />
-
         <FeaturedCollection />
+
+        <ThePack />
 
         <Suspense
           fallback={
