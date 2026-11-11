@@ -22,7 +22,7 @@ export default function Hero() {
     <>
       <section className="relative isolate min-h-[680px] overflow-hidden bg-[#dceef5] text-[#101820] sm:min-h-[740px] lg:min-h-[740px]">
         <div aria-hidden="true" className="absolute inset-0 -z-20 bg-[#bfdae5]">
-          <div className="absolute inset-0 bg-[url('/images/wt-hero-real.webp'),url('/products/origen-hoodie-ivory.webp')] bg-cover bg-[position:57%_center] bg-no-repeat" />
+          <div className="absolute inset-0 bg-[url('/images/wt-hero-real.webp')] bg-cover bg-[position:57%_center] bg-no-repeat" />
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(219,239,248,0.98)_0%,rgba(220,239,247,0.96)_26%,rgba(215,236,244,0.72)_39%,rgba(215,235,243,0.12)_57%,transparent_75%)] max-lg:bg-[linear-gradient(90deg,rgba(219,239,248,0.98)_0%,rgba(220,239,247,0.87)_43%,rgba(215,236,244,0.15)_80%)] max-sm:bg-[linear-gradient(180deg,rgba(224,241,248,0.96)_0%,rgba(222,240,247,0.91)_46%,rgba(220,240,247,0.1)_85%)]" />
         <div className="relative z-10 mx-auto flex min-h-[680px] w-full max-w-[1600px] flex-col justify-between px-6 pb-10 pt-[150px] sm:min-h-[740px] sm:px-10 md:pt-[175px] lg:min-h-[740px] lg:px-16">
