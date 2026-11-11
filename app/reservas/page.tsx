@@ -18,8 +18,9 @@ export default function ReservasPage() {
           <div className="flex flex-wrap items-center gap-4"><a href="https://wa.me/573043795035?text=Hola%2C%20Wolves%20Territory.%20Quiero%20informaci%C3%B3n%20para%20separar%20mi%20look%20de%20diciembre." target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold uppercase tracking-[.15em] text-[#b5ddb9] hover:text-white">WhatsApp comercial ↗</a><Link href="/#coleccion" className="text-[10px] uppercase tracking-[.15em] text-white/65 hover:text-white">Volver a la tienda ↗</Link></div>
         </div>
       </header>
-      <section className="relative overflow-hidden px-4 py-12 sm:px-8 sm:py-20">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_10%_20%,#55412e_0%,transparent_46%)] opacity-65"/>
+      <section className="relative isolate min-h-[calc(100vh-76px)] overflow-hidden px-4 py-12 sm:px-8 sm:py-20">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 bg-[url('/images/separa-ya-origen-diciembre.jpg')] bg-cover bg-[position:65%_center] bg-no-repeat md:bg-center" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#111111]/85 via-[#111111]/80 to-[#111111]/65 sm:from-[#111111]/78 sm:via-[#111111]/69 sm:to-[#111111]/58" />
         <div className="relative">
           <Suspense fallback={<p className="text-center text-sm text-white/70">Cargando catálogo...</p>}>
             <ReservationForm />
