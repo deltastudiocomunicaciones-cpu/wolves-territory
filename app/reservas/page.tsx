@@ -18,13 +18,19 @@ export const metadata: Metadata = {
     siteName: "Wolves Territory",
     title: shareTitle,
     description: shareDescription,
-    // app/reservas/opengraph-image.tsx supplies the campaign image automatically.
+    images: [{
+      url: "https://www.wolves-territory.co/images/separa-ya-origen-diciembre.jpg?v=20261110b",
+      width: 640,
+      height: 360,
+      alt: "Wolves Territory · Diciembre te espera · SEPARA YA · ORIGEN",
+      type: "image/jpeg",
+    }],
   },
   twitter: {
     card: "summary_large_image",
     title: shareTitle,
     description: shareDescription,
-    images: ["https://www.wolves-territory.co/reservas/opengraph-image"],
+    images: ["https://www.wolves-territory.co/images/separa-ya-origen-diciembre.jpg?v=20261110b"],
   },
 };
 
