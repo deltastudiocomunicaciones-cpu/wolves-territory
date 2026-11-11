@@ -1,95 +1,67 @@
+import Link from "next/link";
+
+const pillars = [
+  { index: "01", title: "Diseño propio", detail: "Colección ORIGEN" },
+  { index: "02", title: "Territorio local", detail: "Medellín, Colombia" },
+  { index: "03", title: "Identidad en cada pieza", detail: "Moda masculina" },
+  { index: "04", title: "Comunidad WT", detail: "Un territorio compartido" },
+];
+
 export default function Hero() {
   return (
-    <section className="relative min-h-[100svh] overflow-hidden bg-black">
-      {/* BACKGROUND */}
-      <picture className="absolute inset-0 block h-full w-full">
-        <source
-          media="(max-width: 767px)"
-          srcSet="/images/hero-wolves-mobile.webp"
-        />
-        <img
-          src="/images/hero-wolves.webp"
-          alt="Wolves Territory Campaign"
-          className="h-full w-full object-cover object-center md:object-[center_-20%]"
-        />
-      </picture>
-
-      {/* OVERLAYS */}
-      <div className="absolute inset-0 bg-black/05" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/35 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/25" />
-
-      {/* CONTENT */}
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1600px] items-end px-6 pb-14 pt-36 sm:pb-16 md:px-10 md:pb-18 md:pt-40 lg:px-14 lg:pb-16 xl:px-16 xl:pb-20">
-        <div className="grid w-full items-end gap-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.55fr)] lg:gap-12 xl:gap-16">
-
-          {/* LEFT */}
-          <div className="min-w-0 -translate-y-55 sm:translate-y-0">
-            <div className="mb-6 flex items-center gap-4 md:mb-7">
-              <span className="h-px w-10 shrink-0 bg-[#c9a96e]" />
-
-              <p className="text-[9px] font-medium uppercase tracking-[0.4em] text-[#c9a96e] sm:text-[10px] md:text-[11px]">
-                Origen · Primera Colección
-              </p>
-            </div>
-
-            <h1 className="max-w-[1050px] text-[clamp(2.4rem,9.5vw,4rem)] sm:text-[clamp(3.5rem,8.2vw,9rem)] lg:text-[clamp(4.4rem,8.2vw,9rem)] font-black uppercase leading-[0.78] tracking-[-0.06em] text-white">
-              Usa
-              <br />
-              el
-              <br />
-              Territorio
-            </h1>
-          </div>
-
-          {/* RIGHT */}
-          <div className="w-full max-w-[390px] lg:justify-self-end lg:pb-2 xl:pb-4">
-            <p className="max-w-sm text-[13px] leading-6 text-white/60 md:text-sm md:leading-7 xl:text-[15px]">
-              ¿Ya pensaste qué vas a vestir en diciembre?
-              Haz que cada encuentro cuente. Descubre ORIGEN y consulta cómo
-              separar tu look con Wolves Territory.
+    <>
+      <section className="relative isolate flex min-h-[740px] flex-col overflow-hidden bg-[#dcebf1] text-[#101820] md:min-h-[780px] xl:min-h-[810px]">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_30%_30%,#f3f8fa_0%,#c6e1ec_47%,#adcbd9_100%)]" />
+        <div className="pointer-events-none absolute -right-[14%] top-[11%] -z-10 h-[118%] w-[57%] rotate-[25deg] border-l-[14px] border-white/65 bg-[linear-gradient(110deg,#eff5f6_0%,#d8e5e9_55%,#bbd0d6_100%)] shadow-[-20px_0_65px_rgba(27,79,100,0.06)] md:-right-[7%]" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full bg-[linear-gradient(90deg,rgba(231,242,246,0)_12%,rgba(231,242,246,0)_49%,rgba(231,242,246,0.08)_100%)]" />
+        <div className="absolute bottom-0 right-[-9%] top-[90px] z-0 w-[93%] sm:right-[-3%] sm:w-[73%] lg:right-[4%] lg:top-[65px] lg:w-[59%] xl:right-[6%]">
+          <img
+            src="/products/origen-hoodie-ivory.webp"
+            alt="Hoodie ORIGEN Ivory de Wolves Territory"
+            className="h-full w-full object-contain object-bottom drop-shadow-[0_18px_30px_rgba(16,24,32,0.12)]"
+          />
+        </div>
+        <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-[#e8f2f5]/80 via-[#e8f2f5]/25 to-[#d4e5eb]/5 sm:bg-gradient-to-r sm:from-[#e7f3f8]/85 sm:via-[#d7e8ed]/30 sm:to-transparent" />
+        <div className="relative z-10 mx-auto flex w-full max-w-[1600px] flex-1 flex-col justify-between px-6 pb-10 pt-36 sm:px-10 md:pb-14 md:pt-48 lg:px-16">
+          <div className="max-w-[760px]">
+            <p className="mb-7 flex items-center gap-5 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-[#187E83] sm:text-xs">
+              COLECCIÓN 01 / MEDELLÍN <span className="h-px w-10 bg-[#101820]"/>
             </p>
-
-            <div className="mt-7 flex flex-col gap-4 md:mt-8 md:gap-5">
-              <a
-                href="/reservas"
-                className="group inline-flex items-center justify-between bg-[#c9a96e] px-5 py-4 text-[11px] font-bold uppercase tracking-[.24em] text-black transition hover:bg-[#e6cca1]"
-              >
-                SEPARA YA · VISTE DICIEMBRE
-                <span aria-hidden="true">↗</span>
-              </a>
-              <a
-                href="#coleccion"
-                className="group inline-flex items-center justify-between border-b border-white/35 pb-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-white transition hover:border-[#c9a96e] hover:text-[#c9a96e] md:text-xs md:tracking-[0.28em]"
-              >
-                Shop Origen
-
-                <span className="transition-transform duration-300 group-hover:translate-x-2">
-                  →
-                </span>
-              </a>
-
-              <a
-                href="#nosotros"
-                className="group inline-flex items-center justify-between border-b border-white/15 pb-4 text-[10px] font-semibold uppercase tracking-[0.26em] text-white/55 transition hover:border-white/40 hover:text-white md:text-xs md:tracking-[0.28em]"
-              >
-                Descubre Wolves territory
-
-                <span className="transition-transform duration-300 group-hover:translate-x-2">
-                  →
-                </span>
-              </a>
+            <h1 className="text-[clamp(4.6rem,13.5vw,10.8rem)] font-black uppercase leading-[0.8] tracking-[-0.095em]">ORIGEN</h1>
+            <p className="mt-8 max-w-[400px] text-[16px] leading-[1.65] text-[#101820] sm:text-[20px]">
+              Diseño urbano. Identidad propia.<br/>Prendas para habitar tu territorio.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3 sm:mt-10">
+              <Link href="/#coleccion" className="inline-flex min-h-12 items-center justify-center gap-5 bg-[#075F6C] px-6 py-3 text-xs font-semibold text-white transition-colors hover:bg-[#074551] sm:text-sm">
+                Explorar colección <span aria-hidden="true">↗</span>
+              </Link>
+              <Link href="/#the-pack" className="inline-flex min-h-12 items-center justify-center border border-[#075F6C] px-6 py-3 text-xs font-semibold text-[#075F6C] transition-colors hover:bg-white/60 sm:text-sm">
+                Ver lookbook
+              </Link>
             </div>
+          </div>
+          <div className="mt-40 font-mono text-[10px] leading-6 tracking-[0.08em] text-[#425b65]/80 sm:mt-16">
+            <p>6.2442° N — 75.5812° W</p>
+            <p>MEDELLÍN, CO</p>
           </div>
         </div>
-      </div>
-
-      {/* BOTTOM META */}
-      <div className="absolute bottom-5 right-6 z-20 hidden items-center gap-6 text-[9px] uppercase tracking-[0.3em] text-white/35 md:flex md:right-10 lg:right-14 xl:right-16">
-        <span>Wolves Territory</span>
-        <span>—</span>
-        <span>Colombia · 2026</span>
-      </div>
-    </section>
+        <div className="absolute bottom-12 right-6 z-10 hidden flex-col items-center gap-3 font-mono text-[11px] text-white lg:flex">
+          <span>01</span><span className="h-8 w-px bg-white/80"/><span>01</span>
+        </div>
+      </section>
+      <section aria-label="Filosofía Wolves Territory" className="bg-[#f8fafb] text-[#101820]">
+        <div className="mx-auto grid max-w-[1600px] grid-cols-2 gap-y-8 px-6 py-8 sm:px-10 md:grid-cols-4 lg:px-16 lg:py-10">
+          {pillars.map((pillar, index) => (
+            <div key={pillar.index} className={`flex gap-4 border-[#b3c2c8] px-2 sm:gap-5 md:px-5 ${index ? "md:border-l" : ""}`}>
+              <span className="mt-0.5 font-mono text-xs text-[#187E83]">{pillar.index}</span>
+              <div>
+                <h2 className="text-sm font-semibold sm:text-[15px]">{pillar.title}</h2>
+                <p className="mt-1 text-xs text-[#566e78]">{pillar.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }
