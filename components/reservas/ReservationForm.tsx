@@ -17,7 +17,7 @@ type SelectedItem = { slug: string; size: string; quantity: number };
 
 const options: Option[] = products.flatMap<Option>((product) => product.variants?.length
   ? product.variants.map((variant) => ({
-      slug: variant.slug, name: product.name, color: variant.color,
+      slug: variant.slug, name: product.name.replace(/\\s+(Black|Ivory|Gray|Beige|White|Red)$/i, ""), color: variant.color,
       image: variant.image, price: product.price, category: product.category,
     }))
   : [{
