@@ -1,83 +1,31 @@
+import Link from "next/link";
+
 export default function FeaturedCollection() {
   return (
-    <section
-      id="current-drop"
-      className="
-        scroll-mt-28
-        bg-[linear-gradient(135deg,#D9E3E8_0%,#B8D1DF_45%,#83C8C5_100%)]
-        px-6 py-32 text-[#101820] md:px-12
-      "
-    >
-      <div className="mx-auto max-w-[1600px]">
-
-        {/* HEADER */}
-        <div className="mb-20 text-center">
-          <p className="text-xs font-semibold tracking-[0.4em] text-[#187E83]">
-            DROP ACTUAL
-          </p>
-
-          <h2 className="mt-4 text-4xl font-black uppercase tracking-[-0.03em] md:text-6xl">
-            COLECCIÓN ORIGEN
+    <section id="current-drop" className="scroll-mt-24 bg-[#e9f3f7] text-[#101820]" aria-label="Editorial Colección ORIGEN">
+      <div className="grid grid-cols-1 lg:min-h-[570px] lg:grid-cols-[minmax(0,1.55fr)_minmax(420px,1fr)]">
+        <Link href="/#the-pack" className="group relative block min-h-[480px] overflow-hidden bg-[#d3e3ea] sm:min-h-[550px] lg:min-h-[570px]">
+          <img
+            src="/products/origen-hoodie-ivory.webp"
+            alt="Hoodie Ivory, colección ORIGEN Wolves Territory"
+            className="absolute inset-0 h-full w-full object-cover object-[center_30%] transition-transform duration-700 group-hover:scale-[1.035]"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#102733]/35 via-transparent to-transparent"/>
+          <div className="absolute bottom-8 left-8 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-white sm:left-12">
+            01 / THE ORIGIN LOOKBOOK
+          </div>
+        </Link>
+        <div className="flex min-h-[370px] flex-col justify-center bg-[linear-gradient(135deg,#f3f8fa_0%,#dcebf1_100%)] px-8 py-16 sm:px-14 lg:px-16 xl:px-20">
+          <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#187E83]">LA COLECCIÓN</p>
+          <h2 className="mt-6 text-[clamp(3.6rem,6.2vw,7rem)] font-black uppercase leading-[0.88] tracking-[-0.085em]">
+            ORIGEN <span aria-hidden="true" className="text-[#087f90]">↗</span>
           </h2>
-
-          <div className="mx-auto mt-7 h-px w-16 bg-[#101820]/20" />
-        </div>
-
-        {/* COLLECTION */}
-        <div className="grid gap-6 md:grid-cols-2">
-
-          {/* CARD 01 */}
-          <article className="group relative overflow-hidden rounded-[2rem] border border-[#101820]/10 bg-white/10 shadow-[0_30px_80px_rgba(16,24,32,0.08)]">
-            <img
-              src="/images/polo-origen.png"
-              alt="Polo Origen"
-              className="h-[650px] w-full object-cover transition duration-[1200ms] ease-out group-hover:scale-[1.025]"
-            />
-
-            {/* OVERLAY MUY SUTIL */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#101820]/55 via-[#101820]/5 to-transparent" />
-
-            <div className="absolute bottom-0 left-0 w-full p-8 md:p-10">
-
-              <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#83C8C5]">
-                ESSENTIAL
-              </p>
-
-              <h3 className="mt-3 text-3xl font-black uppercase tracking-[-0.025em] text-white md:text-4xl">
-                POLO ORIGEN
-              </h3>
-
-              <div className="mt-6 h-px w-10 bg-white/45 transition-all duration-500 group-hover:w-20" />
-
-            </div>
-          </article>
-
-          {/* CARD 02 */}
-          <article className="group relative overflow-hidden rounded-[2rem] border border-[#101820]/10 bg-white/10 shadow-[0_30px_80px_rgba(16,24,32,0.08)]">
-            <img
-              src="/images/drop-collection-2.png"
-              alt="Origen Collection"
-              className="h-[650px] w-full object-cover transition duration-[1200ms] ease-out group-hover:scale-[1.025]"
-            />
-
-            {/* OVERLAY MUY SUTIL */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#101820]/55 via-[#101820]/5 to-transparent" />
-
-            <div className="absolute bottom-0 left-0 w-full p-8 md:p-10">
-
-              <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-[#83C8C5]">
-                MOVIMIENTO
-              </p>
-
-              <h3 className="mt-3 text-3xl font-black uppercase tracking-[-0.025em] text-white md:text-4xl">
-                ORIGEN T-SHIRT
-              </h3>
-
-              <div className="mt-6 h-px w-10 bg-white/45 transition-all duration-500 group-hover:w-20" />
-
-            </div>
-          </article>
-
+          <p className="mt-8 max-w-[410px] text-[15px] leading-7 text-[#355864] sm:text-[17px]">
+            Descubre nuestras piezas, colores y siluetas. Una colección que nace del territorio.
+          </p>
+          <Link href="/#coleccion" className="mt-10 inline-flex w-fit items-center gap-12 border-b border-[#075F6C] pb-3 text-[14px] font-semibold text-[#075F6C] transition-colors hover:text-[#101820]">
+            Explorar todas las prendas <span aria-hidden="true">↗</span>
+          </Link>
         </div>
       </div>
     </section>

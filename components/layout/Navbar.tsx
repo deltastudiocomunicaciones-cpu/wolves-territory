@@ -2,280 +2,60 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
 import { useCart } from "@/components/cart/CartProvider";
 import CartDrawer from "@/components/cart/CartDrawer";
+
+const nav = [
+  { label: "Colección", href: "/#coleccion" },
+  { label: "The Pack", href: "/#the-pack" },
+  { label: "Tiendas aliadas", href: "/store/apply" },
+  { label: "Separar ya", href: "/reservas" },
+];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-
   const { totalItems } = useCart();
-
-  const navLinks = [
-    {
-      label: "SEPARA YA",
-      href: "/reservas",
-    },
-    {
-      label: "NEW",
-      href: "/#current-drop",
-    },
-    {
-      label: "SHOP",
-      href: "/#coleccion",
-    },
-    {
-      label: "COLECCIONES",
-      href: "/#current-drop",
-    },
-    {
-      label: "CAPS",
-      href: "/?category=Cap#coleccion",
-    },
-    {
-      label: "APPAREL",
-      href: "/?category=Apparel#coleccion",
-    },
-    
-  ];
 
   return (
     <>
-      {/* =====================================================
-          ANNOUNCEMENT BAR · POWDER
-      ===================================================== */}
-
-      <div className="fixed top-0 z-[60] w-full border-b border-[#101820]/10 bg-[#D9E3E8] text-[#101820]">
-        <div className="flex h-8 items-center justify-center px-4 text-center text-[9px] font-medium uppercase tracking-[0.22em] text-[#101820]/60 md:tracking-[0.28em]">
-          DICIEMBRE SE VISTE DE TERRITORIO · SEPARA YA · COLECCIÓN ORIGEN
-        </div>
-      </div>
-
-      {/* =====================================================
-          NAVBAR · AQUA
-      ===================================================== */}
-
-      <nav className="fixed top-8 z-50 w-full border-b border-[#101820]/10 bg-[#83C8C5]/95 text-[#101820] backdrop-blur-xl">
-
-        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-8 lg:px-12 xl:px-14">
-
-          {/* BRAND */}
-<Link
-  href="/"
-  aria-label="Wolves Territory Home"
-  className="group flex shrink-0 items-center"
->
-  <img
-  src="/images/wolves-logo-black.png"
-  alt="Wolves Territory"
-  className="h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-[1.03] md:h-20"
-/>
-</Link>
-
-          {/* =================================================
-              DESKTOP NAV
-          ================================================= */}
-
-          <div className="hidden items-center gap-4 md:flex lg:gap-6 xl:gap-8">
-
-  {navLinks.map((link) => (
-    <Link
-      key={link.label}
-      href={link.href}
-      className="group relative text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/60 transition-colors duration-300 hover:text-[#101820] lg:text-[10px] lg:tracking-[0.22em]"
-    >
-      {link.label}
-
-      <span className="absolute -bottom-2 left-0 h-px w-0 bg-[#187E83] transition-all duration-300 group-hover:w-full" />
-    </Link>
-  ))}
-
-  {/* TIENDAS · INSCRIPCIÓN STORE */}
-  <Link
-    href="/store/apply"
-    className="group relative text-[9px] font-medium uppercase tracking-[0.18em] text-[#101820]/60 transition-colors duration-300 hover:text-[#101820] lg:text-[10px] lg:tracking-[0.22em]"
-  >
-    TIENDAS
-    <span className="absolute -bottom-2 left-0 h-px w-0 bg-[#187E83] transition-all duration-300 group-hover:w-full" />
-  </Link>
-
-</div>
-
-          {/* =================================================
-              ACTIONS
-          ================================================= */}
-
-          <div className="flex shrink-0 items-center gap-4 lg:gap-5">
-
-            {/* SEARCH */}
-
-            <button
-              type="button"
-              aria-label="Search"
-              className="text-[#101820]/55 transition-colors duration-300 hover:text-[#101820]"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
-            </button>
-
-            {/* ACCOUNT */}
-
-            <button
-              type="button"
-              aria-label="Account"
-              className="hidden text-[#101820]/55 transition-colors duration-300 hover:text-[#101820] sm:block"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <circle cx="12" cy="8" r="4" />
-
-                <path d="M4 21c1.5-4 4-6 8-6s6.5 2 8 6" />
-              </svg>
-            </button>
-
-            {/* CART */}
-
-            <button
-              type="button"
-              aria-label="Cart"
-              onClick={() => setCartOpen(true)}
-              className="relative text-[#101820]/60 transition-colors duration-300 hover:text-[#101820]"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M5 8h14l-1 12H6L5 8Z" />
-
-                <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-              </svg>
-
-              {totalItems > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#587EAD] px-1 text-[9px] font-bold text-white">
-                  {totalItems}
-                </span>
-              )}
-            </button>
-
-            {/* MOBILE MENU */}
-
-            <button
-              type="button"
-              aria-label="Menu"
-              aria-expanded={menuOpen}
-              onClick={() =>
-                setMenuOpen((current) => !current)
-              }
-              className="flex w-5 flex-col gap-1.5 md:hidden"
-            >
-              <span
-                className={`h-px w-5 bg-[#101820]/80 transition-transform duration-300 ${
-                  menuOpen
-                    ? "translate-y-[3.5px] rotate-45"
-                    : ""
-                }`}
-              />
-
-              <span
-                className={`h-px w-5 bg-[#101820]/80 transition-transform duration-300 ${
-                  menuOpen
-                    ? "-translate-y-[3.5px] -rotate-45"
-                    : ""
-                }`}
-              />
-            </button>
-
+      <header className="absolute left-0 top-0 z-50 w-full border-b border-[#c9d7dd]/65 bg-[#f8fafb]/95 text-[#101820] backdrop-blur-lg">
+        <nav className="mx-auto flex h-[82px] max-w-[1600px] items-center justify-between gap-6 px-6 sm:px-10 lg:px-16" aria-label="Navegación principal">
+          <Link href="/" aria-label="Wolves Territory, inicio" className="flex shrink-0 items-center">
+            <img src="/images/wolves-logo-black.png" alt="Wolves Territory" className="h-[55px] w-auto max-w-[190px] object-contain sm:h-[65px]"/>
+          </Link>
+          <div className="hidden items-center gap-7 md:flex lg:gap-10">
+            {nav.map(item => (
+              <Link key={item.href} href={item.href} className="text-[12px] font-semibold text-[#18242c] transition-colors hover:text-[#087381] lg:text-[14px]">
+                {item.label}
+              </Link>
+            ))}
           </div>
-        </div>
-
-        {/* =================================================
-            MOBILE DRAWER · SEAFOAM
-        ================================================= */}
-
+          <div className="flex items-center gap-4 sm:gap-6">
+            <button type="button" onClick={() => setCartOpen(true)} aria-label={`Abrir carrito, ${totalItems} productos`} className="relative p-2 text-[#101820] hover:text-[#187E83]">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>
+              </svg>
+              <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#087F90] px-1 text-[11px] font-bold text-white">{totalItems}</span>
+            </button>
+            <button type="button" aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={menuOpen} onClick={() => setMenuOpen(v => !v)} className="flex h-10 w-10 flex-col items-center justify-center gap-[6px] md:hidden">
+              <span className={`h-px w-6 bg-[#101820] transition-transform ${menuOpen ? "translate-y-[3.5px] rotate-45" : ""}`}/>
+              <span className={`h-px w-6 bg-[#101820] transition-transform ${menuOpen ? "-translate-y-[3.5px] -rotate-45" : ""}`}/>
+            </button>
+          </div>
+        </nav>
         {menuOpen && (
-          <div className="border-t border-[#101820]/10 bg-[#DCE5DE] md:hidden">
-
-            <div className="flex min-h-[calc(100vh-96px)] flex-col justify-between px-6 py-10">
-
-              <div className="flex flex-col gap-7">
-
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="border-b border-[#101820]/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-[#101820] transition hover:text-[#187E83]"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-
-               <Link
-    href="/store/apply"
-    onClick={() => setMenuOpen(false)}
-    className="border-b border-[#101820]/10 pb-5 text-lg font-medium uppercase tracking-[0.14em] text-[#101820] transition hover:text-[#187E83]"
-  >
-    TIENDAS
-  </Link> 
-
-              </div>
-
-              <div className="mt-12 border-t border-[#101820]/10 pt-8">
-
-                <div className="flex items-center gap-3">
-
-                  <img
-                    src="/images/wolves-isotipo.png"
-                    alt=""
-                    className="h-8 w-auto opacity-80"
-                  />
-
-                  <p className="text-[9px] uppercase tracking-[0.3em] text-[#101820]/40">
-                    Wolves Territory
-                  </p>
-
-                </div>
-
-                <p className="mt-4 max-w-xs text-sm leading-6 text-[#101820]/55">
-                  Diseñado para el hombre que se mueve con intención.
-                </p>
-
-              </div>
-
-            </div>
+          <div className="border-t border-[#c9d7dd] bg-[#f8fafb] px-7 py-8 md:hidden">
+            {nav.map(item => (
+              <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className="block border-b border-[#c9d7dd] py-5 text-lg font-semibold text-[#101820]">
+                {item.label}
+              </Link>
+            ))}
+            <Link href="/?category=Cap#coleccion" onClick={() => setMenuOpen(false)} className="block py-5 text-sm uppercase tracking-wider text-[#187E83]">Gorras y accesorios</Link>
           </div>
         )}
-
-      </nav>
-
-      {/* =====================================================
-          CART DRAWER
-      ===================================================== */}
-
-      <CartDrawer
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-      />
+      </header>
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );
 }
