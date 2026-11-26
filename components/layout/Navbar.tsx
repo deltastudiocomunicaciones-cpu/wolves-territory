@@ -8,6 +8,7 @@ import CartDrawer from "@/components/cart/CartDrawer";
 const nav = [
   { label: "Colección", href: "/#coleccion" },
   { label: "The Pack", href: "/#the-pack" },
+  { label: "Fit Studio", href: "/fit-studio" },
   { label: "Tiendas aliadas", href: "/store/apply" },
   { label: "Separar ya", href: "/reservas" },
 ];
