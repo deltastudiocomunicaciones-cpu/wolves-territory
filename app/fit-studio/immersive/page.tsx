@@ -147,7 +147,7 @@ export default function ImmersiveShowroom() {
               <p className="mt-3 text-[10px] uppercase tracking-[.35em] text-[#e2c5a3]">Próxima experiencia</p>
               <h3 className="text-2xl font-light sm:text-3xl">Your reflection. Your territory.</h3>
               <p className="max-w-lg text-sm leading-6 text-white/65">El motor de prueba virtual no está habilitado en esta sala. Puedes seguir explorando el Fit Studio experimental existente sin enviar fotografías personales desde aquí.</p>
-              <Link href="/fit-studio" className="mt-3 border border-[#e6c9a5] px-6 py-3 text-[11px] uppercase tracking-[.15em] hover:bg-[#e6c9a5] hover:text-black">Ver Fit Studio V0.6 ↗</Link>
+              <div className="mt-4 flex flex-wrap justify-center gap-3"><Link href="/fit-studio/fit-guide" className="border border-[#e6c9a5] bg-[#e6c9a5] px-6 py-3 text-[11px] uppercase tracking-[.15em] text-black hover:bg-white">Abrir guía de medidas ↗</Link><Link href="/fit-studio" className="border border-[#e6c9a5] px-6 py-3 text-[11px] uppercase tracking-[.15em] hover:bg-[#e6c9a5] hover:text-black">Explorar Fit Studio V0.6 ↗</Link></div>
             </div>
           )}
         </div>
